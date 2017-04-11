@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assetsInfoExt>
+	<!--
+	 
+		Example custom field configuration.
+		For more information, view the documentation on Custom Metadata.
+		
+		An asset base-type needs to have a unique name and need to be based on an existing base-type,
+		for more information on base-types, view the documentation.
+	
+		Fields need to have a unique name and belong to a field-group. Fields have settings for
+		the search index, the storage engine and about the type of data that will be stored in the field.
+		
+		Note: The <assets> closing tag is after the definition of <asset-type> at the bottom.
+	
+		Namespaces need to be registered if you use them in fileFields with 'xmlPath:' prefix.
+	
+	-->
+	
+	<fieldGroups>
+		<fieldGroup name="AI" />
+	</fieldGroups>
+	
+	<!--
+	
+		Field groups determine how the metadata fields are grouped and viewed in the metadata panel.
+
+	<fieldGroups>
+		<fieldGroup name="CompanyData" />
+	</fieldGroups>
+		
+	-->
+	
+	
+
+	<!--	
+		XML Namespace default prefixes are used for XPath evaluations performed from within Elvis.
+		
+	<namespaces>
+		<namespace prefix="custom_ns" uri="http://www.dutchsoftware.com/xmlns/elvis/custom_testnamespace/1.0"/>
+	</namespaces>
+		
+	-->
+	
+
+
+	<!-- 
+		Custom fields can be added here.
+		
+		The name of a custom field MUST start with 'cf_'.
+		
+		Note: make sure to also add any custom fieldGroup you use at the top of this file.
+	
+	<assets>
+		<assetTypeBaseExt name="CommonFields">
+			<fields>
+				<field name="cf_companyName" group="CompanyData">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" />
+				</field>
+			</fields>
+		</assetTypeBaseExt>
+		<assetTypeBaseExt name="ImageFields">
+			<fields>
+				<field name="cf_photographer" group="CompanyData">
+                    <storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
+					<data editable="true" datatype="number" />
+				</field>
+			</fields>
+		</assetTypeBaseExt>
+	</assets>
+	
+	-->
+	
+	<!-- 
+		Sample Enterprise custom fields
+		
+	<assets>
+		<assetTypeBaseExt name="CommonFields">
+			<fields>
+				<field name="cf_BooleanTest" group="CustomFields">
+                    <storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" />
+				</field>
+				<field name="cf_DateTest" group="CustomFields">
+                    <storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="date" />
+				</field>
+				<field name="cf_DateTimeTest" group="CustomFields">
+                    <storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="datetime" />
+				</field>
+				<field name="cf_DoubleTest" group="CustomFields">
+                    <storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="decimal" />
+				</field>
+				<field name="cf_IntegerTest" group="CustomFields">
+                    <storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="number" />
+				</field>
+				<field name="cf_ListTest" group="CustomFields">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" />
+				</field>
+				<field name="cf_MultiLineTest" group="CustomFields">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" />
+				</field>
+				<field name="cf_MultiListTestElvisMultiField" group="CustomFields">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" multivalue="true" />
+				</field>
+				<field name="cf_MultiStringTestElvisMultiField" group="CustomFields">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" multivalue="true" />
+				</field>
+				<field name="cf_StringTest" group="CustomFields">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" />
+				</field>
+			</fields>
+		</assetTypeBaseExt>
+	</assets>
+	-->
+	
+	
+	<!--
+	
+		Field extensions for standard Elvis fields
+		
+		Some aspects of standard fields can be customized here. It is not possible to override
+		compass settings, datatype and multivalue setting.
+		Customized file fields will be added to standard file fields, all other parameters will 
+		override standard values.
+	
+		Examples:
+	
+		<fieldExt name="assetCreated">						
+			<data editable="true" />				
+		</fieldExt>
+ 		
+		<fieldExt name="id" embed="false" />
+	
+		<fieldExt name="..." group="..." embed="true|false" technical="true|false">
+			<fileFields>
+				<fileField>...exiftool-field...</fileField>
+				<fileField>xmpMeta:...xmp-path...</fileField>
+				<fileField>xmlPath:...xpath...</fileField>
+			</fileFields>
+			<data editable="true|false">
+				<predefinedValues onlyFromList="true|false">
+					<value flagIcon="...">New</value>
+				</predefinedValues>
+			</data>
+			<userInterface
+				filterUI="tagCloud|checkBoxes" 
+				filterValuesSource="allTerms|usedTerms|predefinedValues"
+				flagPosition="unique order number" flagIconWhenNotEmpty="icon name" />
+		</fieldExt>
+		
+		
+		Required metadata
+		
+		To make a field required, add a 'requiredFor' attribute. This can have the following values:
+			
+			requiredFor="*"
+			  =>  Field will be required for all asset types.
+			
+			requiredFor="assetType:doc, assetDomain:image"
+			  =>  A comma seperated list of assetTypes and assetDomains for which the field is required.
+		
+		Example:
+		
+			<fieldExt name="copyright" group="Rights" requiredFor="assetDomain:image" />
+		
+		
+		
+		Flags
+		
+		Similar to how the flags are configured for 'status' and 'copyright' below, flags can be set
+		for any standard or custom field.
+		To enable a flag, set a flagIcon for the value in the predefined values. Or set a flag when
+		'any' value is set on the field using 'flagIconWhenNotEmpty'.
+		Choose from the images in the 'flags' folder or add new png images yourself.
+		The flagPosition is nothing more than a number specifying the order in which flags are 
+		shown in the UI.
+		
+		
+		Taxonomy
+		
+		To make a field a taxonomy field, it needs to have a taxonomy element in the data element.
+		The taxonomy element needs to have a source attribute, which points to a filename in the
+		"taxonomies" folder of the server config folder.
+		
+		The following properties can be defined:
+		
+		- source:
+		  The source file of the taxonomy terms.
+		  
+		- ancestorsSelectable:
+		  Allows ancestors to be added as metadata. The leaves of a taxonomy can always be added.
+		  
+		- sort:
+		  When true the taxonomy terms will be sorted in alphabetical order. Auto-complete is always in alphabetical order.
+		  
+		- onlyFromList:
+		  Prevents custom values (outside the taxonomy) to be added as metadata.
+		
+	-->
+	
+	<assets>
+		<assetTypeBaseExt name="CommonFields">
+			<fields>
+				<field name="cf_tagsAWS" group="AI">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" multivalue="true" />
+					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
+				</field>
+				<field name="cf_tagsGoogle" group="AI">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" multivalue="true" />
+					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
+				</field>
+				<field name="cf_tagsClarifai" group="AI">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" multivalue="true" />
+					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
+				</field>
+				<field name="cf_personAgeMin" group="AI">
+                    <storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
+					<data editable="true" datatype="number"/>
+				</field>
+				<field name="cf_personAgeMax" group="AI">
+                    <storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
+					<data editable="true" datatype="number"/>
+				</field>
+				<field name="cf_personGender" group="AI">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text"/>
+					<userInterface filterUI="checkBoxes" filterValuesSource="usedTerms" />
+				</field>
+				<field name="cf_personEmotions" group="AI">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" multivalue="true"/>
+					<userInterface filterUI="checkBoxes" filterValuesSource="usedTerms" />
+				</field>
+				<field name="cf_personProperties" group="AI">
+                    <storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" multivalue="true"/>
+					<userInterface filterUI="checkBoxes" filterValuesSource="usedTerms" />
+				</field>
+			</fields>
+		</assetTypeBaseExt>
+	</assets>
+	
+	<fieldExtensions>
+
+		<fieldExt name="status" group="General">
+			<data>
+				<predefinedValues onlyFromList="false">
+					<value flagIcon="bullet_ball_glass_blue.png">New</value>
+					<value flagIcon="bullet_ball_glass_blue.png">Draft</value>
+					<value flagIcon="bullet_ball_glass_yellow.png">Production</value>
+					<value flagIcon="bullet_ball_glass_grey.png">Review</value>
+					<value flagIcon="bullet_ball_glass_red.png">Correction</value>
+					<value flagIcon="bullet_ball_glass_green.png">Final</value>
+				</predefinedValues>
+			</data>
+			<userInterface flagPosition="30" />
+		</fieldExt>
+		
+		<fieldExt name="copyright" group="Rights">
+			<userInterface flagPosition="50" flagIconWhenNotEmpty="copyright.png" />
+		</fieldExt>
+		
+		<!--
+		<fieldExt name="usageRights" group="General">
+			<data>
+				<predefinedValues onlyFromList="false">
+					<value flagIcon="r.png">Rights managed</value>
+					<value>Royalty free</value>
+					<value>In house</value>
+					<value flagIcon="r.png">Single use</value>
+				</predefinedValues>
+			</data>
+			<userInterface flagPosition="40" />
+		</fieldExt>
+		-->
+		
+		<fieldExt name="metadataComplete" group="System">
+			<data editable="false">
+				<predefinedValues onlyFromList="true">
+                    <value flagIcon="label_broken.png">false</value>
+                    <value flagIcon="label.png">true</value>
+                </predefinedValues>
+            </data>
+            <userInterface flagPosition="20" />
+        </fieldExt>
+
+		<fieldExt name="sceUsed" group="Enterprise">
+			<data editable="false">
+				<predefinedValues onlyFromList="true">
+					<value flagIcon="woodwing.png">true</value>
+					<value></value>
+				</predefinedValues>
+			</data>
+			<userInterface flagPosition="60" />
+		</fieldExt>
+        
+        <!-- 
+        	Example taxonomy field 
+        -->
+        <!--
+        <fieldExt name="tags">
+        	<data>
+        		<taxonomy source="keyword-list.txt" ancestorsSelectable="false" onlyFromList="false"/>
+        	</data>
+        </fieldExt>
+        -->
+        
+        <fieldExt name="subject">
+        	<data>
+        		<taxonomy source="media-topic.rdf" ancestorsSelectable="true" onlyFromList="true"/>
+        	</data>
+        </fieldExt>
+       
+	 </fieldExtensions>
+</assetsInfoExt>
