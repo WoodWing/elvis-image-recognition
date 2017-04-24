@@ -1,4 +1,5 @@
 import vision = require('@google-cloud/vision');
+import fs = require('fs');
 import { Config } from '../config';
 import { ServiceResponse } from './service-response';
 
@@ -10,9 +11,15 @@ export class GoogleVision {
   private gv;
 
   constructor() {
-    this.gv = vision({
-      projectId: Config.googleProjectId,
-      keyFilename: Config.googleKeyFilename
+    fs.exists(Config.googleKeyFilename, exists => {
+      // We have to check ourselves as Google throws weird errors when there's no valid path specified.
+      // For example when people configure an API key instead of a path to a key file.
+      if (!exists) {
+        throw new Error('The file specified in googleKeyFilename doesn\'t exists: "' + Config.googleKeyFilename + '". Please configure the correct full file path to the Google Service account keyfile.');
+      }
+      this.gv = vision({
+        keyFilename: Config.googleKeyFilename
+      });
     });
   }
 
