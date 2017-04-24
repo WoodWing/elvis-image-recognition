@@ -22,6 +22,8 @@ This integration is currently in *beta* stage.
 - Save the webhook
 - The generated secret token needs to be specified in the image recognition configuration later on.
 
+Detailed information on setting up and using webhooks can be found on [Help Center](https://helpcenter.woodwing.com/hc/en-us/articles/115001884346).
+
 ## Configure Elvis metadata fields
 
 Depending on your configuration and used services, you may need to add custom metadata fields to your Elvis installation. These custom metadata fields need to be configured in the `<Elvis Config>/custom-assetinfo.xml` file. Sample configuration files are provided in the `elvis-config` folder.

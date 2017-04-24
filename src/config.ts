@@ -27,11 +27,11 @@ export class Config {
   static elvisPassword: string = process.env.IR_ELVIS_PASSWORD || 'changemenow';
 
   /**
-   * Elvis webhook token. 
+   * Elvis webhook token. Create a webhook that listens for "asset_create" events and that returns the "assetDomain" metadata field.
    * 
-   * Create a webhook that listens for "asset_create" events.
+   * More info creating a webhook: https://helpcenter.woodwing.com/hc/en-us/articles/115001884346
    */
-  static elvisToken: string = process.env.IR_ELVIS_TOKEN || '';
+  static elvisToken: string = process.env.IR_ELVIS_TOKEN || 'my-webhook-token';
 
   /**
    * Tags field where the unique tags from all services are stored
@@ -48,14 +48,14 @@ export class Config {
    *
    * Can be obtained by creating a Clarifai account: https://www.clarifai.com/
    */
-  static clarifaiClientId: string = process.env.IR_CLARIFAI_CLIENT_ID || '';
+  static clarifaiClientId: string = process.env.IR_CLARIFAI_CLIENT_ID || 'my-clarifai-client-id';
 
   /**
    * Clarifai CLIENT SECRET.
    *
    * Can be obtained by creating a Clarifai account: https://www.clarifai.com/
    */
-  static clarifaiClientSecret: string = process.env.IR_CLARIFAI_CLIENT_SECRET || '';
+  static clarifaiClientSecret: string = process.env.IR_CLARIFAI_CLIENT_SECRET || 'my-clarifai-client-secret';
 
   /**
    * Elvis metadata field where Clarifai tags are stored, set to null to skip saving tags in a specific Clarifai field.
@@ -68,18 +68,17 @@ export class Config {
   static googleEnabled: boolean = process.env.IR_GOOGLE_ENABLED || true;
 
   /**
-   * Path to the Google application credentials file
+   * Full path to the Google Service account keyfile (JSON).  
    *
    * Can be obtained by creating a Google Cloud account: https://cloud.google.com/vision/
+   * 
+   * Steps when starting from scratch with Google Vision:
+   * - Create a new project.
+   * - Enable the Cloud Vision API (API Manager -> Library -> Vision API).
+   * - Create a service account key (API Manager -> Credentials -> Create Credentials - Service account key).
+   * - Specify the full path to the JSON keyfile in this setting.
    */
-  static googleKeyFilename: string = process.env.IR_GOOGLE_KEY_FILENAME || '';
-
-  /**
-   * Google cloud project id
-   *
-   * Can be obtained by creating a Google Cloud account: https://cloud.google.com/vision/
-   */
-  static googleProjectId: string = process.env.IR_GOOGLE_PROJECT_ID || '';
+  static googleKeyFilename: string = process.env.IR_GOOGLE_KEY_FILENAME || '/Users/username/keyfile.json';
 
   /**
    * Elvis metadata field where Google tags are stored, set to null to skip saving tags in a specific Google field.
@@ -96,14 +95,14 @@ export class Config {
    * 
    * Can be obtained by creating an AWS account: https://aws.amazon.com/
    */
-  static awsAccessKeyId: string = process.env.IR_AWS_ACCESS_KEY || '';
+  static awsAccessKeyId: string = process.env.IR_AWS_ACCESS_KEY || 'my-aws-access-key';
 
   /**
    * AWS secret access key
    *
    * Can be obtained by creating an AWS account: https://aws.amazon.com/
    */
-  static awsSecretAccessKey: string = process.env.IR_AWS_SECRET_ACCESS_KEY || '';
+  static awsSecretAccessKey: string = process.env.IR_AWS_SECRET_ACCESS_KEY || 'my-aws-secret-access-key';
 
   /**
    * Elvis metadata field where AWS tags are stored, set to null to skip saving tags in a specific AWS field.
