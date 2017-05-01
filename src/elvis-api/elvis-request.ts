@@ -75,12 +75,12 @@ export class ElvisRequest {
       method: 'POST',
       url: this.serverUrl + '/services/login?username=' + this.username + '&password=' + this.password
     }
-    console.log('Not logged in, logging in...');
+    console.info('Not logged in, logging in...');
     return this.apiRequest(options).then(response => {
       if (!response.loginSuccess) {
         throw new HttpError(response.loginFaultMessage, 401, options);
       } else {
-        console.log('Login successful!');
+        console.info('Login successful!');
         if (response.csrfToken) {
           // Elvis 6+ login
           this.csrfToken = response.csrfToken;

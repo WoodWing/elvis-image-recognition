@@ -36,7 +36,7 @@ class Server {
   public start(port: string): void {
     // Start server
     this.app.listen(port);
-    console.log('Image Recognition Server started at port: ' + port + '. Waiting for incoming events...');
+    console.info('Image Recognition Server started at port: ' + port + '. Waiting for incoming events...');
 
     this.addPostRoute();
   }
