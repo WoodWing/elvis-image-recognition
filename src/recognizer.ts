@@ -76,7 +76,7 @@ export class Recognizer {
       // 5. We're done!
       console.info('Image recognition finshed for asset: ' + assetId + ' (' + hit.metadata['filename'] + ')');
     }).catch((error: any) => {
-      console.error('Image recognition failed for asset: ' + assetId + '; Error details: ' + error);
+      console.error('Image recognition failed for asset: ' + assetId + '. Error details:\n' + error.stack);
     });
   }
 
@@ -85,7 +85,8 @@ export class Recognizer {
     return this.api.searchGet(query).then((sr: SearchResponse) => {
       if (sr.totalHits !== 1) {
         // Should only happen when the asset is not available any more for some reason (deleted / incorrect permission setup)
-        throw new Error('Unexpected number of hits retrieved.');
+        throw new Error('Unexpected number of assets retrieved (' + sr.totalHits + '). This query should return 1 asset: ' + query
+          + '\nThis error can occur when the asset is no longer available in Elvis or when the configured Elvis user does not have permission to access the given asset.');
       }
       let hit: HitElement = sr.hits[0];
       if (!hit.previewUrl) {
