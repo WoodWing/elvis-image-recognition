@@ -13,18 +13,32 @@ export class HttpError extends Error {
 export class ElvisRequest {
 
   private csrfToken: string;
+  private auth: Promise<any>
 
   constructor(private serverUrl: string, private username: string, private password: string) {
   }
 
+  // TODO: The request and requestFile code is long and redundant. not sure yet how to minimize code without losing functionality
+
   public request(options: (UriOptions & CoreOptions) | (UrlOptions & CoreOptions)): Promise<any> {
     return this.apiRequest(options).catch(error => {
       if (error.statusCode == 401) {
-        // Not logged in, login first
-        return this.authenticate().then(() => {
-          // Retry initial call
-          return this.apiRequest(options);
-        });
+        if (!this.auth) {
+          // Not logged in, login first
+          this.auth = this.authenticate().then(() => {
+            // Retry initial call
+            this.auth = null;
+            return this.apiRequest(options);
+          });
+          return this.auth;
+        }
+        else {
+          console.log('Already logging in, waiting for login to finish...');
+          return this.auth.then(() => {
+            // Retry initial call
+            return this.apiRequest(options);
+          });
+        }
       } else {
         throw error;
       }
@@ -34,11 +48,22 @@ export class ElvisRequest {
   public requestFile(url: string, destination: string): Promise<any> {
     return this.fileRequest(url, destination).catch(error => {
       if (error.statusCode == 401) {
-        // Not logged in, login first
-        return this.authenticate().then(() => {
-          // Retry initial call
-          return this.fileRequest(url, destination);
-        });
+        if (!this.auth) {
+          // Not logged in, login first
+          this.auth = this.authenticate().then(() => {
+            // Retry initial call
+            this.auth = null;
+            return this.fileRequest(url, destination);
+          });
+          return this.auth;
+        }
+        else {
+          console.log('Already logging in, waiting for login to finish...');
+          return this.auth.then(() => {
+            // Retry initial call
+            return this.fileRequest(url, destination);
+          });
+        }
       } else {
         throw error;
       }
