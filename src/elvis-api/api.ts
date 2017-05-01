@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-import elvisRequest = require('./elvis-request');
+import { ElvisRequest } from './elvis-request';
 import request = require('request');
 import Promise = require('bluebird');
 
@@ -139,9 +139,9 @@ export enum ElvisApiApiKeys {
 
 export class ElvisApi {
     protected basePath = defaultBasePath;
-    protected defaultHeaders : any = {};
-    protected _useQuerystring : boolean = false;
-    protected elvisRequest;
+    protected defaultHeaders: any = {};
+    protected _useQuerystring: boolean = false;
+    public elvisRequest: ElvisRequest;
 
     protected authentications = {
         'default': <Authentication>new VoidAuth(),
@@ -149,13 +149,7 @@ export class ElvisApi {
 
     constructor(username: string, password: string, basePath: string) {
         this.basePath = basePath;
-        this.elvisRequest = elvisRequest({
-            serverUrl: this.basePath,
-            useBaseUrl: false,
-            username: username,
-            password: password,
-            parseJSON: true
-        });
+        this.elvisRequest = new ElvisRequest(this.basePath, username, password);
     }
 
     set useQuerystring(value: boolean) {
@@ -174,7 +168,7 @@ export class ElvisApi {
      * @param metadataToReturn Comma-delimited list of metadata fields to return. Specify &#39;all&#39; to return all available metadata. Omit to return a minimal list of fields.  Optional. If omitted, only the file will be updated. 
      * @param appendRequestSecret When set to true will append an encrypted code to the thumbnail, preview and original URLs. This is useful when the search is transformed to HTML by an intermediary and is then served to a web browser that is not authenticated against the server. The request secret is valid for a limited time (30 minutes).  Optional. Default value is false. 
      */
-    public searchGet (q: string, start?: number, num?: number, metadataToReturn?: string, appendRequestSecret?: boolean) : Promise<SearchResponse> {
+    public searchGet(q: string, start?: number, num?: number, metadataToReturn?: string, appendRequestSecret?: boolean): Promise<SearchResponse> {
         const localVarPath = this.basePath + '/services/search';
         let queryParameters: any = {};
         let headerParams: any = (<any>Object).assign({}, this.defaultHeaders);
@@ -226,14 +220,14 @@ export class ElvisApi {
                 requestOptions.form = formParams;
             }
         }
-        return this.elvisRequest(requestOptions);
+        return this.elvisRequest.request(requestOptions);
     }
     /**
      * Search in Elvis
      * 
      * @param body AssetSearch object
      */
-    public searchPost (body: AssetSearch) : Promise<SearchResponse> {
+    public searchPost(body: AssetSearch): Promise<SearchResponse> {
         const localVarPath = this.basePath + '/services/search';
         let queryParameters: any = {};
         let headerParams: any = (<any>Object).assign({}, this.defaultHeaders);
@@ -266,7 +260,7 @@ export class ElvisApi {
                 requestOptions.form = formParams;
             }
         }
-        return this.elvisRequest(requestOptions);
+        return this.elvisRequest.request(requestOptions);
     }
     /**
      * Updates the file and/or the metadata for a given asset. It&#39;s required to either specify the Fildata or metadata parameter.
@@ -282,7 +276,7 @@ export class ElvisApi {
      * @param autoRename When set to true, the file is automatically renamed when a file already exists on the destination location. When set to false, an excpetion is thrown when a file already exists.  A destination change can happen when for example the newly updated file has a different extension or when a new filename is specified in the metadata.  Optional. Default value is true. 
      * @param authcred User credentials specifified as a base64 encoded string. Use this alternative type of authentication only for testing purposes or when the user can publicly access assets. Usage example; assume the &#39;admin&#39; user with default password &#39;changemenow&#39;, the authcred is the base64 encoded equivalent of admin:changemenow &#x3D;&gt; YWRtaW46Y2hhbmdlbWVub3c&#x3D;
      */
-    public update (id: string, metadata?: string, filedata?: Buffer, metadataToReturn?: string, nextUrl?: string, parseMetadataModifications?: boolean, clearCheckoutState?: boolean, createVersion?: boolean, autoRename?: boolean, authcred?: string) : Promise<HitElement> {
+    public update(id: string, metadata?: string, filedata?: Buffer, metadataToReturn?: string, nextUrl?: string, parseMetadataModifications?: boolean, clearCheckoutState?: boolean, createVersion?: boolean, autoRename?: boolean, authcred?: string): Promise<HitElement> {
         const localVarPath = this.basePath + '/services/asset/update';
         let queryParameters: any = {};
         let headerParams: any = (<any>Object).assign({}, this.defaultHeaders);
@@ -355,6 +349,6 @@ export class ElvisApi {
                 requestOptions.form = formParams;
             }
         }
-        return this.elvisRequest(requestOptions);
+        return this.elvisRequest.request(requestOptions);
     }
 }
