@@ -2,12 +2,13 @@
 
 The Elvis image recognition server is a nodejs server application that integrates Elvis with AI image recognition services from Google, Amazon and Clarifai. It uses these services to detect labels, landmarks and emotions.
 
-This integration is currently in *beta* stage.
+This integration is currently in **beta** stage.
 
 # Prerequisites
 
-- Fully installed and licensed Elvis server (5.23 or higher). You can obtain Elvis via: https://www.woodwing.com/en/digital-asset-management-system
+- Fully installed and licensed Elvis server (5.24 or higher). You can obtain Elvis via: https://www.woodwing.com/en/digital-asset-management-system
 - Server where the image recognition server can run (can be on the same machine where Elvis runs)
+- API user license 
 
 # Installation steps
 
@@ -31,7 +32,7 @@ Depending on your configuration and used services, you may need to add custom me
 ## Install the image recognition server
 
 - Clone or download this package.
-- Open src/config.ts and configure the settings (Port where this server runs, Elvis Server settings, which Image AI services to use, etc). You can either configure the settings in this config file or by setting environment variables.
+- Open src/config.ts and configure the settings (Port where this server runs, Elvis Server settings, which Image AI services to use, etc). You can either configure the settings in this config file or by setting environment variables. Note: the configured Elvis user needs to be an API user that can process all incoming webhook events.
 - Install nodejs (6.9 or higher) from https://nodejs.org
 - Open a terminal and go to the package folder.
 - Install TypeScript via npm: `npm install -g typescript`
@@ -47,6 +48,11 @@ Depending on your configuration and used services, you may need to add custom me
 - When there's no magic... check the terminal where the image recognition server is running for errors and make sure your configuration is correct.
 
 # Version history
+
+## v1.1.0
+- Elvis 6 support
+- Support for API users (requires Elvis 5.24 or higher)
+- Improved logging: log lines with date and time
 
 ## v1.0.0
 - Clarifai: label detection
