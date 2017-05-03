@@ -1,9 +1,7 @@
 import Promise = require('bluebird');
 import { Config } from './config';
 import { ApiManager } from './api-manager';
-import { ElvisApi } from './elvis-api/api';
-import { SearchResponse } from './elvis-api/api';
-import { HitElement } from './elvis-api/api';
+import { ElvisApi, AssetSearch, SearchResponse, HitElement } from './elvis-api/api';
 import { FileUtils } from './file-utils';
 import { GoogleVision } from './service/google-vision';
 import { AwsRekognition } from './service/aws-rekognition';
@@ -81,8 +79,16 @@ export class Recognizer {
   }
 
   private downloadAsset(assetId: string): Promise<string> {
-    let query = 'id:' + assetId;
-    return this.api.searchGet(query).then((sr: SearchResponse) => {
+    let query: string = 'id:' + assetId;
+    let search: AssetSearch = {
+      query: {
+        QueryStringQuery: {
+          queryString: query
+        }
+      },
+      returnPendingImports: true
+    };
+    return this.api.searchPost(search).then((sr: SearchResponse) => {
       if (sr.totalHits !== 1) {
         // Should only happen when the asset is not available any more for some reason (deleted / incorrect permission setup)
         throw new Error('Unexpected number of assets retrieved (' + sr.totalHits + '). This query should return 1 asset: ' + query

@@ -2,6 +2,7 @@
  * Start web server and entry point for API requests.
  */
 
+require("console-stamp")(console, { pattern: "dd-mm-yyyy HH:MM:ss.l" });
 import express = require('express');
 import crypto = require('crypto');
 import compare = require('secure-compare');
@@ -35,10 +36,7 @@ class Server {
   public start(port: string): void {
     // Start server
     this.app.listen(port);
-    console.log('======================================================================='
-      + '\nImage Recognition Server started at port: ' + port
-      + '\n======================================================================='
-      + '\n\nWaiting for incoming events...');
+    console.info('Image Recognition Server started at port: ' + port + '. Waiting for incoming events...');
 
     this.addPostRoute();
   }

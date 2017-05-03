@@ -1,8 +1,8 @@
 import url = require('url');
 import fs = require('fs');
 import path = require('path');
-const request = require('request').defaults({ jar: true });
-
+import { ApiManager } from './api-manager';
+import Promise = require('bluebird');
 import lvs = require('./elvis-api/api');
 
 export class FileUtils {
@@ -85,36 +85,7 @@ export class FileUtils {
    */
   private static downloadFile(url: string, destination: string): Promise<string> {
     return this.createDestinationDirectory(destination).then(() => {
-      return new Promise((resolve, reject) => {
-        let errorMsg: string = 'Download of ' + url + ' to: ' + destination + ' failed: ';
-
-        let file: fs.WriteStream = fs.createWriteStream(destination);
-
-        let req = request.get(url)
-          .on('error', (error) => {
-            // Handle generic errors when getting the file, for example unknown host
-            reject(new Error(errorMsg + error));
-          })
-          .on('response', response => {
-
-            // Handle Elvis HTTP errors: 404, 401, 500, etc
-            if (response.statusCode < 200 || response.statusCode > 299) {
-              reject(new Error(errorMsg + response.statusCode + ' - ' + response.statusMessage));
-            }
-
-            // Request went well, let's start piping the data...
-            req.pipe(file)
-              .on('error', (error) => {
-                // Handle piping errors: unable to write file, stream closed, ...
-                reject(new Error(errorMsg + error));
-              })
-              .on('finish', () => {
-                // Piping complete, we've got the file!
-                // console.log('Successfully downloaded ' + url + ' to: ' + destination);
-                resolve(destination);
-              });
-          })
-      });
+      return ApiManager.getApi().elvisRequest.requestFile(url, destination);
     });
   }
 
@@ -125,7 +96,7 @@ export class FileUtils {
    */
   private static createDestinationDirectory(file: string): Promise<string> {
     let dir: string = require('path').dirname(file);
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       fs.mkdir(dir, error => {
         if (!error || (error && error.code === 'EEXIST')) {
           resolve(dir);
