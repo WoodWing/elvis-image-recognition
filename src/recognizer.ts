@@ -7,6 +7,7 @@ import { GoogleVision } from './service/google-vision';
 import { AwsRekognition } from './service/aws-rekognition';
 import { Clarifai } from './service/clarifai';
 import { ServiceResponse } from './service/service-response';
+import { GoogleTranslate } from './service/google-translate';
 
 export class Recognizer {
 
@@ -14,10 +15,11 @@ export class Recognizer {
   private deleteFile: Function = Promise.promisify(require('fs').unlink);
 
   private clarifai: Clarifai;
-  private google: GoogleVision;
+  private googleVision: GoogleVision;
   private aws: AwsRekognition;
+  private googleTranslate: GoogleTranslate;
 
-  constructor(public useClarifai: boolean = false, public useGoogle: boolean = false, public useAws: boolean = false) {
+  constructor(public useClarifai: boolean = false, public useGoogle: boolean = false, public useAws: boolean = false, public translate = false) {
     if (!useClarifai && !useGoogle && !useAws) {
       throw new Error('Specify at least one recognition service');
     }
@@ -25,10 +27,13 @@ export class Recognizer {
       this.clarifai = new Clarifai();
     }
     if (useGoogle) {
-      this.google = new GoogleVision();
+      this.googleVision = new GoogleVision();
     }
     if (useAws) {
       this.aws = new AwsRekognition();
+    }
+    if (translate) {
+      this.googleTranslate = new GoogleTranslate();
     }
   }
 
@@ -37,6 +42,7 @@ export class Recognizer {
     console.info('Image recognition started for asset: ' + assetId);
 
     let filePath: string;
+    let metadata: any = {};
 
     // 1. Download the asset preview
     this.downloadAsset(assetId).then((path: string) => {
@@ -47,7 +53,7 @@ export class Recognizer {
         services.push(this.clarifai.detect(filePath));
       }
       if (this.useGoogle) {
-        services.push(this.google.detect(filePath));
+        services.push(this.googleVision.detect(filePath));
       }
       if (this.useAws) {
         services.push(this.aws.detect(filePath));
@@ -59,8 +65,7 @@ export class Recognizer {
         console.error('Unable to remove temporary file: ' + error);
       });
 
-      // 4. Combine results from the services and update metadata in Elvis
-      let metadata: any = {};
+      // 4. Combine results from the services
       let tags: string[] = [];
       serviceResponses.forEach((serviceResponse: ServiceResponse) => {
         // Merge metadata values, note: this is quite a blunt merge, 
@@ -68,10 +73,20 @@ export class Recognizer {
         metadata = (Object.assign(metadata, serviceResponse.metadata));
         tags = tags.concat(serviceResponse.tags);
       });
-      metadata[Config.elvisTagsField] = tags.join(',');
+      let tagString: string = tags.join(',');
+      metadata[Config.elvisTagsField] = tagString;
+
+      // 5. Translate (if configured)
+      if (this.translate) {
+        return this.googleTranslate.translate(tagString).then((translatedMetadata: any) => {
+          metadata = (Object.assign(metadata, translatedMetadata));
+        });
+      }
+    }).then(() => {
+      // 6. Update metadata
       return this.api.update(assetId, JSON.stringify(metadata), undefined, 'filename');
     }).then((hit: HitElement) => {
-      // 5. We're done!
+      // 7. We're done!
       console.info('Image recognition finshed for asset: ' + assetId + ' (' + hit.metadata['filename'] + ')');
     }).catch((error: any) => {
       console.error('Image recognition failed for asset: ' + assetId + '. Error details:\n' + error.stack);

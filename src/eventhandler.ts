@@ -9,7 +9,7 @@ export class EventHandler {
   private recognizer: Recognizer;
 
   constructor() {
-    this.recognizer = new Recognizer(Config.clarifaiEnabled, Config.googleEnabled, Config.awsEnabled);
+    this.recognizer = new Recognizer(Config.clarifaiEnabled, Config.googleEnabled, Config.awsEnabled, Config.languages !== 'en');
   }
 
   /**

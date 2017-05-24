@@ -114,4 +114,25 @@ export class Config {
    */
   static awsTagsField: string = process.env.IR_AWS_TAGS_FIELD || 'cf_tagsAWS';
 
+  /**
+   * Comma separated list of languages in which the generated tags are translated. Default value is 'en' 
+   * which implies nothing is translated. 
+   * 
+   * Google Translate is used as translation service.
+   * Example values for Dutch Portugese and Russian: 'nl,pt,ru'
+   * 
+   * - Requires googleKeyFilename setting to be configured.
+   * - Languages to choose from: https://cloud.google.com/translate/docs/languages
+   */
+  static languages: string = process.env.IR_LANGUAGES || 'en';
+
+  /**
+   * Comma separated list of tag field names to store the translated tags. Default value is the  
+   * tag field name defined for Config.elvisTagsField.
+   * 
+   * The order of the field names need to be identical to the languages field, for example:
+   * 'cf_tagsNl,cf_tagsPt,cf_tagsRu'
+   */
+  static languageTagFields: string = process.env.IR_LANGUAGE_TAG_FIELDS || Config.elvisTagsField;
+
 }
