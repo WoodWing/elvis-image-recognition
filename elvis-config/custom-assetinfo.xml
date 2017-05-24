@@ -224,51 +224,71 @@
 		<assetTypeBaseExt name="CommonFields">
 			<fields>
 				<field name="cf_tagsAWS" group="AI">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" multivalue="true" />
 					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
 				</field>
 				<field name="cf_tagsGoogle" group="AI">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" multivalue="true" />
 					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
 				</field>
 				<field name="cf_tagsClarifai" group="AI">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" multivalue="true" />
 					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
 				</field>
 				<field name="cf_personAgeMin" group="AI">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
 					<data editable="true" datatype="number"/>
 				</field>
 				<field name="cf_personAgeMax" group="AI">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
 					<data editable="true" datatype="number"/>
 				</field>
 				<field name="cf_personGender" group="AI">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text"/>
 					<userInterface filterUI="checkBoxes" filterValuesSource="usedTerms" />
 				</field>
 				<field name="cf_personEmotions" group="AI">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" multivalue="true"/>
 					<userInterface filterUI="checkBoxes" filterValuesSource="usedTerms" />
 				</field>
 				<field name="cf_personProperties" group="AI">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" multivalue="true"/>
 					<userInterface filterUI="checkBoxes" filterValuesSource="usedTerms" />
 				</field>
+				<!--
+				<field name="cf_tagsPt" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" multivalue="true" />
+					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
+				</field>
+				<field name="cf_tagsNl" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" multivalue="true" />
+					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
+				</field>
+				<field name="cf_tagsRu" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" multivalue="true" />
+					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
+				</field>
+				-->
 			</fields>
 		</assetTypeBaseExt>
 	</assets>
