@@ -41,25 +41,20 @@ export class GoogleTranslate extends Google {
    * @param text Text string to translate
    */
   public translate(text: string): Promise<string> {
+    let translations = [];
+    let metadata: any = {};
 
-    return new Promise<string>((resolve, reject) => {
-
-      let translations = [];
-      let metadata: any = {};
-
-      for (let i: number = 0; i < this.languages.length; i++) {
-
+    for (let i: number = 0; i < this.languages.length; i++) {
+      if (this.languages[i] !== 'en') {
         translations.push(this.translateTo(text, this.languages[i]));
-        Promise.all(translations).then((responses: any[]) => {
-          responses.forEach(response => {
-            let metadataField: string = this.languageTagFields[this.languages.indexOf(response.language)];
-            metadata[metadataField] = response.translation;
-          });
-          resolve(metadata);
-        }).catch((error) => {
-          reject(new Error('An error occurred while translating tags: ' + error.message));
-        });
       }
+    }
+    return Promise.all(translations).then((responses: any[]) => {
+      responses.forEach(response => {
+        let metadataField: string = this.languageTagFields[this.languages.indexOf(response.language)];
+        metadata[metadataField] = response.translation;
+      });
+      return metadata;
     });
   }
 
@@ -69,15 +64,13 @@ export class GoogleTranslate extends Google {
       to: language
     };
 
-    return new Promise<any>((resolve, reject) => {
-      this.gt.translate(text, options).then((response: any) => {
-        resolve({
-          language: language,
-          translation: response[0]
-        });
-      }).catch((error) => {
-        reject(new Error('An error occurred while translating tags: ' + error.message));
-      });
+    return this.gt.translate(text, options).then((response: any) => {
+      return {
+        language: language,
+        translation: response[0]
+      };
+    }).catch((error) => {
+      throw new Error('An error occurred while translating tags: ' + error.message);
     });
   }
 }
