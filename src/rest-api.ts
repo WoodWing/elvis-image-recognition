@@ -1,7 +1,7 @@
 import express = require('express');
 import { Router, Application } from 'express';
 
-import { ElvisApi, AssetSearch, SearchResponse, HitElement } from './elvis-api/api';
+import { ElvisApi, AssetSearch, SearchResponse } from './elvis-api/api';
 import { ApiManager } from './api-manager';
 import { Recognizer } from './recognizer';
 import { Config } from './config';
@@ -31,6 +31,7 @@ export class RestApi {
       next();
     });
 
+    // Recognize API
     router.post('/recognize', (req, res) => {
       if (!req.body) {
         return this.handleError('Invalid request, no parameters specified.', req, res);
@@ -52,10 +53,10 @@ export class RestApi {
     app.use('/api', router);
   }
 
-  private recognizeBatch(pi: ProcessInfo, rr: RecognizeRequest, start: number = 0, num: number = 3): void {
+  private recognizeBatch(pi: ProcessInfo, rr: RecognizeRequest, startIndex: number = 0, batchSize: number = 3): void {
     let search: AssetSearch = {
-      firstResult: start,
-      maxResultHits: num,
+      firstResult: startIndex,
+      maxResultHits: batchSize,
       sorting: [
         {
           field: 'assetCreated',
@@ -69,30 +70,42 @@ export class RestApi {
       }
     };
 
-    let recognizers: any[] = [];
-    let hitsFound = 0;
+    // let recognizers: any[] = [];
+    // let hitsFound;
+    let processedInBatch: number = 0;
+    let lastBatch: boolean = false;
 
     this.api.searchPost(search).then((sr: SearchResponse) => {
-      hitsFound = sr.hits.length;
-      console.log('Processing: ' + pi.id + ', total hits: ' + sr.totalHits + ', start: ' + start + ', num: ' + num + ', hits found: ' + hitsFound + ', query: ' + rr.q);
-      sr.hits.forEach(hit => {
-        recognizers.push(this.recognizer.recognize(hit.id));
-      });
-      return Promise.all(recognizers);
-    }).then((resultHits: HitElement[]) => {
-      pi.successCount += resultHits.length;
-      if (hitsFound === num) {
-        // Process next page
-        this.recognizeBatch(pi, rr, start + num, num);
-      }
-      else {
-        // We're done
-        console.log('Processing: ' + pi.id + ' completed, successCount: ' + pi.successCount + ', failedCount: ' + pi.failedCount);
-      }
+      lastBatch = sr.hits.length < batchSize;
+      console.log('Processing: ' + pi.id + ', total hits: ' + sr.totalHits + ', startIndex: ' + startIndex + ', batchSize: ' + batchSize + ', hits found: ' + sr.hits.length + ', query: ' + rr.q);
+      sr.hits.forEach((hit) => {
+        this.recognizer.recognize(hit.id).then(() => {
+          // Recognition successful
+          pi.successCount++;
+          processedInBatch++;
+          this.nextBatchHandler(pi, rr, startIndex, batchSize, processedInBatch, sr.hits.length, lastBatch);
+        }).catch(() => {
+          // Recognition failed
+          pi.failedCount++;
+          processedInBatch++;
+          this.nextBatchHandler(pi, rr, startIndex, batchSize, processedInBatch, sr.hits.length, lastBatch);
+        });
+      })
     }).catch((error: any) => {
-      pi.failedCount++;
-      console.log('Oups... ' + error.message);
+      // Search failed
+      console.error('Search failed for query: ' + rr.q + '. Error details: ' + error.stack);
     });
+  }
+
+  private nextBatchHandler(pi: ProcessInfo, rr: RecognizeRequest, startIndex: number, batchSize: number, processedInBatch: number, hitsFound: number, lastBatch: boolean): void {
+    if (!lastBatch && processedInBatch == batchSize) {
+      // There's more...
+      this.recognizeBatch(pi, rr, startIndex + batchSize, batchSize);
+    }
+    else if (lastBatch && processedInBatch == hitsFound) {
+      // We're done!
+      console.log('Processing: ' + pi.id + ' completed, successCount: ' + pi.successCount + ', failedCount: ' + pi.failedCount);
+    }
   }
 
   private handleError(message: string, req, res): void {
