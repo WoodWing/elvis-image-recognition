@@ -23,6 +23,9 @@ let defaultBasePath = 'http://localhost:8080';
 /* tslint:disable:no-unused-variable */
 
 export class AssetSearch {
+    firstResult?: number;
+    maxResultHits?: number;
+    sorting?: Array<Sort>;
     query: Query;
     facets?: { [key: string]: Facet; };
     metadataToReturn?: Array<string>;
@@ -90,6 +93,11 @@ export class SearchResponse {
     maxResultHits?: number;
     totalHits?: number;
     hits?: Array<HitElement>;
+}
+
+export class Sort {
+    field?: string;
+    descending?: boolean;
 }
 
 
