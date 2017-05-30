@@ -37,7 +37,7 @@ export class Recognizer {
     }
   }
 
-  public recognize(assetId: string): void {
+  public recognize(assetId: string): Promise<HitElement> {
 
     console.info('Image recognition started for asset: ' + assetId);
 
@@ -45,7 +45,7 @@ export class Recognizer {
     let metadata: any = {};
 
     // 1. Download the asset preview
-    this.downloadAsset(assetId).then((path: string) => {
+    return this.downloadAsset(assetId).then((path: string) => {
       // 2. Send image to all configured AI image recognition services
       filePath = path;
       let services = [];
@@ -88,8 +88,10 @@ export class Recognizer {
     }).then((hit: HitElement) => {
       // 7. We're done!
       console.info('Image recognition finshed for asset: ' + assetId + ' (' + hit.metadata['filename'] + ')');
+      return hit;
     }).catch((error: any) => {
       console.error('Image recognition failed for asset: ' + assetId + '. Error details:\n' + error.stack);
+      throw error;
     });
   }
 

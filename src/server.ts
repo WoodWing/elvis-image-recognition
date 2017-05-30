@@ -4,10 +4,12 @@
 
 require("console-stamp")(console, { pattern: "dd-mm-yyyy HH:MM:ss.l" });
 import express = require('express');
+import bodyParser = require('body-parser');
 import crypto = require('crypto');
 import compare = require('secure-compare');
 import { Config } from './config';
 import { EventHandler } from './eventhandler';
+import { RestApi } from './rest-api'
 
 /**
  * Singleton server class
@@ -22,10 +24,12 @@ class Server {
 
   private app: express.Application;
   private eventHandler: EventHandler;
+  private restApi: RestApi;
 
   private constructor() {
     this.app = express();
     this.eventHandler = new EventHandler();
+    this.restApi = new RestApi();
   }
 
   /**
@@ -34,17 +38,22 @@ class Server {
    * @param port Server HTTP port.
    */
   public start(port: string): void {
+    // configure app to use bodyParser()
+    this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.app.use(bodyParser.json());
+
     // Start server
     this.app.listen(port);
     console.info('Image Recognition Server started at port: ' + port + '. Waiting for incoming events...');
 
-    this.addPostRoute();
+    this.addWebhookRoute();
+    this.restApi.addRoutes(this.app);
   }
 
   /**
    * Register HTTP Post route on '/' and listen for Elvis webhook events
    */
-  private addPostRoute(): void {
+  private addWebhookRoute(): void {
     this.app.post('/', (request: express.Request, response: express.Response) => {
       let data: string = '';
 
