@@ -1,6 +1,6 @@
 import translate = require('@google-cloud/translate');
 import { Google } from './google-base';
-import { Config } from '../config';
+import { Config } from '../../config';
 
 /**
  * Uses the Google Translate API to translate tags.

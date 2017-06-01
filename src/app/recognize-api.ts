@@ -1,10 +1,10 @@
 import express = require('express');
 import { Router, Application } from 'express';
 
-import { ElvisApi, AssetSearch, SearchResponse } from './elvis-api/api';
-import { ApiManager } from './api-manager';
+import { ElvisApi, AssetSearch, SearchResponse } from '../elvis-api/api';
+import { ApiManager } from '../elvis-api/api-manager';
 import { Recognizer } from './recognizer';
-import { Config } from './config';
+import { Config } from '../config';
 import uuidV4 = require('uuid/v4');
 
 export class RecognizeApi {

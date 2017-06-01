@@ -8,8 +8,8 @@ import bodyParser = require('body-parser');
 import crypto = require('crypto');
 import compare = require('secure-compare');
 import { Config } from './config';
-import { EventHandler } from './eventhandler';
-import { RecognizeApi } from './recognize-api'
+import { WebhookEndpoint } from './app/webhook-endpoint';
+import { RecognizeApi } from './app/recognize-api'
 
 /**
  * Singleton server class
@@ -23,12 +23,12 @@ class Server {
   }
 
   private app: express.Application;
-  private eventHandler: EventHandler;
+  private webhookEndPoint: WebhookEndpoint;
   private recognizeApi: RecognizeApi;
 
   private constructor() {
     this.app = express();
-    this.eventHandler = new EventHandler();
+    this.webhookEndPoint = new WebhookEndpoint();
     this.recognizeApi = new RecognizeApi(this.app);
   }
 
@@ -84,7 +84,7 @@ class Server {
         }
 
         // Handle the event. 
-        this.eventHandler.handle(jsonData);
+        this.webhookEndPoint.handle(jsonData);
       });
 
       request.on('error', (e: Error) => {

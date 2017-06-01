@@ -1,5 +1,5 @@
-import { Config } from './config';
-import { ElvisApi } from './elvis-api/api';
+import { Config } from '../config';
+import { ElvisApi } from '../elvis-api/api';
 
 /**
  * Singleton class that ensures only one Elvis API session is used.

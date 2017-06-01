@@ -1,4 +1,4 @@
-import * as lvs from './elvis-api/api';
+import * as lvs from './api';
 
 /**
  * Test class for all Elvis API features

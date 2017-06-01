@@ -1,9 +1,9 @@
 import url = require('url');
 import fs = require('fs');
 import path = require('path');
-import { ApiManager } from './api-manager';
+import { ApiManager } from '../elvis-api/api-manager';
 import Promise = require('bluebird');
-import lvs = require('./elvis-api/api');
+import lvs = require('../elvis-api/api');
 
 export class FileUtils {
 

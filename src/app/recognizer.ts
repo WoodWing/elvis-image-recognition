@@ -1,7 +1,7 @@
 import Promise = require('bluebird');
-import { Config } from './config';
-import { ApiManager } from './api-manager';
-import { ElvisApi, AssetSearch, SearchResponse, HitElement } from './elvis-api/api';
+import { Config } from '../config';
+import { ApiManager } from '../elvis-api/api-manager';
+import { ElvisApi, AssetSearch, SearchResponse, HitElement } from '../elvis-api/api';
 import { FileUtils } from './file-utils';
 import { GoogleVision } from './service/google-vision';
 import { AwsRekognition } from './service/aws-rekognition';

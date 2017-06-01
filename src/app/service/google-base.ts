@@ -1,5 +1,5 @@
 import fs = require('fs');
-import { Config } from '../config';
+import { Config } from '../../config';
 
 export abstract class Google {
 

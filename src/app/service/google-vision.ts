@@ -1,6 +1,6 @@
 import vision = require('@google-cloud/vision');
 import { Google } from './google-base';
-import { Config } from '../config';
+import { Config } from '../../config';
 import { ServiceResponse } from './service-response';
 
 /**

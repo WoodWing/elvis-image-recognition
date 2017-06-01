@@ -1,6 +1,6 @@
 import Promise = require('bluebird');
 import ClarifaiAPI = require('clarifai');
-import { Config } from '../config';
+import { Config } from '../../config';
 import { ServiceResponse } from './service-response';
 
 /**

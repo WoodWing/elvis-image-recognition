@@ -1,10 +1,10 @@
 import { Recognizer } from './recognizer';
-import { Config } from './config';
+import { Config } from '../config';
 
 /**
  * Handle Elvis webhook events
  */
-export class EventHandler {
+export class WebhookEndpoint {
 
   private recognizer: Recognizer;
 
