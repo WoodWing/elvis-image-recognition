@@ -9,7 +9,7 @@ import crypto = require('crypto');
 import compare = require('secure-compare');
 import { Config } from './config';
 import { EventHandler } from './eventhandler';
-import { RestApi } from './rest-api'
+import { RecognizeApi } from './recognize-api'
 
 /**
  * Singleton server class
@@ -24,12 +24,12 @@ class Server {
 
   private app: express.Application;
   private eventHandler: EventHandler;
-  private restApi: RestApi;
+  private recognizeApi: RecognizeApi;
 
   private constructor() {
     this.app = express();
     this.eventHandler = new EventHandler();
-    this.restApi = new RestApi();
+    this.recognizeApi = new RecognizeApi(this.app);
   }
 
   /**
@@ -44,16 +44,20 @@ class Server {
 
     // Start server
     this.app.listen(port);
-    console.info('Image Recognition Server started at port: ' + port + '. Waiting for incoming events...');
+    console.info('Image Recognition Server started at port: ' + port);
 
-    this.addWebhookRoute();
-    this.restApi.addRoutes(this.app);
+    this.addWebhooksRoute();
+    this.recognizeApi.addRoutes();
   }
 
   /**
    * Register HTTP Post route on '/' and listen for Elvis webhook events
    */
-  private addWebhookRoute(): void {
+  private addWebhooksRoute(): void {
+    if (!Config.recognizeOnImport) {
+      console.info('recognizeOnImport is disabled, images can only be tagged through direct API calls');
+      return;
+    }
     this.app.post('/', (request: express.Request, response: express.Response) => {
       let data: string = '';
 

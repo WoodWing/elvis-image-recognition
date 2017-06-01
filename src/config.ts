@@ -27,6 +27,13 @@ export class Config {
   static elvisPassword: string = process.env.IR_ELVIS_PASSWORD || 'changemenow';
 
   /**
+   * Recognize images right after they are imported in Elvis.
+   * 
+   * This depends on webhooks, make sure to also configure the elvisToken correctly when this setting is enabled.
+   */
+  static recognizeOnImport: boolean = process.env.IR_RECOGNIZE_ON_IMPORT || true;
+
+  /**
    * Elvis webhook token. Create a webhook that listens for "asset_create" events and that returns the "assetDomain" metadata field.
    * 
    * More info creating a webhook: https://helpcenter.woodwing.com/hc/en-us/articles/115001884346
@@ -122,6 +129,7 @@ export class Config {
    * Example values for Dutch Portugese and Russian: 'nl,pt,ru'
    * 
    * - Requires googleKeyFilename setting to be configured.
+   * - Enable the Translate API on your Google Cloud account
    * - Languages to choose from: https://cloud.google.com/translate/docs/languages
    */
   static languages: string = process.env.IR_LANGUAGES || 'en';
