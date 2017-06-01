@@ -17,46 +17,31 @@ export class WebhookEndpoint {
   }
 
   /**
- * Register HTTP Post route on '/' and listen for Elvis webhook events
- */
+   * Register HTTP Post route on '/' and listen for Elvis webhook events
+   */
   public addRoutes(): void {
     if (!Config.recognizeOnImport) {
       console.info('recognizeOnImport is disabled, images can only be tagged through direct API calls');
       return;
     }
-    this.app.post('/', (request: Request, response: Response) => {
-      let data: string = '';
 
-      request.on('data', (chunk: string) => {
-        data += chunk;
-      });
+    // Recognize API
+    this.app.post('/', (req: Request, res: Response) => {
 
-      request.on('end', () => {
-        // Send a response back to Elvis before handling the event, so the app won't keep 
-        // the connection open while it's handling the event. This results in better performance.
-        response.status(200).send();
+      // Send a response back to Elvis before handling the event, so the app won't keep 
+      // the connection open while it's handling the event. This results in better performance.
+      res.status(200).send();
 
-        // Validate the webhook signature
-        let signature: string = request.header('x-hook-signature');
-        if (!this.validateSignature(signature, data)) {
-          return console.error('Invalid WebHook signature: ' + signature + '. Make sure the elvisToken is configured correctly.');
-        }
+      // Validate the webhook signature
+      let signature: string = req.header('x-hook-signature');
+      if (!this.validateSignature(signature, JSON.stringify(req.body))) {
+        return console.error('Invalid WebHook signature: ' + signature + '. Make sure the elvisToken is configured correctly.');
+      }
 
-        try {
-          var jsonData: string = JSON.parse(data);
-        }
-        catch (e) {
-          return console.error('Invalid request: ' + e + '\nrequest data:\n' + data);
-        }
-
-        // Handle the event. 
-        this.handle(jsonData);
-      });
-
-      request.on('error', (e: Error) => {
-        this.throwError(response, 'An unexpected error occurred: ' + e + '\nrequest data:\n' + data);
-      });
+      // Handle the event. 
+      this.handle(req.body);
     });
+
   }
 
   /**
@@ -76,14 +61,6 @@ export class WebhookEndpoint {
       console.warn('Signature validation failed for signature: ' + signature + ' and data: ' + data + '; details: ' + error);
     }
     return false;
-  }
-
-  /**
-   * Log the error and send an error response back to Elvis.
-   */
-  private throwError(response: Response, message: string): void {
-    console.error(message);
-    response.status(400).send(message);
   }
 
   /**

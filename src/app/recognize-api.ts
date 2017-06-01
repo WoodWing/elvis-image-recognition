@@ -1,4 +1,3 @@
-import express = require('express');
 import { Router, Application } from 'express';
 
 import { ElvisApi, AssetSearch, SearchResponse } from '../elvis-api/api';
@@ -22,13 +21,13 @@ export class RecognizeApi {
    */
   public addRoutes(): void {
 
-    let router: Router = express.Router();
+    let router: Router = Router();
 
     // API logging
     router.use((req, res, next) => {
       // Keep the compiler happy
       res = res;
-      console.info('API call received: "' + req.originalUrl + '" with body: ' + JSON.stringify(req.body));
+      console.info('API call received: ' + req.method + ' "' + req.originalUrl + '" with body: ' + JSON.stringify(req.body));
       // Make sure we go to the next routes and don't stop here
       next();
     });
@@ -47,14 +46,14 @@ export class RecognizeApi {
       let pi: ProcessInfo = new ProcessInfo(rr);
       this.processes[pi.id] = pi;
 
-      // Return "ACCEPTED" status
+      // Return 202 "ACCEPTED" status, client needs to monitor progress using the process id.
       res.status(202).json({ processId: pi.id });
 
       // Start recognition process
       this.recognizeBatch(pi, rr);
     });
 
-    // Get recognize process info
+    // Get recognize process info by id
     router.get('/recognize/:id', (req, res) => {
       let pi: ProcessInfo = this.retrieveProcessInfo(req, res);
       if (!pi) {
@@ -65,7 +64,7 @@ export class RecognizeApi {
       res.status(200).json(pi);
     });
 
-    // Cancel recognize process
+    // Cancel recognize process for a specified id
     router.delete('/recognize/:id', (req, res) => {
       let pi: ProcessInfo = this.retrieveProcessInfo(req, res);
       if (!pi) {
@@ -150,6 +149,7 @@ export class RecognizeApi {
       })
     }).catch((error: any) => {
       // Search failed, we're done here...
+      // TODO: set correct failed count here or do the first search before sending the ACCEPTED response
       console.error('Search failed for query: ' + rr.q + '. Error details: ' + error.stack);
     });
   }
@@ -159,7 +159,7 @@ export class RecognizeApi {
    */
   private nextBatchHandler(pi: ProcessInfo, rr: RecognizeRequest, startIndex: number, batchSize: number, processedInBatch: number, hitsFound: number, lastBatch: boolean): void {
     if (pi.cancelled && processedInBatch == hitsFound) {
-      // We're cancelled!
+      // We're cancelled :-(
       console.info('Processing cancelled: ' + pi.id + ', successCount: ' + pi.successCount + ', failedCount: ' + pi.failedCount);
     }
     else if (lastBatch && processedInBatch == hitsFound) {

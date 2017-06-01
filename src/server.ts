@@ -45,7 +45,10 @@ class Server {
     this.app.listen(port);
     console.info('Image Recognition Server started at port: ' + port);
 
+    // Start listening for webhook events
     this.webhookEndPoint.addRoutes();
+
+    // Start REST API
     this.recognizeApi.addRoutes();
   }
 }
