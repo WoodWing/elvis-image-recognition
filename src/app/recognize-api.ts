@@ -10,12 +10,10 @@ import uuidV4 = require('uuid/v4');
 export class RecognizeApi {
 
   private api: ElvisApi = ApiManager.getApi();
-  private app: Application;
   private recognizer: Recognizer;
   private processes: ProcessInfo[] = [];
 
-  constructor(app: Application) {
-    this.app = app;
+  constructor(public app: Application) {
     this.recognizer = new Recognizer(Config.clarifaiEnabled, Config.googleEnabled, Config.awsEnabled, Config.languages !== 'en');
   }
 
