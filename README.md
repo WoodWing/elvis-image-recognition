@@ -2,7 +2,9 @@
 
 This integration is currently in **beta** stage.
 
-The Elvis image recognition server is a nodejs server application that integrates Elvis with AI image recognition services from Google, Amazon and Clarifai. It uses these services to detect labels, landmarks and emotions.
+The Elvis image recognition server is a nodejs server application that integrates Elvis with AI image recognition services from Google, Amazon and Clarifai. It uses these services to detect labels, landmarks and emotions. Labels can also be automatically translated using Google Translate. The server supports tagging of images right after they are imported in Elvis but it also features a built-in REST API to detect images that are already imported in Elvis.
+
+**NOTE: The current implementation of the REST API is not secured! Run this application sandboxed - behind a firewall.**
 
 This readme describes how to setup the integration. Please read this [blog article](https://www.woodwing.com/blog/post/157564395070/ai-dam-five-ways-ai-can-make-life-easier-for) if you want to know more about Elvis and AI.
 
@@ -14,7 +16,13 @@ This readme describes how to setup the integration. Please read this [blog artic
 
 # Installation steps
 
-## Configure the Elvis Webhook
+## Configure Elvis metadata fields
+
+Depending on your configuration and used services, you may need to add custom metadata fields to your Elvis installation. These custom metadata fields need to be configured in the `<Elvis Config>/custom-assetinfo.xml` file. Sample configuration files are provided in the `elvis-config` folder.
+
+## Optional: configure the Elvis Webhook
+
+An Elvis webhook needs to be configured if you want to detect incoming images in Elvis. You can skip this step if you only want to use the REST API.
 
 - Log-in to the Elvis web client as admin user
 - Go to the management console, webhooks secion and add a new webhook
@@ -27,10 +35,6 @@ This readme describes how to setup the integration. Please read this [blog artic
 
 Detailed information on setting up and using webhooks can be found on [Help Center](https://helpcenter.woodwing.com/hc/en-us/articles/115001884346).
 
-## Configure Elvis metadata fields
-
-Depending on your configuration and used services, you may need to add custom metadata fields to your Elvis installation. These custom metadata fields need to be configured in the `<Elvis Config>/custom-assetinfo.xml` file. Sample configuration files are provided in the `elvis-config` folder.
-
 ## Install the image recognition server
 
 - Clone or download this package.
@@ -41,7 +45,7 @@ Depending on your configuration and used services, you may need to add custom me
 - Install node modules: `npm install`
 - Start the server: `npm start`
 
-# Usage
+# Detect images during import
 
 - Open the Elvis web client.
 - Upload a few images.
@@ -49,7 +53,69 @@ Depending on your configuration and used services, you may need to add custom me
 - Watch the magic :)
 - When there's no magic... check the terminal where the image recognition server is running for errors and make sure your configuration is correct.
 
+# Detect images using the REST API
+
+## POST /api/recognize
+
+Starts the image recognition for a given query, immediatly returns a process id that can be used to track progress or cancel the operation.
+
+In this example we detect all images in the `/Demo Zone` folder.
+
+Request
+```bash
+$ curl -H "Content-Type: application/json" -X POST -d '{"q":"ancestorPaths:\"/Demo Zone\""}' http://localhost:9090/api/recognize
+```
+
+Response (202 ACCEPTED)
+```json
+{
+    "processId" : "5e5949d8-3c58-4074-84a4-a63fa10286f8"
+}
+```
+
+## GET /api/recognize/:id:
+
+Retrieve progress information for a given recognition process.
+
+Request
+```bash
+$ curl -X GET http://localhost:9090/api/recognize/5e5949d8-3c58-4074-84a4-a63fa10286f8
+```
+
+Response (200 OK)
+```json
+{
+  "cancelled": false,
+  "failedCount": 0,
+  "successCount": 335,
+  "totalCount": 3246,
+  "id": "5e5949d8-3c58-4074-84a4-a63fa10286f8",
+  "request": {
+    "q": "(ancestorPaths:\"/Demo Zone\") AND assetDomain:image"
+  }
+}
+```
+
+## DELETE /api/recognize/
+
+Cancel a recognition process.
+
+Request
+```bash
+$ curl -X DELETE http://localhost:9090/api/recognize/5e5949d8-3c58-4074-84a4-a63fa10286f8
+```
+
+Response (200 OK)
+```
+Process with id "5e5949d8-3c58-4074-84a4-a63fa10286f8" is being cancelled.
+```
+
 # Version history
+
+## v2.0.0
+- Added support for translating tags into different languages (using Google Translate)
+- New recognize REST API to detect existing assets in Elvis
+- Refactored package structure
 
 ## v1.1.0
 - Elvis 6 support
