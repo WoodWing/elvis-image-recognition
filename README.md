@@ -1,6 +1,6 @@
 # 1. Introduction
 
-**NOTE: This integration is currently in beta stage, usage is at your own risk. The REST API is currently not secured so make surte you run this application sandboxed (behind a firewall).**
+**NOTE: This integration is currently in beta stage, usage is at your own risk. The REST API is currently not secured so ensure you run this application sandboxed (behind a firewall).**
 
 The Elvis image recognition server is a nodejs server application that integrates Elvis with AI image recognition services from Google, Amazon and Clarifai. It uses these services to detect labels, landmarks and emotions. Labels can also be automatically translated to other languages (Google Translate). The recognition server supports tagging of images right after they are imported in Elvis but it also features a built-in REST API to detect images that are already imported in Elvis.
 
