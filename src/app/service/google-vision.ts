@@ -34,7 +34,7 @@ export class GoogleVision extends Google {
 
       this.gv.detect(inputFile, params, (error, response) => {
         if (error) {
-          return reject(new Error('An error occurred while getting the labels from Google Vision: ' + error));
+          return reject(new Error('An error occurred while getting the labels for "' + inputFile + '" from Google Vision: ' + error));
         }
 
         var sr = new ServiceResponse();
