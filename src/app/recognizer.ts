@@ -90,8 +90,14 @@ export class Recognizer {
       console.info('Image recognition finshed for asset: ' + assetId + ' (' + hit.metadata['filename'] + ')');
       return hit;
     }).catch((error: any) => {
-      console.error('Image recognition failed for asset: ' + assetId + '. Error details:\n' + error.stack);
-      throw error;
+      if (error instanceof NoPreviewError) {
+        // We're not logging this error as it's triggered by desktop client uploads
+        // console.info(error.message);
+      }
+      else {
+        console.error('Image recognition failed for asset: ' + assetId + '. Error details:\n' + error.stack);
+        throw error;
+      }
     });
   }
 
@@ -113,9 +119,15 @@ export class Recognizer {
       }
       let hit: HitElement = sr.hits[0];
       if (!hit.previewUrl) {
-        throw new Error('Asset ' + assetId + ' doesn\'t have a preview, unable to extract labels.');
+        throw new NoPreviewError('Asset ' + assetId + ' doesn\'t have a preview, unable to extract labels.', assetId);
       }
       return FileUtils.downloadPreview(hit, Config.tempDir);
     });
+  }
+}
+
+class NoPreviewError extends Error {
+  constructor(public message = '', public assetId: string = '') {
+    super(message);
   }
 }

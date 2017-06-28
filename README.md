@@ -26,8 +26,8 @@ An Elvis webhook needs to be configured if you want to detect incoming images in
 - Go to the management console, webhooks secion and add a new webhook
 - Name: For example, "Image Recognition"
 - URL: Point it to the URL where the image recognition server is running, if it's running on the same machine as Elvis, this will be: http://localhost:9090/
-- Event types: `asset_create`
-- Metadata to include `assetDomain`
+- Event types: `asset_create` AND `asset_metadata_update`
+- Metadata to include: `assetDomain`
 - Save the webhook
 - The generated secret token needs to be specified in the image recognition configuration later on.
 
