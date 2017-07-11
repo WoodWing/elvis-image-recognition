@@ -8,7 +8,7 @@ This readme describes how to setup the integration. Please read this [blog artic
 
 # 2. Prerequisites
 
-- Fully installed and licensed Elvis server (5.24 or higher). You can obtain Elvis via: https://www.woodwing.com/en/digital-asset-management-system
+- Fully installed and licensed Elvis server (5.26 or higher). You can obtain Elvis via: https://www.woodwing.com/en/digital-asset-management-system
 - Server where the image recognition server can run (can be on the same machine where Elvis runs)
 - API user license 
 
@@ -114,6 +114,8 @@ Process with id "5e5949d8-3c58-4074-84a4-a63fa10286f8" is being cancelled.
 ## v2.0.0
 - Added support for translating tags into different languages (using Google Translate)
 - New recognize REST API to detect existing assets in Elvis
+- Added support for uploads using the Elvis desktop client
+- Changed default tags field to the new "Tags from AI" field, this field is introduced with Elvis 5.26.
 - Refactored package structure
 
 ## v1.1.0
