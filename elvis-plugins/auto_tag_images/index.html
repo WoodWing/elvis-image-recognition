@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--
+
+Licensed under the MIT License
+Copyright (c) 2010-2017 WoodWing Software
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this а and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+-->
+
+<head>
+	<title>Auto Tag Images</title>
+	<script src="${pluginsBaseRootUrl}/web.shared/jquery.js" type="text/javascript"></script>
+	<script src="${pluginsBaseRootUrl}/web.shared/jquery.class.js" type="text/javascript"></script>
+	<script src="${pluginsBaseRootUrl}/web.shared/jquery.cookie.js" type="text/javascript"></script>
+	<script src="${pluginsBaseRootUrl}/web.shared/elvis_api/js/jquery.elvis.js" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		var elvisContext = ElvisPlugin.resolveElvisContext();
+		var elvisApi = new ElvisAPI('${serverUrl}');
+		var queryToPerform = null;
+
+		function loadCssFromParent() {
+			var parentLinks = $('link[rel=stylesheet]', parent.document);
+			for (var i = 0; i < parentLinks.length; i++) {
+				loadCss(parentLinks[i].href);
+			}
+		}
+
+		function loadCss(href) {
+			var head = $('head')[0];
+			var link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.href = href;
+			head.appendChild(link);
+		}
+
+		// Load CSS files from Elvis
+		loadCssFromParent();
+
+		// Load own CSS
+		loadCss('resources/styles.css');
+
+		function getSelectedFolder() {
+			try {
+				return elvisContext.activeTab.folderSelection[0].assetPath;
+			}
+			catch (error) {
+				return null;
+			}
+		}
+
+		function getAssetSelection() {
+			return elvisContext.activeTab.originalAssetSelection;
+		}
+
+		function dryRunQuery(tagMode, callback) {
+			var response = {
+				query: '',
+				count: 0
+			}
+			if (tagMode === 'SelectedAssets') {
+				var assetIds = [];
+				var selection = getAssetSelection();
+				selection.forEach(function (hit) {
+					if (hit.metadata.assetDomain === 'image') {
+						assetIds.push(hit.id);
+					}
+				});
+				response.count = assetIds.length;
+				if (assetIds.length > 0) {
+					response.query = 'id:' + assetIds.join(' OR id:');
+				}
+				callback(response);
+			} else if (tagMode === 'SelectedFolder') {
+				response.query = 'ancestorPaths:"' + getSelectedFolder() + '" AND assetDomain:image';
+				elvisApi.search({
+					q: response.query
+				}, function (data) {
+					response.count = data.totalHits;
+					callback(response);
+				});
+			} else {
+				throw new Error('Invalid tagMode: ' + tagMode);
+			}
+		}
+
+		function init() {
+			// Event handlers
+			$('.start-btn').click(start);
+			$('.cancel-btn').click(cancel);
+			$('input[type=radio][name=tag-mode').change(updateInfo);
+
+			var assetSelection = getAssetSelection();
+			var selectedFolder = getSelectedFolder();
+
+			var assetsRadio = $('#selected-assets');
+			var folderRadio = $('#selected-folder');
+
+			var isFolderSelected = selectedFolder !== '/';
+			var hasAssetSelection = assetSelection.length > 0;
+
+			if (!hasAssetSelection && !isFolderSelected) {
+				showWarning('You need to to select a folder or files to tag.', false);
+				showContent();
+				return;
+			}
+
+			// Enable / disable radio buttons
+			assetsRadio.prop('disabled', !hasAssetSelection);
+			assetsRadio.prop('checked', hasAssetSelection);
+			folderRadio.prop('disabled', !isFolderSelected);
+			folderRadio.prop('checked', !hasAssetSelection && isFolderSelected);
+
+			updateInfo(showContent);
+		}
+
+		/**
+		 * Update the info panel to inform the user what will be tagged
+		 */
+		function updateInfo(callback) {
+			var tagMode = $('input[name=tag-mode]:checked').val();
+			dryRunQuery(tagMode, function (data) {
+				var infoMsg = '';
+				var validSelection = true;
+				if (data.count == 0) {
+					infoMsg = 'There are no images in your selected files or folder, please make a valid selection.';
+					validSelection = false;
+				}
+				else if (data.count > 10000) {
+					infoMsg = 'Note: There are more than 10.000 images in your selection, only the first 10.000 images will be tagged. Click start to begin the tagging process.';
+				}
+				else {
+					infoMsg = 'There are ' + data.count + ' images in your current selection. Click start to begin the tagging process.';
+				}
+
+				queryToPerform = data.query;
+				$('.tag-info').text(infoMsg);
+				$('.start-btn').prop('disabled', !validSelection);
+
+				if (callback && typeof callback === 'function') {
+					callback();
+				}
+			});
+		}
+
+		/**
+		 * Make everything visible
+		 */
+		function showContent() {
+			$('body').animate({
+				opacity: 1
+			}, 300);
+		}
+
+		/**
+		 * Show warning message
+		 */
+		function showWarning(message, disableStart) {
+			$('.tag-main').css('display', 'none');
+			$('.tag-warning').css('display', 'block');
+			$('.tag-warning').text(message);
+			$('.start-btn').prop('disabled', disableStart);
+		}
+
+		function start() {
+			var request = {
+				q: queryToPerform
+			}
+			$.ajax({
+				type: 'POST',
+				url: 'http://127.0.0.1:9090/api/recognize',
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				data: JSON.stringify(request),
+				crossDomain: true,
+				success: function (data) {
+					console.log('Recognition started: ' + data.processId);
+				},
+				error: function (data) {
+					console.log('Recognition request failed: ' + data.message);
+				}
+			});
+		}
+
+		function cancel() {
+			elvisContext.close();
+		}
+	</script>
+</head>
+
+<body style="opacity:0" onLoad="init()">
+	<form class="tag-form">
+		<div class="tag-panel">
+			<div class="tag-main">
+				<h3>What do you want to tag?</h3>
+				<input type="radio" id="selected-assets" name="tag-mode" value="SelectedAssets" />
+				<label for="selected-assets">All selected images</label><br/>
+				<input type="radio" id="selected-folder" name="tag-mode" value="SelectedFolder">
+				<label for="all-assets">All images in the current folder and subfolders</label>
+				<div class="tag-info"></div>
+			</div>
+			<div class="tag-warning"></div>
+			<button type="button" class="cancel-btn basic-btn pale">Cancel</button> <button type="button" class="start-btn basic-btn">Start</button>
+		</div>
+	</form>
+</body>
+
+</html>
