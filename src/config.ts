@@ -31,7 +31,7 @@ export class Config {
    * 
    * This depends on webhooks, make sure to also configure the elvisToken correctly when this setting is enabled.
    */
-  static recognizeOnImport: boolean = process.env.IR_RECOGNIZE_ON_IMPORT || true;
+  static recognizeOnImport: boolean = process.env.IR_RECOGNIZE_ON_IMPORT === 'true' || true;
 
   /**
    * Elvis webhook token. Create a webhook that listens for "asset_create" events and that returns the "assetDomain" metadata field.
@@ -51,7 +51,7 @@ export class Config {
   /**
    * Enable or disable Clarifai image recognition.
    */
-  static clarifaiEnabled: boolean = process.env.IR_CLARIFAI_ENABLED || true;
+  static clarifaiEnabled: boolean = process.env.IR_CLARIFAI_ENABLED === 'true' || true;
 
   /**
    * Clarifai CLIENT ID.
@@ -75,7 +75,7 @@ export class Config {
   /**
    * Enable or disable Google image recognition.
    */
-  static googleEnabled: boolean = process.env.IR_GOOGLE_ENABLED || true;
+  static googleEnabled: boolean = process.env.IR_GOOGLE_ENABLED === 'true' || true;
 
   /**
    * Full path to the Google Service account keyfile (JSON).  
@@ -98,7 +98,7 @@ export class Config {
   /**
    * Enable or disable AWS image recognition.
    */
-  static awsEnabled: boolean = process.env.IR_AWS_ENABLED || true;
+  static awsEnabled: boolean = process.env.IR_AWS_ENABLED === 'true' || true;
 
   /**
    * AWS access key
