@@ -28,7 +28,6 @@ export class RecognizeApi {
       // Keep the compiler happy
       res = res;
       console.info('API call received: ' + req.method + ' "' + req.originalUrl + '" with body: ' + JSON.stringify(req.body));
-      // Make sure we go to the next routes and don't stop here
       next();
     });
 
@@ -43,38 +42,56 @@ export class RecognizeApi {
         return this.handleError('Invalid request, parameter "q" is required.', req, res);
       }
 
-      let pi: ProcessInfo = new ProcessInfo(rr);
+      let query: string = '(' + rr.q + ') AND assetDomain:image';
+
+      let search: AssetSearch = {
+        sorting: [
+          {
+            field: 'assetCreated',
+            descending: true
+          }
+        ],
+        query: {
+          QueryStringQuery: {
+            queryString: query
+          }
+        }
+      };
+
+      let pi: ProcessInfo = new ProcessInfo(search);
       this.processes[pi.id] = pi;
 
       // Return 202 "ACCEPTED" status, client needs to monitor progress using the process id.
       res.status(202).json({ processId: pi.id });
 
       // Start recognition process
-      this.recognizeBatch(pi, rr);
+      this.recognizeBatch(pi);
     });
 
     // Get recognize process info by id
     router.get('/recognize/:id', (req, res) => {
       let pi: ProcessInfo = this.retrieveProcessInfo(req, res);
       if (!pi) {
-        return;
+        res.status(404);
       }
-
-      // Return process info
-      res.status(200).json(pi);
+      else {
+        // Return process info
+        res.status(200).json(pi);
+      }
     });
 
     // Cancel recognize process for a specified id
     router.delete('/recognize/:id', (req, res) => {
       let pi: ProcessInfo = this.retrieveProcessInfo(req, res);
       if (!pi) {
-        return;
+        res.status(404);
       }
+      else {
+        pi.cancelled = true;
 
-      pi.cancelled = true;
-
-      // Return process info
-      res.status(200).send('Process with id "' + pi.id + '" is being cancelled.');
+        // Return process info
+        res.status(200).send('Process with id "' + pi.id + '" is being cancelled.');
+      }
     });
 
     // Prefix all API's with /api
@@ -103,35 +120,17 @@ export class RecognizeApi {
   /**
    * Recognize images in batches
    */
-  private recognizeBatch(pi: ProcessInfo, rr: RecognizeRequest, startIndex: number = 0, batchSize: number = 5): void {
-    if (startIndex == 0) {
-      // First batch, parse query to make sure we only retrieve images
-      rr.q = '(' + rr.q + ') AND assetDomain:image';
-    }
-
-    let search: AssetSearch = {
-      firstResult: startIndex,
-      maxResultHits: batchSize,
-      sorting: [
-        {
-          field: 'assetCreated',
-          descending: true
-        }
-      ],
-      query: {
-        QueryStringQuery: {
-          queryString: rr.q
-        }
-      }
-    };
+  private recognizeBatch(pi: ProcessInfo, startIndex: number = 0, batchSize: number = 5): void {
+    pi.search.firstResult = startIndex;
+    pi.search.maxResultHits = batchSize;
 
     let processedInBatch: number = 0;
     let lastBatch: boolean = false;
 
     // Search batch
-    this.api.searchPost(search).then((sr: SearchResponse) => {
+    this.api.searchPost(pi.search).then((sr: SearchResponse) => {
       lastBatch = sr.hits.length < batchSize;
-      console.info('Processing in-progress: ' + pi.id + ', total hits: ' + sr.totalHits + ', startIndex: ' + startIndex + ', batchSize: ' + batchSize + ', hits found: ' + sr.hits.length + ', query: ' + rr.q);
+      console.info('Processing in-progress: ' + pi.id + ', total hits: ' + sr.totalHits + ', startIndex: ' + startIndex + ', batchSize: ' + batchSize + ', hits found: ' + sr.hits.length + ', query: ' + JSON.stringify(pi.search.query));
       sr.hits.forEach((hit) => {
 
         // Start image recognition
@@ -139,25 +138,25 @@ export class RecognizeApi {
           // Recognition successful
           pi.successCount++;
           processedInBatch++;
-          this.nextBatchHandler(pi, rr, startIndex, batchSize, processedInBatch, sr.hits.length, lastBatch);
+          this.nextBatchHandler(pi, startIndex, batchSize, processedInBatch, sr.hits.length, lastBatch);
         }).catch(() => {
           // Recognition failed
           pi.failedCount++;
           processedInBatch++;
-          this.nextBatchHandler(pi, rr, startIndex, batchSize, processedInBatch, sr.hits.length, lastBatch);
+          this.nextBatchHandler(pi, startIndex, batchSize, processedInBatch, sr.hits.length, lastBatch);
         });
       })
     }).catch((error: any) => {
       // Search failed, we're done here...
       // TODO: set correct failed count here or do the first search before sending the ACCEPTED response
-      console.error('Search failed for query: ' + rr.q + '. Error details: ' + error.stack);
+      console.error('Search failed for query: ' + pi.search + '. Error details: ' + error.stack);
     });
   }
 
   /**
    * Determine if we're done or if a new batch needs to be processed
    */
-  private nextBatchHandler(pi: ProcessInfo, rr: RecognizeRequest, startIndex: number, batchSize: number, processedInBatch: number, hitsFound: number, lastBatch: boolean): void {
+  private nextBatchHandler(pi: ProcessInfo, startIndex: number, batchSize: number, processedInBatch: number, hitsFound: number, lastBatch: boolean): void {
     if (pi.cancelled && processedInBatch == hitsFound) {
       // We're cancelled :-(
       console.info('Processing cancelled: ' + pi.id + ', successCount: ' + pi.successCount + ', failedCount: ' + pi.failedCount);
@@ -168,7 +167,7 @@ export class RecognizeApi {
     }
     else if (!lastBatch && processedInBatch == batchSize) {
       // There's more...
-      this.recognizeBatch(pi, rr, startIndex + batchSize, batchSize);
+      this.recognizeBatch(pi, startIndex + batchSize, batchSize);
     }
   }
 
@@ -180,20 +179,20 @@ export class RecognizeApi {
 
 class ProcessInfo {
   public id: string;
-  public start: Date; // TODO: implement
-  public finish: Date; // TODO: implement
-  public request: RecognizeRequest;
+  public start: Date; // TODO: implement or remove
+  public finish: Date; // TODO: implement or remove
+  public search: AssetSearch;
   public cancelled: boolean = false;
   public failedCount: number = 0;
   public successCount: number = 0;
 
-  constructor(request: RecognizeRequest) {
+  constructor(search: AssetSearch) {
     this.id = uuidV4();
-    this.request = request;
+    this.search = search;
   }
 }
 
 class RecognizeRequest {
   public q: string;
-  public num: number;
+  public num: number; // TODO: implement or remove
 }
