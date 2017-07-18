@@ -40,6 +40,7 @@ class Server {
     // configure app to use bodyParser()
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(bodyParser.json());
+    this.app.use(this.allowCrossDomain);
 
     // Start server
     this.app.listen(port);
@@ -50,6 +51,17 @@ class Server {
 
     // Start REST API
     this.recognizeApi.addRoutes();
+  }
+
+  private allowCrossDomain = function (req, res, next) {
+    // Keep the compiler happy
+    req = req;
+
+    res.header('Access-Control-Allow-Origin', Config.elvisUrl);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept');
+
+    next();
   }
 }
 
