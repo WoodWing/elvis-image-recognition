@@ -37,10 +37,18 @@ THE SOFTWARE.
 		var elvisApi = new ElvisAPI('${serverUrl}');
 		var queryToPerform = null;
 
-		function loadCssFromParent() {
+		function loadClientSpecificCss() {
 			var parentLinks = $('link[rel=stylesheet]', parent.document);
-			for (var i = 0; i < parentLinks.length; i++) {
-				loadCss(parentLinks[i].href);
+			if (parentLinks == 0) {
+				// We're in the desktop client, load desktop client styles
+				// TODO: doesn't work yet
+				loadCss('resources/desktop-styles.css')
+			}
+			else {
+				// We're in the web client, load css from parent frame
+				for (var i = 0; i < parentLinks.length; i++) {
+					loadCss(parentLinks[i].href);
+				}
 			}
 		}
 
@@ -51,12 +59,6 @@ THE SOFTWARE.
 			link.href = href;
 			head.appendChild(link);
 		}
-
-		// Load CSS files from Elvis
-		loadCssFromParent();
-
-		// Load own CSS
-		loadCss('resources/styles.css');
 
 		function getSelectedFolder() {
 			try {
@@ -80,7 +82,7 @@ THE SOFTWARE.
 				var assetIds = [];
 				var selection = getAssetSelection();
 				selection.forEach(function (hit) {
-					if (hit.metadata.assetDomain === 'image') {
+					if (hit.assetDomain === 'image') {
 						assetIds.push(hit.id);
 					}
 				});
@@ -103,10 +105,16 @@ THE SOFTWARE.
 		}
 
 		function init() {
+			// Load CSS files from Elvis
+			loadClientSpecificCss();
+
+			// Load main CSS
+			loadCss('resources/styles.css');
+
 			// Event handlers
 			$('.start-btn').click(start);
 			$('.cancel-btn').click(cancel);
-			$('input[type=radio][name=tag-mode').change(updateInfo);
+			$('input[type=radio][name=tag-mode]').change(updateInfo);
 
 			var assetSelection = getAssetSelection();
 			var selectedFolder = getSelectedFolder();

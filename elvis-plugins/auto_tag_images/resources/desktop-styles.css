@@ -23,12 +23,11 @@
 
 body {
     min-width: 0px;
+    background-color: #333;
+    color: #fff;
+    font-size: 12px;
 }
 
-.tag-panel {
-    width: 100%;
-}
-
-.tag-panel .basic-btn {
-    margin-top: 10px;
+* {
+    font-family: Arial, Arial, Helvetica, sans-serif;
 }
