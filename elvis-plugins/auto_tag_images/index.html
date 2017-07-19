@@ -132,13 +132,15 @@ THE SOFTWARE.
 			folderRadio.prop('checked', !hasAssetSelection && isFolderSelected);
 
 			if (!hasAssetSelection && !isFolderSelected) {
-				$('.tag-info').html('Please select either a folder containing images or one or more individual images.');
-				$('.tag-info').removeClass().addClass('tag-info error');
+				$('#info').html('Please select either a folder containing images or one or more individual images.');
+				$('#info').removeClass().addClass('tag-info error');
 				$('.start-btn').prop('disabled', true);
-				showContent();
+				$('.start-state').css('display', 'block');
 				return;
 			}
-			updateInfo(showContent);
+			updateInfo(function () {
+				$('.start-state').css('display', 'block');
+			});
 		}
 
 		/**
@@ -166,23 +168,14 @@ THE SOFTWARE.
 				}
 
 				queryToPerform = data.query;
-				$('.tag-info').html(infoMsg);
-				$('.tag-info').removeClass().addClass(cssClass);
+				$('#info').html(infoMsg);
+				$('#info').removeClass().addClass(cssClass);
 				$('.start-btn').prop('disabled', !validSelection);
 
 				if (callback && typeof callback === 'function') {
 					callback();
 				}
 			});
-		}
-
-		/**
-		 * Make everything visible
-		 */
-		function showContent() {
-			$('body').animate({
-				opacity: 1
-			}, 300);
 		}
 
 		function start() {
@@ -197,10 +190,16 @@ THE SOFTWARE.
 				data: JSON.stringify(request),
 				crossDomain: true,
 				success: function (data) {
-					console.log('Recognition started: ' + data.processId);
+					console.log('Image recognition process started with id: ' + data.processId);
+					$('#running-ok').html('The image tagging started as backround process. You can now close this dialog and follow the progress in the metadata of the selected files.');
+					$('.start-state').css('display', 'none');
+					$('.running-state').css('display', 'block');
 				},
-				error: function (data) {
-					console.log('Recognition request failed: ' + data.message);
+				error: function (jqXHR, textStatus, error) {
+					console.log('Recognition request failed: ' + JSON.stringify(jqXHR));
+					$('#running-error').html('The image tagging process failed to start due to an unexpected error. You can check the web browser developer console for error details.');
+					$('.start-state').css('display', 'none');
+					$('.error-state').css('display', 'block');
 				}
 			});
 		}
@@ -211,22 +210,30 @@ THE SOFTWARE.
 	</script>
 </head>
 
-<body style="opacity:0" onLoad="init()">
-	<form class="tag-form">
-		<div class="tag-panel">
-			<div class="tag-main">
-				<h3>What do you want to tag?</h3>
-				<input type="radio" id="selected-assets" name="tag-mode" value="SelectedAssets" />
-				<label for="selected-assets">All selected images</label><br/>
-				<input type="radio" id="selected-folder" name="tag-mode" value="SelectedFolder">
-				<label for="selected-folder">All images in the current folder and subfolders</label>
-				<div class="tag-info"></div>
+<body onLoad="init()">
+	<div style="display: none" class="start-state">
+		<form class="tag-form">
+			<div class="tag-panel">
+				<div class="tag-main">
+					<h3>What do you want to tag?</h3>
+					<input type="radio" id="selected-assets" name="tag-mode" value="SelectedAssets" />
+					<label for="selected-assets">All selected images</label><br/>
+					<input type="radio" id="selected-folder" name="tag-mode" value="SelectedFolder">
+					<label for="selected-folder">All images in the current folder and sub-folders</label>
+					<div id="info" class="tag-info"></div>
+				</div>
+				<div class="tag-buttons">
+					<button type="button" class="cancel-btn basic-btn ml10 pale">Cancel</button> <button type="button" class="start-btn basic-btn ml10">Start</button>
+				</div>
 			</div>
-			<div class="tag-buttons">
-				<button type="button" class="cancel-btn basic-btn ml10 pale">Cancel</button> <button type="button" class="start-btn basic-btn ml10">Start</button>
-			</div>
-		</div>
-	</form>
+		</form>
+	</div>
+	<div style="display: none" class="running-state">
+		<div id="running-ok" class="tag-info"></div>
+	</div>
+	<div style="display: none" class="error-state">
+		<div id="running-error" class="tag-info error"></div>
+	</div>
 </body>
 
 </html>

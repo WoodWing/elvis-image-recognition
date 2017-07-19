@@ -21,8 +21,14 @@
  * THE SOFTWARE.
  */
 
+ html {
+     font-size: 14px;
+ }
+
 body {
     min-width: 0px;
+    align-items: center;
+    display: flex;
 }
 
 h3 {
