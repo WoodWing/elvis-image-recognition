@@ -132,7 +132,7 @@ THE SOFTWARE.
 			folderRadio.prop('checked', !hasAssetSelection && isFolderSelected);
 
 			if (!hasAssetSelection && !isFolderSelected) {
-				$('.tag-info').html('You need to to select a folder or files to tag.');
+				$('.tag-info').html('Please select either a folder containing images or one or more individual images.');
 				$('.tag-info').removeClass().addClass('tag-info error');
 				$('.start-btn').prop('disabled', true);
 				showContent();
@@ -154,8 +154,8 @@ THE SOFTWARE.
 					infoMsg = 'There are no images in your selected files or folder, please make a valid selection.';
 					validSelection = false;
 				}
-				else if (data.count > 100) {
-					infoMsg = 'There are <strong>' + data.count + '000</strong> in your selection, only the <strong>first 10.000 images</strong> will be tagged. Click start to begin the tagging process.';
+				else if (data.count > 10000) {
+					infoMsg = 'There are <strong>' + data.count + '</strong> in your selection, only the <strong>first 10.000 images</strong> will be tagged. Click start to begin the tagging process.';
 					cssClass = 'tag-info warning';
 				}
 				else if (data.count == 1) {
