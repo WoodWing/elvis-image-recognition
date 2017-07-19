@@ -13,7 +13,7 @@
 		<icon24Url>${pluginUrl}/icon24.png</icon24Url>
 
 		<userInterface>
-			<dialog width="400" height="300"/>
+			<dialog width="400" height="175"/>
 		</userInterface>
 
 		<menuAssignments>
@@ -22,7 +22,7 @@
 
 		<messages>
 			<entries locale="en_US">
-				<entry key="title">Automatically tag images</entry>
+				<entry key="title">Automatically Tag Images</entry>
 				<entry key="button.label">Auto Tag Images</entry>
 				<entry key="button.tooltip">Automatically tag images using AI services</entry>
 			</entries>

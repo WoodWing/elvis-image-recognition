@@ -25,6 +25,18 @@ body {
     min-width: 0px;
 }
 
+h3 {
+    margin-top: 0;
+}
+
+input[type="radio"] {
+    margin: 3px;
+}
+
+input[type="radio"][disabled] + label {
+     color: #999;
+} 
+
 .tag-panel {
     width: 100%;
 }
@@ -32,3 +44,35 @@ body {
 .tag-panel .basic-btn {
     margin-top: 10px;
 }
+
+.tag-info {
+    background-color: #f5f6f8;
+    padding: 10px;
+    margin: 10px 0px;
+    border: 2px solid #009ee3;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    color: #666;
+}
+
+.tag-info.warning {
+    border: 2px solid orange;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    color: #333;
+}
+
+.tag-info.error {
+    border: 2px solid red;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    color: #333;
+}
+
+.tag-buttons {
+    text-align: right;
+}
+

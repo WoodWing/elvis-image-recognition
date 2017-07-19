@@ -60,6 +60,12 @@ THE SOFTWARE.
 			head.appendChild(link);
 		}
 
+		// Load CSS files from Elvis
+		loadClientSpecificCss();
+
+		// Load main CSS
+		loadCss('resources/styles.css');
+
 		function getSelectedFolder() {
 			try {
 				return elvisContext.activeTab.folderSelection[0].assetPath;
@@ -105,12 +111,6 @@ THE SOFTWARE.
 		}
 
 		function init() {
-			// Load CSS files from Elvis
-			loadClientSpecificCss();
-
-			// Load main CSS
-			loadCss('resources/styles.css');
-
 			// Event handlers
 			$('.start-btn').click(start);
 			$('.cancel-btn').click(cancel);
@@ -125,18 +125,19 @@ THE SOFTWARE.
 			var isFolderSelected = selectedFolder !== '/';
 			var hasAssetSelection = assetSelection.length > 0;
 
-			if (!hasAssetSelection && !isFolderSelected) {
-				showWarning('You need to to select a folder or files to tag.', false);
-				showContent();
-				return;
-			}
-
 			// Enable / disable radio buttons
 			assetsRadio.prop('disabled', !hasAssetSelection);
 			assetsRadio.prop('checked', hasAssetSelection);
 			folderRadio.prop('disabled', !isFolderSelected);
 			folderRadio.prop('checked', !hasAssetSelection && isFolderSelected);
 
+			if (!hasAssetSelection && !isFolderSelected) {
+				$('.tag-info').html('You need to to select a folder or files to tag.');
+				$('.tag-info').removeClass().addClass('tag-info error');
+				$('.start-btn').prop('disabled', true);
+				showContent();
+				return;
+			}
 			updateInfo(showContent);
 		}
 
@@ -147,20 +148,26 @@ THE SOFTWARE.
 			var tagMode = $('input[name=tag-mode]:checked').val();
 			dryRunQuery(tagMode, function (data) {
 				var infoMsg = '';
+				var cssClass = 'tag-info';
 				var validSelection = true;
 				if (data.count == 0) {
 					infoMsg = 'There are no images in your selected files or folder, please make a valid selection.';
 					validSelection = false;
 				}
-				else if (data.count > 10000) {
-					infoMsg = 'Note: There are more than 10.000 images in your selection, only the first 10.000 images will be tagged. Click start to begin the tagging process.';
+				else if (data.count > 100) {
+					infoMsg = 'There are <strong>' + data.count + '000</strong> in your selection, only the <strong>first 10.000 images</strong> will be tagged. Click start to begin the tagging process.';
+					cssClass = 'tag-info warning';
+				}
+				else if (data.count == 1) {
+					infoMsg = 'There is <strong>1</strong> image in your current selection. Click start to begin the tagging process.';
 				}
 				else {
-					infoMsg = 'There are ' + data.count + ' images in your current selection. Click start to begin the tagging process.';
+					infoMsg = 'There are <strong>' + data.count + '</strong> images in your current selection. Click start to begin the tagging process.';
 				}
 
 				queryToPerform = data.query;
-				$('.tag-info').text(infoMsg);
+				$('.tag-info').html(infoMsg);
+				$('.tag-info').removeClass().addClass(cssClass);
 				$('.start-btn').prop('disabled', !validSelection);
 
 				if (callback && typeof callback === 'function') {
@@ -176,16 +183,6 @@ THE SOFTWARE.
 			$('body').animate({
 				opacity: 1
 			}, 300);
-		}
-
-		/**
-		 * Show warning message
-		 */
-		function showWarning(message, disableStart) {
-			$('.tag-main').css('display', 'none');
-			$('.tag-warning').css('display', 'block');
-			$('.tag-warning').text(message);
-			$('.start-btn').prop('disabled', disableStart);
 		}
 
 		function start() {
@@ -222,11 +219,12 @@ THE SOFTWARE.
 				<input type="radio" id="selected-assets" name="tag-mode" value="SelectedAssets" />
 				<label for="selected-assets">All selected images</label><br/>
 				<input type="radio" id="selected-folder" name="tag-mode" value="SelectedFolder">
-				<label for="all-assets">All images in the current folder and subfolders</label>
+				<label for="selected-folder">All images in the current folder and subfolders</label>
 				<div class="tag-info"></div>
 			</div>
-			<div class="tag-warning"></div>
-			<button type="button" class="cancel-btn basic-btn pale">Cancel</button> <button type="button" class="start-btn basic-btn">Start</button>
+			<div class="tag-buttons">
+				<button type="button" class="cancel-btn basic-btn ml10 pale">Cancel</button> <button type="button" class="start-btn basic-btn ml10">Start</button>
+			</div>
 		</div>
 	</form>
 </body>
