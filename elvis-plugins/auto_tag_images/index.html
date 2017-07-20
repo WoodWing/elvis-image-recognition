@@ -36,6 +36,7 @@ THE SOFTWARE.
 		var elvisContext = ElvisPlugin.resolveElvisContext();
 		var elvisApi = new ElvisAPI('${serverUrl}');
 		var queryToPerform = null;
+		var recognitionServerUrl = null;
 
 		function loadClientSpecificCss() {
 			var parentLinks = $('link[rel=stylesheet]', parent.document);
@@ -65,6 +66,17 @@ THE SOFTWARE.
 
 		// Load main CSS
 		loadCss('resources/styles.css');
+
+		function getServerUrl() {
+			var url = elvisContext.plugin.configProperties.recognitionServerUrl.value;
+			if (!url || url.length == 0) {
+				throw new Error('No recognitionServerUrl configured, please configure this setting in the action.config.xml of this plugin.');
+			}
+			if (url.substring(url.length - 1) == '/') {
+				url = url.substring(0, url.length - 1);
+			}
+			return url;
+		}
 
 		function getSelectedFolder() {
 			try {
@@ -111,11 +123,6 @@ THE SOFTWARE.
 		}
 
 		function init() {
-			// Event handlers
-			$('.start-btn').click(start);
-			$('.cancel-btn').click(cancel);
-			$('input[type=radio][name=tag-mode]').change(updateInfo);
-
 			var assetSelection = getAssetSelection();
 			var selectedFolder = getSelectedFolder();
 
@@ -131,16 +138,40 @@ THE SOFTWARE.
 			folderRadio.prop('disabled', !isFolderSelected);
 			folderRadio.prop('checked', !hasAssetSelection && isFolderSelected);
 
-			if (!hasAssetSelection && !isFolderSelected) {
-				$('#info').html('Please select either a folder containing images or one or more individual images.');
-				$('#info').removeClass().addClass('tag-info error');
-				$('.start-btn').prop('disabled', true);
-				$('.start-state').css('display', 'block');
+			try {
+				recognitionServerUrl = getServerUrl();
+			}
+			catch (error) {
+				// Handle config failures
+				showErrorState(error.message);
 				return;
 			}
+
+			if (!hasAssetSelection && !isFolderSelected) {
+				showErrorState('Please select either a folder containing images or one or more individual images.');
+				return;
+			}
+
+			// Event handlers
+			$('.start-btn').click(start);
+			$('.cancel-btn').click(cancel);
+			$('input[type=radio][name=tag-mode]').change(updateInfo);
+
 			updateInfo(function () {
 				$('.start-state').css('display', 'block');
 			});
+		}
+
+		function showErrorState(message) {
+			$('#running-error').html(message);
+			$('.start-state').css('display', 'none');
+			$('.error-state').css('display', 'block');
+		}
+
+		function showRunningState(message) {
+			$('#running-ok').html(message);
+			$('.start-state').css('display', 'none');
+			$('.running-state').css('display', 'block');
 		}
 
 		/**
@@ -184,22 +215,18 @@ THE SOFTWARE.
 			}
 			$.ajax({
 				type: 'POST',
-				url: 'http://127.0.0.1:9090/api/recognize',
+				url: recognitionServerUrl + '/api/recognize',
 				contentType: 'application/json; charset=utf-8',
 				dataType: 'json',
 				data: JSON.stringify(request),
 				crossDomain: true,
 				success: function (data) {
 					console.log('Image recognition process started with id: ' + data.processId);
-					$('#running-ok').html('The image tagging started as backround process. You can now close this dialog and follow the progress in the metadata of the selected files.');
-					$('.start-state').css('display', 'none');
-					$('.running-state').css('display', 'block');
+					showRunningState('The image tagging started as backround process. You can now close this dialog and follow the progress in the metadata of the selected files.');
 				},
 				error: function (jqXHR, textStatus, error) {
 					console.log('Recognition request failed: ' + JSON.stringify(jqXHR));
-					$('#running-error').html('The image tagging process failed to start due to an unexpected error. You can check the web browser developer console for error details.');
-					$('.start-state').css('display', 'none');
-					$('.error-state').css('display', 'block');
+					showErrorState('The image tagging process failed to start due to an unexpected error. You can check the web browser developer console for error details.');
 				}
 			});
 		}

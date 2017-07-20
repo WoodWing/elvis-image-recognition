@@ -29,9 +29,9 @@
 		</messages>
 	</action>
 	<config>
-		<property name="apiKey">
-			<description>TBD</description>
-			<value>TBD</value>
+		<property name="recognitionServerUrl">
+			<description>The base URL where the image recognition server runs. This URL must be accessible for users using this plugin.</description>
+			<value>http://localhost:9090</value>
 		</property>
 	</config>
 </plugin>

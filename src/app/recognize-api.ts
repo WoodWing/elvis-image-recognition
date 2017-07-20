@@ -13,7 +13,8 @@ export class RecognizeApi {
   private processes: ProcessInfo[] = [];
 
   constructor(public app: Application) {
-    this.recognizer = new Recognizer(Config.clarifaiEnabled, Config.googleEnabled, Config.awsEnabled, Config.languages !== 'en');
+    let translateEnabled: boolean = Config.languages !== '';
+    this.recognizer = new Recognizer(Config.clarifaiEnabled, Config.googleEnabled, Config.awsEnabled, translateEnabled);
   }
 
   /**
