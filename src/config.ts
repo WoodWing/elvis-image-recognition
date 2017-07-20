@@ -49,6 +49,13 @@ export class Config {
   static elvisTagsField: string = process.env.IR_ELVIS_TAGS_FIELD || 'tagsFromAI';
 
   /**
+   * Elvis metadata field that holds a timestamp of the last AI metadata update.
+   *
+   * This can be useful to determine which files need to be processed or re-processed after a certain period (new services, better AI models)
+   */
+  static aiMetadataModifiedField: string = process.env.IR_ELVIS_AI_METADATA_MODIFIED_FIELD || 'cf_aiMetadataModified'
+
+  /**
    * Enable or disable Clarifai image recognition.
    */
   static clarifaiEnabled: boolean = process.env.IR_CLARIFAI_ENABLED === 'true' || true;

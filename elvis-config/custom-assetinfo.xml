@@ -269,6 +269,11 @@
 					<data editable="true" datatype="text" multivalue="true"/>
 					<userInterface filterUI="checkBoxes" filterValuesSource="usedTerms" />
 				</field>
+				<field name="cf_aiMetadataModified" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="true"/>
+					<data editable="true" datatype="datetime"/>
+				</field>
 				<!--
 				<field name="cf_tagsPt" group="AI">
 					<storage storeInMetadata="true"/>

@@ -84,6 +84,7 @@ export class Recognizer {
       }
     }).then(() => {
       // 6. Update metadata
+      metadata[Config.aiMetadataModifiedField] = new Date().getTime();
       return this.api.update(assetId, JSON.stringify(metadata), undefined, 'filename');
     }).then((hit: HitElement) => {
       // 7. We're done!

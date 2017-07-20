@@ -37,9 +37,11 @@ class Server {
    * @param port Server HTTP port.
    */
   public start(port: string): void {
-    // configure app to use bodyParser()
+    // Configure bodyParser
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(bodyParser.json());
+
+    // Allow cross domain requests from Elvis plugins
     this.app.use(this.allowCrossDomain);
 
     // Start server
