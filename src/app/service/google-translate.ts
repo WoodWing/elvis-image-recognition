@@ -18,6 +18,9 @@ export class GoogleTranslate extends Google {
       if (!Config.languages) {
         throw new Error('The languages config property cannot be empty.');
       }
+      if (!Config.sourceLanguage) {
+        throw new Error('The sourceLanguage property cannot be empty.');
+      }
       if (!Config.languageTagFields) {
         throw new Error('The languageTagFields property cannot be empty.');
       }
@@ -45,8 +48,8 @@ export class GoogleTranslate extends Google {
     let metadata: any = {};
 
     for (let i: number = 0; i < this.languages.length; i++) {
-      if (this.languages[i] !== 'en') {
-        translations.push(this.translateTo(text, this.languages[i]));
+      if (this.languages[i] !== Config.sourceLanguage) {
+        translations.push(this.translateTo(text, Config.sourceLanguage, this.languages[i]));
       }
     }
     return Promise.all(translations).then((responses: any[]) => {
@@ -58,15 +61,15 @@ export class GoogleTranslate extends Google {
     });
   }
 
-  private translateTo(text: string, language: string): Promise<any> {
+  private translateTo(text: string, sourceLanguage, destinationLanguage: string): Promise<any> {
     let options: any = {
-      from: 'en',
-      to: language
+      from: sourceLanguage,
+      to: destinationLanguage
     };
 
     return this.gt.translate(text, options).then((response: any) => {
       return {
-        language: language,
+        language: destinationLanguage,
         translation: response[0]
       };
     }).catch((error) => {
