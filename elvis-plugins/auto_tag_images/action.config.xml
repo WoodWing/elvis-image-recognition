@@ -20,6 +20,10 @@
 			<menuAssignment id="assetContextMenu" order="1"/>
 		</menuAssignments>
 
+		<requiredRoles>
+			<role>ROLE_CUSTOM_AUTO_TAG</role>
+		</requiredRoles>
+
 		<messages>
 			<entries locale="en_US">
 				<entry key="title">Automatically Tag Images</entry>
