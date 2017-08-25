@@ -1,8 +1,33 @@
 export class Config {
   /**
-   * Port where the app runs
+   * Enable or disable HTTP.
    */
-  static port: string = process.env.IR_PORT || '9090';
+  static httpEnabled: boolean = process.env.IR_HTTP_ENABLED === 'true' || true;
+
+  /**
+   * HTTP Port where the app runs
+   */
+  static httpPort: string = process.env.IR_HTTP_PORT || '9090';
+
+  /**
+   * Enable or disable HTTPS. When enabled, all HTTP traffic is redirected to HTTPS.
+   */
+  static httpsEnabled: boolean = process.env.IR_HTTPS_ENABLED === 'true' || true;
+
+  /**
+   * HTTPS Port where the app runs
+   */
+  static httpsPort: string = process.env.IR_HTTPS_PORT || '9443';
+
+  /**
+   * SSL private key
+   */
+  static httpsKeyFile: string = process.env.IR_HTTPS_KEY_FILE || './https/server.key';
+
+  /**
+   * SSL certificate
+   */
+  static httpsCertFile: string = process.env.IR_HTTPS_CERT_FILE || './https/server.crt';
 
   /**
    * Temporary directory used for downloading images.
@@ -31,7 +56,7 @@ export class Config {
    * 
    * This depends on webhooks, make sure to also configure the elvisToken correctly when this setting is enabled.
    */
-  static recognizeOnImport: boolean = process.env.IR_RECOGNIZE_ON_IMPORT === 'true' || true;
+  static recognizeOnImport: boolean = process.env.IR_RECOGNIZE_ON_IMPORT === 'true' || false;
 
   /**
    * Elvis webhook token. Create a webhook that listens for "asset_create" events and that returns the "assetDomain" metadata field.
@@ -82,7 +107,7 @@ export class Config {
   /**
    * Enable or disable Google image recognition.
    */
-  static googleEnabled: boolean = process.env.IR_GOOGLE_ENABLED === 'true' || true;
+  static googleEnabled: boolean = process.env.IR_GOOGLE_ENABLED === 'true' || false;
 
   /**
    * Full path to the Google Service account keyfile (JSON).  
@@ -105,7 +130,7 @@ export class Config {
   /**
    * Enable or disable AWS image recognition.
    */
-  static awsEnabled: boolean = process.env.IR_AWS_ENABLED === 'true' || true;
+  static awsEnabled: boolean = process.env.IR_AWS_ENABLED === 'true' || false;
 
   /**
    * AWS access key
@@ -142,6 +167,7 @@ export class Config {
    * - Enable the Translate API on your Google Cloud account
    * - Languages to choose from: https://cloud.google.com/translate/docs/languages
    */
+  //static languages: string = process.env.IR_LANGUAGES || 'en,pt,nl,ru';
   static languages: string = process.env.IR_LANGUAGES || '';
 
   /**
@@ -159,5 +185,6 @@ export class Config {
    * 'cf_tagsNl,cf_tagsPt,cf_tagsRu'
    */
   static languageTagFields: string = process.env.IR_LANGUAGE_TAG_FIELDS || Config.elvisTagsField;
+  //static languageTagFields: string = 'tagsFromAI,cf_tagsPt,cf_tagsNl,cf_tagsRu';
 
 }

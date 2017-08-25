@@ -4,6 +4,9 @@
 
 require("console-stamp")(console, { pattern: "dd-mm-yyyy HH:MM:ss.l" });
 import express = require('express');
+import http = require('http');
+import https = require('https');
+import fs = require('fs');
 import { Application } from 'express';
 import bodyParser = require('body-parser');
 import { Config } from './config';
@@ -22,21 +25,27 @@ class Server {
   }
 
   private app: Application;
+  private httpApp: Application;
+  private httpsApp: Application;
   private webhookEndPoint: WebhookEndpoint;
   private recognizeApi: RecognizeApi;
 
   private constructor() {
-    this.app = express();
+    if (Config.httpEnabled) {
+      this.httpApp = express();
+    }
+    if (Config.httpsEnabled) {
+      this.httpsApp = express();
+    }
+    this.app = Config.httpsEnabled ? this.httpsApp : this.httpApp;
     this.webhookEndPoint = new WebhookEndpoint(this.app);
     this.recognizeApi = new RecognizeApi(this.app);
   }
 
   /**
    * Start the server
-   * 
-   * @param port Server HTTP port.
    */
-  public start(port: string): void {
+  public start(): void {
     // Configure bodyParser
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(bodyParser.json());
@@ -44,9 +53,30 @@ class Server {
     // Allow cross domain requests from Elvis plugins
     this.app.use(this.allowCrossDomain);
 
-    // Start server
-    this.app.listen(port);
-    console.info('Image Recognition Server started at port: ' + port);
+    if (Config.httpEnabled && Config.httpsEnabled) {
+      // Redirect all HTTP traffic to HTTPS
+      this.httpApp.get('*', (req, res) => {
+        res.redirect('https://' + req.headers.host + ':' + Config.httpsPort + '/' + req.path);
+      });
+    }
+
+    if (Config.httpEnabled) {
+      // Start HTTP server
+      http.createServer(this.httpApp).listen(Config.httpPort, () => {
+        console.info('HTTP Server started at port: ' + Config.httpPort);
+      });
+    }
+
+    if (Config.httpsEnabled) {
+      // Start HTTPS server
+      let httpsOptions = {
+        key: fs.readFileSync(Config.httpsKeyFile),
+        cert: fs.readFileSync(Config.httpsCertFile)
+      };
+      https.createServer(httpsOptions, this.httpsApp).listen(Config.httpsPort, () => {
+        console.info('HTTPS Server started at port: ' + Config.httpsPort);
+      });
+    }
 
     // Start listening for webhook events
     this.webhookEndPoint.addRoutes();
@@ -68,4 +98,4 @@ class Server {
 }
 
 let server: Server = Server.getInstance();
-server.start(Config.port);
+server.start();
