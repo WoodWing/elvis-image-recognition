@@ -56,12 +56,12 @@ export class Config {
    * 
    * This depends on webhooks, make sure to also configure the elvisToken correctly when this setting is enabled.
    */
-  static recognizeOnImport: boolean = process.env.IR_RECOGNIZE_ON_IMPORT === 'true' || false;
+  static recognizeOnImport: boolean = process.env.IR_RECOGNIZE_ON_IMPORT === 'true' || true;
 
   /**
    * Elvis webhook token. Create a webhook that listens for "asset_create" events and that returns the "assetDomain" metadata field.
    * 
-   * More info creating a webhook: https://helpcenter.woodwing.com/hc/en-us/articles/115001884346
+   * More info on creating a webhook: https://helpcenter.woodwing.com/hc/en-us/articles/115001884346
    */
   static elvisToken: string = process.env.IR_ELVIS_TOKEN || 'my-webhook-token';
 
@@ -107,7 +107,7 @@ export class Config {
   /**
    * Enable or disable Google image recognition.
    */
-  static googleEnabled: boolean = process.env.IR_GOOGLE_ENABLED === 'true' || false;
+  static googleEnabled: boolean = process.env.IR_GOOGLE_ENABLED === 'true' || true;
 
   /**
    * Full path to the Google Service account keyfile (JSON).  
@@ -130,7 +130,7 @@ export class Config {
   /**
    * Enable or disable AWS image recognition.
    */
-  static awsEnabled: boolean = process.env.IR_AWS_ENABLED === 'true' || false;
+  static awsEnabled: boolean = process.env.IR_AWS_ENABLED === 'true' || true;
 
   /**
    * AWS access key
