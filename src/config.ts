@@ -167,7 +167,6 @@ export class Config {
    * - Enable the Translate API on your Google Cloud account
    * - Languages to choose from: https://cloud.google.com/translate/docs/languages
    */
-  //static languages: string = process.env.IR_LANGUAGES || 'en,pt,nl,ru';
   static languages: string = process.env.IR_LANGUAGES || '';
 
   /**
@@ -185,6 +184,5 @@ export class Config {
    * 'cf_tagsNl,cf_tagsPt,cf_tagsRu'
    */
   static languageTagFields: string = process.env.IR_LANGUAGE_TAG_FIELDS || Config.elvisTagsField;
-  //static languageTagFields: string = 'tagsFromAI,cf_tagsPt,cf_tagsNl,cf_tagsRu';
 
 }
