@@ -11,6 +11,7 @@ export class Clarifai {
 
   private clarifai: ClarifaiAPI.App;
   private readFile: Function = Promise.promisify(require("fs").readFile);
+  private detectSettings: any = { maxConcepts: 30, minValue: 0.85 };
 
   constructor() {
     this.clarifai = new ClarifaiAPI.App(
@@ -29,12 +30,25 @@ export class Clarifai {
     return this.readFile(inputFile).then((data: Buffer) => {
       let base64data: string = new Buffer(data).toString('base64');
       let promises = [];
+      let sr = new ServiceResponse();
       models.forEach((model: string) => {
-        promises.push(this.detectTags(base64data, model));
+        switch (model) {
+          case ClarifaiAPI.GENERAL_MODEL:
+          case ClarifaiAPI.FOOD_MODEL:
+          case ClarifaiAPI.TRAVEL_MODEL:
+          case ClarifaiAPI.WEDDING_MODEL:
+          case ClarifaiAPI.APPAREL_MODEL:
+            promises.push(this.detectTags(base64data, model));
+            break;
+          case 'e466caa0619f444ab97497640cefc4dc': // Celebrity model
+            promises.push(this.detectCelebrities(sr, base64data, model));
+            break;
+          default:
+            throw new Error('Unsupported Clarifai model: ' + model);
+        }
       });
       return Promise.all(promises).then((responses: string[]) => {
-        // Consolidate into one service response
-        let sr = new ServiceResponse();
+        // Consolidate tags into one service response
         responses.forEach((tags) => {
           sr.tags = Utils.mergeArrays(sr.tags, tags);
         });
@@ -56,42 +70,40 @@ export class Clarifai {
 
   private detectTags(data: string, model: any): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
-      this.clarifai.models.predict(model, { base64: data }, { maxConcepts: 30, minValue: 0.85 }).then((response: any) => {
-        switch (model) {
-          case ClarifaiAPI.GENERAL_MODEL:
-          case ClarifaiAPI.FOOD_MODEL:
-          case ClarifaiAPI.TRAVEL_MODEL:
-          case ClarifaiAPI.WEDDING_MODEL:
-          case ClarifaiAPI.APPAREL_MODEL:
-            resolve(this.getTagsFromConcepts(response.outputs[0].data.concepts));
-            break;
-          case 'e466caa0619f444ab97497640cefc4dc': // Celebrity model
-            resolve(this.getTagsFromRegions(response.outputs[0].data.regions));
-            break;
-          default:
-            reject(new Error('Unsupported Clarifai model: ' + model));
-        }
+      this.clarifai.models.predict(model, { base64: data }, this.detectSettings).then((response: any) => {
+        resolve(this.getTagsFromConcepts(response.outputs[0].data.concepts));
       }).catch((error: any) => {
         reject(new Error('An error occurred while getting labels from Clarifai: ' + JSON.stringify(error.data.status, null, 2)));
       });
     });
   }
 
-  private getTagsFromConcepts(concepts: any): string[] {
-    let tags: string[] = [];
-    concepts.forEach(concept => {
-      tags.push(concept.name.toLowerCase());
+  private detectCelebrities(sr: ServiceResponse, data: string, model: any): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.clarifai.models.predict(model, { base64: data }, this.detectSettings).then((response: any) => {
+        let regions = response.outputs[0].data.regions;
+        let celebs: string[] = [];
+        regions.forEach(region => {
+          if (region.data && region.data.face && region.data.face.identity && region.data.face.identity.concepts) {
+            let concepts: any = region.data.face.identity.concepts;
+            celebs = Utils.mergeArrays(celebs, this.getTagsFromConcepts(concepts, false));
+          }
+        });
+        if (celebs.length > 0) {
+          sr.metadata['subjectPerson'] = celebs.join(', ');
+        }
+        resolve();
+      }).catch((error: any) => {
+        reject(new Error('An error occurred while getting celebrity info from Clarifai: ' + JSON.stringify(error.data.status, null, 2)));
+      });
     });
-    return tags;
   }
 
-  private getTagsFromRegions(regions: any): string[] {
+  private getTagsFromConcepts(concepts: any, lowercase: boolean = true): string[] {
     let tags: string[] = [];
-    regions.forEach(region => {
-      if (region.data && region.data.face && region.data.face.identity && region.data.face.identity.concepts) {
-        let concepts: any = region.data.face.identity.concepts;
-        tags = Utils.mergeArrays(tags, this.getTagsFromConcepts(concepts));
-      }
+    concepts.forEach(concept => {
+      let tag: string = lowercase ? concept.name.toLowerCase() : concept.name;
+      tags.push(tag);
     });
     return tags;
   }
