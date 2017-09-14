@@ -32,19 +32,15 @@ export class GoogleVision extends Google {
         verbose: true
       };
 
-      this.gv.detect(inputFile, params, (error, response) => {
-        if (error) {
-          return reject(new Error('An error occurred while getting the labels for "' + inputFile + '" from Google Vision: ' + error));
-        }
-
+      this.gv.detect(inputFile, params).then((response) => {
         var sr = new ServiceResponse();
 
-        response.labels.forEach(label => {
+        response[0].labels.forEach(label => {
           sr.tags.push(label.desc.toLowerCase());
         });
 
-        if (response.landmarks !== undefined && response.landmarks.length > 0) {
-          let landmarks = response.landmarks;
+        if (response[0].landmarks !== undefined && response[0].landmarks.length > 0) {
+          let landmarks = response[0].landmarks;
           sr.metadata['gpsLatitude'] = landmarks[0].locations[0].latitude;
           sr.metadata['gpsLongitude'] = landmarks[0].locations[0].longitude;
           let locations = [];
@@ -61,8 +57,15 @@ export class GoogleVision extends Google {
         }
 
         resolve(sr);
+      }).catch((error) => {
+        reject(this.getErrorObj(inputFile, error));
       });
     });
+  }
+
+  private getErrorObj(inputFile, error): Error {
+    let errorVal: string = (typeof error === 'string') ? error : JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
+    return new Error('An error occurred while getting labels for "' + inputFile + '" from Google Vision: ' + errorVal);
   }
 }
 
