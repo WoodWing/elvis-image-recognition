@@ -135,7 +135,7 @@ export class RecognizeApi {
       sr.hits.forEach((hit) => {
 
         // Start image recognition
-        this.recognizer.recognize(hit.id).then(() => {
+        this.recognizer.recognize(hit.id, hit.metadata['assetPath']).then(() => {
           // Recognition successful
           pi.successCount++;
           processedInBatch++;

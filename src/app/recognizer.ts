@@ -3,6 +3,7 @@ import { Config } from '../config';
 import { ApiManager } from '../elvis-api/api-manager';
 import { ElvisApi, AssetSearch, SearchResponse, HitElement } from '../elvis-api/api';
 import { FileUtils } from './file-utils';
+import { Utils } from './utils';
 import { GoogleVision } from './service/google-vision';
 import { AwsRekognition } from './service/aws-rekognition';
 import { Clarifai } from './service/clarifai';
@@ -37,7 +38,7 @@ export class Recognizer {
     }
   }
 
-  public recognize(assetId: string): Promise<HitElement> {
+  public recognize(assetId: string, assetPath: string): Promise<HitElement> {
 
     console.info('Image recognition started for asset: ' + assetId);
 
@@ -50,7 +51,7 @@ export class Recognizer {
       filePath = path;
       let services = [];
       if (this.useClarifai) {
-        services.push(this.clarifai.detect(filePath));
+        services.push(this.clarifai.detect(filePath, assetPath));
       }
       if (this.useGoogle) {
         services.push(this.googleVision.detect(filePath));
@@ -71,7 +72,7 @@ export class Recognizer {
         // Merge metadata values, note: this is quite a blunt merge, 
         // this only works because the cloud services don't use identical metadata fields
         metadata = (Object.assign(metadata, serviceResponse.metadata));
-        tags = tags.concat(serviceResponse.tags);
+        tags = Utils.mergeArrays(tags, serviceResponse.tags);
       });
       let tagString: string = tags.join(',');
       metadata[Config.elvisTagsField] = tagString;
@@ -97,7 +98,6 @@ export class Recognizer {
       }
       else {
         console.error('Image recognition failed for asset: ' + assetId + '. Error details:\n' + error.stack);
-        throw error;
       }
     });
   }

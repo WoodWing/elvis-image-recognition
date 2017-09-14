@@ -75,8 +75,9 @@ export class WebhookEndpoint {
   private handle(event: any): void {
     let isUpdateMetadataEvent: boolean = (event.type === 'asset_update_metadata');
     let hasAssetDomainMetadata: boolean = (event.metadata && event.metadata.assetDomain);
-    if (!isUpdateMetadataEvent || !hasAssetDomainMetadata) {
-      console.warn('Received useless event, we\'re only interested in metadata_update events where the assetDomain is specified. ' +
+    let hasAssetPathMetadata: boolean = (event.metadata && event.metadata.assetPath);
+    if (!isUpdateMetadataEvent || !hasAssetDomainMetadata || !hasAssetPathMetadata) {
+      console.warn('Received useless event, we\'re only interested in metadata_update events where the assetDomain and assetPath metadata fields are specified. ' +
         'Make sure to configure the Elvis webhook correctly. Event: '
         + JSON.stringify(event));
       return;
@@ -86,6 +87,6 @@ export class WebhookEndpoint {
       // Simply ignore any metadata update that doesn't change the previewState to "yes" or has an assetDomain other than "image"
       return;
     }
-    this.recognizer.recognize(event.assetId);
+    this.recognizer.recognize(event.assetId, event.metadata.assetPath);
   }
 }

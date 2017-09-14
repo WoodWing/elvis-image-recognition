@@ -1,3 +1,5 @@
+import ClarifaiAPI = require('clarifai');
+
 export class Config {
   /**
    * Enable or disable HTTP.
@@ -105,6 +107,39 @@ export class Config {
   static clarifaiTagsField: string = process.env.IR_CLARIFAI_TAGS_FIELD || 'cf_tagsClarifai';
 
   /**
+   * Possible model values:
+   * - ClarifaiAPI.GENERAL_MODEL
+   * - ClarifaiAPI.FOOD_MODEL
+   * - ClarifaiAPI.TRAVEL_MODEL
+   * - ClarifaiAPI.WEDDING_MODEL
+   * - ClarifaiAPI.APPAREL_MODEL
+   * - 'e466caa0619f444ab97497640cefc4dc' (Celebrity model)
+   * - ClarifaiAPI.DEMOGRAPHICS_MODEL
+   * - ClarifaiAPI.MODERATION_MODEL
+   * - ClarifaiAPI.NSFW_MODEL
+   */
+  static clarifaiFolderToModelMapping: any[] = [
+    {
+      folder: '/Demo Zone/Images/Food',
+      models: [ClarifaiAPI.GENERAL_MODEL, ClarifaiAPI.FOOD_MODEL]
+    },
+    {
+      folder: '/Demo Zone/Images/Travel',
+      models: [ClarifaiAPI.GENERAL_MODEL, ClarifaiAPI.TRAVEL_MODEL]
+    },
+    {
+      folder: '/Demo Zone/Images/Wedding',
+      models: [ClarifaiAPI.GENERAL_MODEL, ClarifaiAPI.WEDDING_MODEL]
+    },
+    {
+      folder: '/Demo Zone/Images/Apparel',
+      models: [ClarifaiAPI.GENERAL_MODEL, ClarifaiAPI.APPAREL_MODEL]
+    },
+    {
+      folder: '/Demo Zone/Images/Celebrity',
+      models: [ClarifaiAPI.GENERAL_MODEL, 'e466caa0619f444ab97497640cefc4dc']
+    }
+  ];
    * Enable or disable Google image recognition.
    */
   static googleEnabled: boolean = process.env.IR_GOOGLE_ENABLED === 'true' || true;
