@@ -37,6 +37,36 @@ THE SOFTWARE.
 		var elvisApi = new ElvisAPI('${serverUrl}');
 		var queryToPerform = null;
 		var recognitionServerUrl = null;
+		var advancedMode = false;
+
+		var allClarifaiModels = {
+			GENERAL_MODEL: { name: 'General', id: 'aaa03c23b3724a16a56b629203edc62c' },
+			FOOD_MODEL: { name: 'Food', id: 'bd367be194cf45149e75f01d59f77ba7' },
+			TRAVEL_MODEL: { name: 'Travel', id: 'eee28c313d69466f836ab83287a54ed9' },
+			NSFW_MODEL: { name: 'NSFW', id: 'e9576d86d2004ed1a38ba0cf39ecb4b1' },
+			WEDDINGS_MODEL: { name: 'Weddings', id: 'c386b7a870114f4a87477c0824499348' },
+			WEDDING_MODEL: { name: 'Wedding', id: 'c386b7a870114f4a87477c0824499348' },
+			COLOR_MODEL: { name: 'Color', id: 'eeed0b6733a644cea07cf4c60f87ebb7' },
+			CLUSTER_MODEL: { name: 'Cluster', id: 'cccbe437d6e54e2bb911c6aa292fb072' },
+			FACE_DETECT_MODEL: { name: 'Face detect', id: 'a403429f2ddf4b49b307e318f00e528b' },
+			FOCUS_MODEL: { name: 'Focus', id: 'c2cf7cecd8a6427da375b9f35fcd2381' },
+			LOGO_MODEL: { name: 'Logo', id: 'c443119bf2ed4da98487520d01a0b1e3' },
+			DEMOGRAPHICS_MODEL: { name: 'Demographics', id: 'c0c0ac362b03416da06ab3fa36fb58e3' },
+			GENERAL_EMBED_MODEL: { name: 'General embedding', id: 'bbb5f41425b8468d9b7a554ff10f8581' },
+			FACE_EMBED_MODEL: { name: 'Face embedding', id: 'd02b4508df58432fbb84e800597b8959' },
+			APPAREL_MODEL: { name: 'Apparel', id: 'e0be3b9d6a454f0493ac3a30784001ff' },
+			MODERATION_MODEL: { name: 'Moderation', id: 'd16f390eb32cad478c7ae150069bd2c6' },
+			CELEBRITY_MODEL: { name: 'Celebrity', id: 'e466caa0619f444ab97497640cefc4dc' }
+		};
+
+		var clarifaiModels = [
+			allClarifaiModels.GENERAL_MODEL,
+			allClarifaiModels.FOOD_MODEL,
+			allClarifaiModels.TRAVEL_MODEL,
+			allClarifaiModels.WEDDING_MODEL,
+			allClarifaiModels.APPAREL_MODEL,
+			allClarifaiModels.CELEBRITY_MODEL
+		];
 
 		function loadClientSpecificCss() {
 			var parentLinks = $('link[rel=stylesheet]', parent.document);
@@ -152,7 +182,21 @@ THE SOFTWARE.
 				return;
 			}
 
+			// Advanced section
+			if (localStorage.getItem('elvis-ai.advancedMode') === 'true') {
+				toggleAdvanced();
+			}
+			var selectedModels = localStorage.getItem('elvis-ai.selectedModels') ? localStorage.getItem('elvis-ai.selectedModels') : [];
+			var tagModel = $('#tag-model');
+			for (var i = 0; i < clarifaiModels.length; i++) {
+				var model = clarifaiModels[i];
+				var option = new Option(model.name, model.id, null, (selectedModels.indexOf(model.id) > -1));
+				tagModel.append(option);
+			}
+
 			// Event handlers
+			$('.advanced-header').click(toggleAdvanced);
+			tagModel.change(modelSelectionChange);
 			$('.start-btn').click(start);
 			$('.cancel-btn').click(cancel);
 			$('input[type=radio][name=tag-mode]').change(updateInfo);
@@ -209,9 +253,39 @@ THE SOFTWARE.
 			});
 		}
 
+		function toggleAdvanced() {
+			advancedMode = !advancedMode;
+			localStorage.setItem('elvis-ai.advancedMode', advancedMode);
+
+			var cssClass = advancedMode ? 'toggle-icon toggle-icon-opened' : 'toggle-icon toggle-icon-closed';
+			$('.advanced-header span').removeClass().addClass(cssClass);
+
+			// TODO: Calculate these heights
+			var standardIFrameHeight = 210;
+			var contentHeight = 150;
+			$('iframe', parent.document).animate({
+				height: advancedMode ? standardIFrameHeight + contentHeight : standardIFrameHeight
+			}, 200, function () {
+			});
+			$('.advanced-content').animate({
+				height: advancedMode ? contentHeight : 0
+			}, 200, function () {
+			});
+		}
+
+		function modelSelectionChange() {
+			localStorage.setItem('elvis-ai.selectedModels', $('#tag-model').val());
+		}
+
 		function start() {
+			var models = $('#tag-model').val();
+			if (!models || models.length == 0) {
+				models = [allClarifaiModels.GENERAL_MODEL];
+			}
+			console.log('Selected models: ' + models);
 			var request = {
-				q: queryToPerform
+				q: queryToPerform,
+				models: models
 			}
 			$.ajax({
 				type: 'POST',
@@ -248,6 +322,17 @@ THE SOFTWARE.
 					<input type="radio" id="selected-folder" name="tag-mode" value="SelectedFolder">
 					<label for="selected-folder">All images in the current folder and sub-folders</label>
 					<div id="info" class="tag-info"></div>
+				</div>
+				<div class="tag-advanced">
+					<div class="advanced-header">
+						<span class="toggle-icon toggle-icon-closed"></span>Advanced settings
+					</div>
+					<div class="advanced-content">
+						<label for="tag-model">Choose one or multiple tag models:</label>
+						<div class="tag-model-wrapper">
+							<select id="tag-model" name="tag-model" multiple></select>
+						</div>
+					</div>
 				</div>
 				<div class="tag-buttons">
 					<button type="button" class="cancel-btn basic-btn ml10 pale">Cancel</button> <button type="button" class="start-btn basic-btn ml10">Start</button>

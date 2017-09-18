@@ -38,7 +38,7 @@ export class Recognizer {
     }
   }
 
-  public recognize(assetId: string, assetPath: string): Promise<HitElement> {
+  public recognize(assetId: string, models: string[] = null, assetPath: string = null): Promise<HitElement> {
 
     console.info('Image recognition started for asset: ' + assetId);
 
@@ -51,7 +51,7 @@ export class Recognizer {
       filePath = path;
       let services = [];
       if (this.useClarifai) {
-        services.push(this.clarifai.detect(filePath, assetPath));
+        services.push(this.clarifai.detect(filePath, models, assetPath));
       }
       if (this.useGoogle) {
         services.push(this.googleVision.detect(filePath));

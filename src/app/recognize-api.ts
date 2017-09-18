@@ -59,7 +59,7 @@ export class RecognizeApi {
         }
       };
 
-      let pi: ProcessInfo = new ProcessInfo(search);
+      let pi: ProcessInfo = new ProcessInfo(rr, search);
       this.processes[pi.id] = pi;
 
       // Return 202 "ACCEPTED" status, client needs to monitor progress using the process id.
@@ -135,7 +135,7 @@ export class RecognizeApi {
       sr.hits.forEach((hit) => {
 
         // Start image recognition
-        this.recognizer.recognize(hit.id, hit.metadata['assetPath']).then(() => {
+        this.recognizer.recognize(hit.id, pi.recognizeRequest.models, hit.metadata['assetPath']).then(() => {
           // Recognition successful
           pi.successCount++;
           processedInBatch++;
@@ -186,14 +186,17 @@ class ProcessInfo {
   public cancelled: boolean = false;
   public failedCount: number = 0;
   public successCount: number = 0;
+  public recognizeRequest: RecognizeRequest;
 
-  constructor(search: AssetSearch) {
+  constructor(recognizeRequest: RecognizeRequest, search: AssetSearch) {
     this.id = uuidV4();
     this.search = search;
+    this.recognizeRequest = recognizeRequest;
   }
 }
 
 class RecognizeRequest {
   public q: string;
+  public models: string[];
   public num: number; // TODO: implement or remove
 }

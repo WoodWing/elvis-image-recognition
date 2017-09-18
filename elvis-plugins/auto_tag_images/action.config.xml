@@ -13,7 +13,7 @@
 		<icon24Url>${pluginUrl}/icon24.png</icon24Url>
 
 		<userInterface>
-			<dialog width="400" height="185"/>
+			<dialog width="400" height="200"/>
 		</userInterface>
 
 		<menuAssignments>

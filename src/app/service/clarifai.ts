@@ -11,7 +11,7 @@ export class Clarifai {
 
   private clarifai: ClarifaiAPI.App;
   private readFile: Function = Promise.promisify(require("fs").readFile);
-  private detectSettings: any = { maxConcepts: 30, minValue: 0.85 };
+  private detectSettings: any = { maxConcepts: 30, minValue: 0.80 };
 
   constructor() {
     this.clarifai = new ClarifaiAPI.App(
@@ -25,8 +25,10 @@ export class Clarifai {
    * 
    * @param inputFile Full path to the image to analyze
    */
-  public detect(inputFile: string, assetPath: string): Promise<ServiceResponse> {
-    let models: string[] = this.findModelForPath(assetPath);
+  public detect(inputFile: string, models: string[] = null, assetPath: string = null): Promise<ServiceResponse> {
+    if (!models || models.length == 0) {
+      models = assetPath ? this.findModelForPath(assetPath) : [ClarifaiAPI.GENERAL_MODEL];
+    }
     return this.readFile(inputFile).then((data: Buffer) => {
       let base64data: string = new Buffer(data).toString('base64');
       let promises = [];
@@ -71,7 +73,13 @@ export class Clarifai {
   private detectTags(data: string, model: any): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
       this.clarifai.models.predict(model, { base64: data }, this.detectSettings).then((response: any) => {
-        resolve(this.getTagsFromConcepts(response.outputs[0].data.concepts));
+        let resData: any = this.getResponseData(response);
+        if (resData && resData.concepts) {
+          resolve(this.getTagsFromConcepts(resData.concepts));
+        }
+        else {
+          resolve([]);
+        }
       }).catch((error: any) => {
         reject(new Error('An error occurred while getting labels from Clarifai: ' + JSON.stringify(error.data.status, null, 2)));
       });
@@ -81,7 +89,11 @@ export class Clarifai {
   private detectCelebrities(sr: ServiceResponse, data: string, model: any): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.clarifai.models.predict(model, { base64: data }, this.detectSettings).then((response: any) => {
-        let regions = response.outputs[0].data.regions;
+        let resData: any = this.getResponseData(response);
+        if (!resData || !resData.regions) {
+          return resolve();
+        }
+        let regions = resData.regions;
         let celebs: string[] = [];
         regions.forEach(region => {
           if (region.data && region.data.face && region.data.face.identity && region.data.face.identity.concepts) {
@@ -106,5 +118,12 @@ export class Clarifai {
       tags.push(tag);
     });
     return tags;
+  }
+
+  private getResponseData(response: any): any {
+    if (response.outputs && response.outputs.length > 0 && response.outputs[0].data) {
+      return response.outputs[0].data;
+    }
+    return null;
   }
 }
