@@ -1,0 +1,66 @@
+.btn:focus, .upload-btn:focus{
+  outline: 0 !important;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700');
+
+* {
+    box-sizing: border-box;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+html, body {
+  font-family: Lato, sans-serif;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.upload-btn {
+  color: #ffffff;
+  background-color: #009ee3;
+  border: none;
+}
+
+.upload-btn:hover,
+.upload-btn:focus,
+.upload-btn:active,
+.upload-btn.active {
+  color: #ffffff;
+  background-color: #009ee3;
+  border: none;
+}
+
+.glyphicon {
+  font-size: 5em;
+  color: #9CA3A9;
+}
+
+.progress-bar {
+  background-color: #718763;
+}
+
+#upload-input {
+  display: none;
+}
+
+.panel-body {
+  height: 240px;
+}
+
+.panel-search {
+  display: none;
+}
+
+.panel-search h2 {
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.panel-search i {
+  font-size: 48px;
+}

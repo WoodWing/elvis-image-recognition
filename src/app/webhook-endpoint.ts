@@ -87,6 +87,6 @@ export class WebhookEndpoint {
       // Simply ignore any metadata update that doesn't change the previewState to "yes" or has an assetDomain other than "image"
       return;
     }
-    this.recognizer.recognize(event.assetId, event.metadata.assetPath);
+    this.recognizer.recognize(event.assetId, null, event.metadata.assetPath);
   }
 }

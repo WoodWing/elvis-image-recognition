@@ -3,7 +3,9 @@ import { Router, Application } from 'express';
 import { ElvisApi, AssetSearch, SearchResponse } from '../elvis-api/api';
 import { ApiManager } from '../elvis-api/api-manager';
 import { Recognizer } from './recognizer';
+import { ServiceResponse } from './service/service-response';
 import { Config } from '../config';
+import formidable = require('formidable');
 import uuidV4 = require('uuid/v4');
 
 export class RecognizeApi {
@@ -93,6 +95,38 @@ export class RecognizeApi {
         // Return process info
         res.status(200).send('Process with id "' + pi.id + '" is being cancelled.');
       }
+    });
+
+    router.post('/recognizeFile', (req, res) => {
+      let form = new formidable.IncomingForm();
+      form.multiples = false;
+      form.uploadDir = Config.tempDir;
+
+      // Capture where the file was uploaded
+      let filePath = null;
+      form.on('file', (field, file) => {
+        // Keep the compiler happy
+        field = field
+        filePath = file.path;
+      });
+
+      form.on('error', (err) => {
+        res.status(500).send('An error occurred while uploading a file: ' + err);
+      });
+
+      // Upload finished, start detection
+      form.on('end', () => {
+        this.recognizer.recognizeFile(filePath).then((response: ServiceResponse) => {
+          let tags: string = response.tags.join(',');
+          console.log('tags: ' + tags);
+          res.end(tags);
+        }).catch((err) => {
+          console.error(err);
+        });
+      });
+
+      // Parse the incoming request containing the form data
+      form.parse(req);
     });
 
     // Prefix all API's with /api

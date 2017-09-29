@@ -13,8 +13,9 @@
   },
   "scripts": {
     "start": "$(npm bin)/ts-node src/server.ts",
-    "build": "tsc -p tsconfig.release.json",
-    "watch": "tsc -w -p tsconfig.release.json"
+    "copy-template": "$(npm bin)/copyfiles -u 1 './src/**/*.html' './src/**/*.css' './src/**/*.js' 'bin-debug'",
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -w -p tsconfig.json"
   },
   "devDependencies": {
     "@types/aws-sdk": "2.7.0",
@@ -31,7 +32,9 @@
     "body-parser": "^1.18.1",
     "clarifai": "^2.4.0",
     "console-stamp": "^0.2.5",
+    "copyfiles": "^1.2.0",
     "express": "^4.15.4",
+    "formidable": "^1.1.1",
     "request": "^2.81.0",
     "secure-compare": "^3.0.1",
     "ts-node": "^3.3.0",
