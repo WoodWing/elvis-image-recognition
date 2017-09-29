@@ -78,8 +78,11 @@ export class WebhookEndpoint {
       return;
     }
     let previewIsReady: boolean = (event.changedMetadata && event.changedMetadata.previewState && event.changedMetadata.previewState.newValue === 'yes');
-    if (!previewIsReady || event.metadata.assetDomain !== 'image') {
-      // Simply ignore any metadata update that doesn't change the previewState to "yes" or has an assetDomain other than "image"
+    if (event.metadata.assetPath.startsWith('/Users/') || !previewIsReady || event.metadata.assetDomain !== 'image') {
+      // Simply ignore any metadata update that:
+      // - Is in the Users folder, the configured API user doesn't have access here
+      // - When we don't have a preview
+      // - When it's not an image
       return;
     }
     this.recognizer.recognize(event.assetId, null, event.metadata.assetPath);
