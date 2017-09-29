@@ -101,18 +101,11 @@ export class Config {
   static clarifaiEnabled: boolean = process.env.IR_CLARIFAI_ENABLED === 'true' || true;
 
   /**
-   * Clarifai CLIENT ID.
-   *
+   * Clarifai API key.
+   * 
    * Can be obtained by creating a Clarifai account: https://www.clarifai.com/
    */
-  static clarifaiClientId: string = process.env.IR_CLARIFAI_CLIENT_ID || 'my-clarifai-client-id';
-
-  /**
-   * Clarifai CLIENT SECRET.
-   *
-   * Can be obtained by creating a Clarifai account: https://www.clarifai.com/
-   */
-  static clarifaiClientSecret: string = process.env.IR_CLARIFAI_CLIENT_SECRET || 'my-clarifai-client-secret';
+  static clarifaiAPIKey: string = process.env.IR_CLARIFAI_API_KEY || 'my-clarifai-api-key';
 
   /**
    * Elvis metadata field where Clarifai tags are stored, set to null to skip saving tags in a specific Clarifai field.

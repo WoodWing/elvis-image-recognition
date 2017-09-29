@@ -165,19 +165,20 @@ Process with id "5e5949d8-3c58-4074-84a4-a63fa10286f8" is being cancelled.
 # 8. Version history
 
 ## v2.0.0
-- Added support for translating tags into different languages (using Google Translate)
-- Added support for Clarifai models
-- New recognize REST API to detect existing images in Elvis
-- Added support for uploads using the Elvis desktop client
+- Added support for translating tags into different languages (using Google Translate).
+- Added support for Clarifai models.
+- New recognize REST API to detect existing images in Elvis.
+- Added support for uploads using the Elvis desktop client.
 - Changed default tags field to the new "Tags from AI" field, this field is introduced with Elvis 5.26.
-- Refactored package structure
+- Changed Clarifai authentication model, now requires the API key to be configured, instead of the client request and secret.
+- Refactored package structure.
 
 ## v1.1.0
-- Elvis 6 support
-- Support for API users (requires Elvis 5.24 or higher)
-- Improved logging: log lines with date and time
+- Elvis 6 support.
+- Support for API users (requires Elvis 5.24 or higher).
+- Improved logging: log lines with date and time.
 
 ## v1.0.0
-- Clarifai: label detection
-- Google Vision: label & landmark detection
-- AWS Rekognition: label & emotion detection
+- Clarifai: label detection.
+- Google Vision: label & landmark detection.
+- AWS Rekognition: label & emotion detection.
