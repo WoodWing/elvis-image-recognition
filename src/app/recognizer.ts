@@ -1,12 +1,14 @@
 import Promise = require('bluebird');
-import { Config } from './config';
-import { ApiManager } from './api-manager';
-import { ElvisApi, AssetSearch, SearchResponse, HitElement } from './elvis-api/api';
+import { Config } from '../config';
+import { ApiManager } from '../elvis-api/api-manager';
+import { ElvisApi, AssetSearch, SearchResponse, HitElement } from '../elvis-api/api';
 import { FileUtils } from './file-utils';
+import { Utils } from './utils';
 import { GoogleVision } from './service/google-vision';
 import { AwsRekognition } from './service/aws-rekognition';
 import { Clarifai } from './service/clarifai';
 import { ServiceResponse } from './service/service-response';
+import { GoogleTranslate } from './service/google-translate';
 
 export class Recognizer {
 
@@ -14,10 +16,11 @@ export class Recognizer {
   private deleteFile: Function = Promise.promisify(require('fs').unlink);
 
   private clarifai: Clarifai;
-  private google: GoogleVision;
+  private googleVision: GoogleVision;
   private aws: AwsRekognition;
+  private googleTranslate: GoogleTranslate;
 
-  constructor(public useClarifai: boolean = false, public useGoogle: boolean = false, public useAws: boolean = false) {
+  constructor(public useClarifai: boolean = false, public useGoogle: boolean = false, public useAws: boolean = false, public translate = false) {
     if (!useClarifai && !useGoogle && !useAws) {
       throw new Error('Specify at least one recognition service');
     }
@@ -25,29 +28,33 @@ export class Recognizer {
       this.clarifai = new Clarifai();
     }
     if (useGoogle) {
-      this.google = new GoogleVision();
+      this.googleVision = new GoogleVision();
     }
     if (useAws) {
       this.aws = new AwsRekognition();
     }
+    if (translate) {
+      this.googleTranslate = new GoogleTranslate();
+    }
   }
 
-  public recognize(assetId: string): void {
+  public recognize(assetId: string, models: string[] = null, assetPath: string = null): Promise<HitElement> {
 
     console.info('Image recognition started for asset: ' + assetId);
 
     let filePath: string;
+    let metadata: any = {};
 
     // 1. Download the asset preview
-    this.downloadAsset(assetId).then((path: string) => {
+    return this.downloadAsset(assetId).then((path: string) => {
       // 2. Send image to all configured AI image recognition services
       filePath = path;
       let services = [];
       if (this.useClarifai) {
-        services.push(this.clarifai.detect(filePath));
+        services.push(this.clarifai.detect(filePath, models, assetPath));
       }
       if (this.useGoogle) {
-        services.push(this.google.detect(filePath));
+        services.push(this.googleVision.detect(filePath));
       }
       if (this.useAws) {
         services.push(this.aws.detect(filePath));
@@ -59,22 +66,39 @@ export class Recognizer {
         console.error('Unable to remove temporary file: ' + error);
       });
 
-      // 4. Combine results from the services and update metadata in Elvis
-      let metadata: any = {};
+      // 4. Combine results from the services
       let tags: string[] = [];
       serviceResponses.forEach((serviceResponse: ServiceResponse) => {
         // Merge metadata values, note: this is quite a blunt merge, 
         // this only works because the cloud services don't use identical metadata fields
         metadata = (Object.assign(metadata, serviceResponse.metadata));
-        tags = tags.concat(serviceResponse.tags);
+        tags = Utils.mergeArrays(tags, serviceResponse.tags);
       });
-      metadata[Config.elvisTagsField] = tags.join(',');
+      let tagString: string = tags.join(',');
+      metadata[Config.elvisTagsField] = tagString;
+
+      // 5. Translate (if configured)
+      if (this.translate) {
+        return this.googleTranslate.translate(tagString).then((translatedMetadata: any) => {
+          metadata = (Object.assign(metadata, translatedMetadata));
+        });
+      }
+    }).then(() => {
+      // 6. Update metadata
+      metadata[Config.aiMetadataModifiedField] = new Date().getTime();
       return this.api.update(assetId, JSON.stringify(metadata), undefined, 'filename');
     }).then((hit: HitElement) => {
-      // 5. We're done!
+      // 7. We're done!
       console.info('Image recognition finshed for asset: ' + assetId + ' (' + hit.metadata['filename'] + ')');
+      return hit;
     }).catch((error: any) => {
-      console.error('Image recognition failed for asset: ' + assetId + '. Error details:\n' + error.stack);
+      if (error instanceof NoPreviewError) {
+        // We're not logging this error as it's triggered by desktop client uploads
+        // console.info(error.message);
+      }
+      else {
+        console.error('Image recognition failed for asset: ' + assetId + '. Error details:\n' + error.stack);
+      }
     });
   }
 
@@ -96,9 +120,15 @@ export class Recognizer {
       }
       let hit: HitElement = sr.hits[0];
       if (!hit.previewUrl) {
-        throw new Error('Asset ' + assetId + ' doesn\'t have a preview, unable to extract labels.');
+        throw new NoPreviewError('Asset ' + assetId + ' doesn\'t have a preview, unable to extract labels.', assetId);
       }
       return FileUtils.downloadPreview(hit, Config.tempDir);
     });
+  }
+}
+
+class NoPreviewError extends Error {
+  constructor(public message = '', public assetId: string = '') {
+    super(message);
   }
 }

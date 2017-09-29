@@ -1,22 +1,18 @@
 import vision = require('@google-cloud/vision');
-import fs = require('fs');
-import { Config } from '../config';
+import { Google } from './google-base';
+import { Config } from '../../config';
 import { ServiceResponse } from './service-response';
 
 /**
  * Uses the Google Vision API to detect tags and locations in the given image.
  */
-export class GoogleVision {
+export class GoogleVision extends Google {
 
   private gv;
 
   constructor() {
-    fs.exists(Config.googleKeyFilename, exists => {
-      // We have to check ourselves as Google throws weird errors when there's no valid path specified.
-      // For example when people configure an API key instead of a path to a key file.
-      if (!exists) {
-        throw new Error('The file specified in googleKeyFilename doesn\'t exists: "' + Config.googleKeyFilename + '". Please configure the correct full file path to the Google Service account keyfile.');
-      }
+    super();
+    this.validateConfig().then(() => {
       this.gv = vision({
         keyFilename: Config.googleKeyFilename
       });
@@ -36,19 +32,17 @@ export class GoogleVision {
         verbose: true
       };
 
-      this.gv.detect(inputFile, params, (error, response) => {
-        if (error) {
-          return reject(new Error('An error occurred while getting the labels from Google Vision: ' + error));
-        }
-
+      this.gv.detect(inputFile, params).then((response) => {
         var sr = new ServiceResponse();
 
-        response.labels.forEach(label => {
-          sr.tags.push(label.desc.toLowerCase());
+        response[0].labels.forEach(label => {
+          if (label.score > 0.85) {
+            sr.tags.push(label.desc.toLowerCase());
+          }
         });
 
-        if (response.landmarks !== undefined && response.landmarks.length > 0) {
-          let landmarks = response.landmarks;
+        if (response[0].landmarks !== undefined && response[0].landmarks.length > 0) {
+          let landmarks = response[0].landmarks;
           sr.metadata['gpsLatitude'] = landmarks[0].locations[0].latitude;
           sr.metadata['gpsLongitude'] = landmarks[0].locations[0].longitude;
           let locations = [];
@@ -65,8 +59,15 @@ export class GoogleVision {
         }
 
         resolve(sr);
+      }).catch((error) => {
+        reject(this.getErrorObj(inputFile, error));
       });
     });
+  }
+
+  private getErrorObj(inputFile, error): Error {
+    let errorVal: string = (typeof error === 'string') ? error : JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
+    return new Error('An error occurred while getting labels for "' + inputFile + '" from Google Vision: ' + errorVal);
   }
 }
 

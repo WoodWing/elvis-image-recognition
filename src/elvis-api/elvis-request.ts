@@ -64,6 +64,12 @@ export class ElvisRequest {
             return this.fileRequest(url, destination);
           });
         }
+      } else if (error.statusCode == 409) {
+        let delay: number = 5;
+        console.warn('Download failed with 409 error (file not available), retrying once more in ' + delay + ' seconds. URL: ' + url);
+        return Promise.delay(delay * 1000).then(() => {
+          return this.fileRequest(url, destination);
+        });
       } else {
         throw error;
       }

@@ -1,6 +1,6 @@
 import Promise = require('bluebird');
 import AWS = require('aws-sdk');
-import { Config } from '../config';
+import { Config } from '../../config';
 import { Rekognition } from 'aws-sdk';
 import { AWSError } from 'aws-sdk';
 import { ServiceResponse } from './service-response';

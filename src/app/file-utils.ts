@@ -1,9 +1,10 @@
 import url = require('url');
 import fs = require('fs');
 import path = require('path');
-import { ApiManager } from './api-manager';
+import { ApiManager } from '../elvis-api/api-manager';
 import Promise = require('bluebird');
-import lvs = require('./elvis-api/api');
+import lvs = require('../elvis-api/api');
+import uuidV4 = require('uuid/v4');
 
 export class FileUtils {
 
@@ -71,7 +72,10 @@ export class FileUtils {
     }
 
     let filename: string = path.basename(url.parse(fileUrl).pathname);
-    let destination: string = path.join(destinationFolder, filename);
+    let ext: string = path.extname(filename);
+    let baseFilename: string = path.basename(filename, ext);
+    let tempFilename: string = baseFilename + '_' + uuidV4() + ext;
+    let destination: string = path.join(destinationFolder, tempFilename);
 
     return this.downloadFile(hit.previewUrl, destination);
   }
