@@ -14,10 +14,7 @@ export class Clarifai {
   private detectSettings: any = { maxConcepts: 20, minValue: 0.85 };
 
   constructor() {
-    this.clarifai = new ClarifaiAPI.App(
-      Config.clarifaiClientId,
-      Config.clarifaiClientSecret
-    );
+    this.clarifai = new ClarifaiAPI.App({ apiKey: Config.clarifaiAPIKey });
   }
 
   /**
