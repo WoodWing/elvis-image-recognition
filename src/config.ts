@@ -61,7 +61,17 @@ export class Config {
   static recognizeOnImport: boolean = process.env.IR_RECOGNIZE_ON_IMPORT === 'true' || true;
 
   /**
-   * Elvis webhook token. Create a webhook that listens for "asset_create" events and that returns the "assetDomain" metadata field.
+   * Enable or disable the REST API.
+   * 
+   * Web client plugins like the Auto Tag Images plugin depend on this API to be enabled.
+   * 
+   * BETA NOTE: This API is currently in BETA stage. All API calls are fully functional, authentication is however not yet implemented. 
+   * Therefore, ensure on network level that the recognition server can only be accessed by your integration.
+   */
+  static restAPIEnabled: boolean = process.env.IR_REST_API_ENABLED === 'true' || false;
+
+  /**
+   * Elvis webhook token. Create a webhook that listens for "asset_update_metadata" events and that returns the "assetDomain" metadata field.
    * 
    * More info on creating a webhook: https://helpcenter.woodwing.com/hc/en-us/articles/115001884346
    */

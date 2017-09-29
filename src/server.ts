@@ -38,8 +38,12 @@ class Server {
       this.httpsApp = express();
     }
     this.app = Config.httpsEnabled ? this.httpsApp : this.httpApp;
-    this.webhookEndPoint = new WebhookEndpoint(this.app);
-    this.recognizeApi = new RecognizeApi(this.app);
+    if (Config.recognizeOnImport) {
+      this.webhookEndPoint = new WebhookEndpoint(this.app);
+    }
+    if (Config.restAPIEnabled) {
+      this.recognizeApi = new RecognizeApi(this.app);
+    }
   }
 
   /**
@@ -63,7 +67,7 @@ class Server {
     if (Config.httpEnabled) {
       // Start HTTP server
       http.createServer(this.httpApp).listen(Config.httpPort, () => {
-        console.info('HTTP Server started at port: ' + Config.httpPort);
+        this.logStartupMessage('HTTP Server started at port: ' + Config.httpPort);
       });
     }
 
@@ -74,15 +78,25 @@ class Server {
         cert: fs.readFileSync(Config.httpsCertFile)
       };
       https.createServer(httpsOptions, this.httpsApp).listen(Config.httpsPort, () => {
-        console.info('HTTPS Server started at port: ' + Config.httpsPort);
+        this.logStartupMessage('HTTPS Server started at port: ' + Config.httpsPort);
       });
     }
 
-    // Start listening for webhook events
-    this.webhookEndPoint.addRoutes();
+    if (Config.recognizeOnImport) {
+      // Start listening for webhook events
+      this.webhookEndPoint.addRoutes();
+    }
 
-    // Start REST API
-    this.recognizeApi.addRoutes();
+    if (Config.restAPIEnabled) {
+      // Start REST API
+      this.recognizeApi.addRoutes();
+    }
+  }
+
+  private logStartupMessage(serverMsg: string): void {
+    console.info(serverMsg);
+    console.info('Recognize imported files on import: ' + Config.recognizeOnImport);
+    console.info('REST API enabled: ' + Config.restAPIEnabled);
   }
 
   private allowCrossDomain = function (req, res, next) {
