@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+	<info>
+		<version>
+			<pluginVersion>1.0</pluginVersion>
+			<requiresAtLeast>5.26.1.246</requiresAtLeast>
+		</version>
+		<description>Search similar assets</description>
+	</info>
+	<action>
+		<url>${pluginUrl}/index.html</url>
+		<icon16Url>${pluginUrl}/icon16.png</icon16Url>
+		<icon24Url>${pluginUrl}/icon24.png</icon24Url>
+
+		<userInterface>
+			<dialog width="400" height="200"/>
+		</userInterface>
+
+		<menuAssignments>
+			<menuAssignment id="assetContextMenu" order="2"/>
+		</menuAssignments>
+		
+		<enabledExpression>elvisContext.isSingleItem()</enabledExpression>
+
+		<messages>
+			<entries locale="en_US">
+				<entry key="title">Search similar</entry>
+				<entry key="button.label">Search similar</entry>
+				<entry key="button.tooltip">Search similar assets</entry>
+			</entries>
+      <entries locale="de">
+				<entry key="title">Search similar</entry>
+				<entry key="button.label">Ähnliche suchen</entry>
+				<entry key="button.tooltip">Search similar assets</entry>
+			</entries>
+		</messages>
+	</action>
+</plugin>

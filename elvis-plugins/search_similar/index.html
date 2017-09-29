@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<!--
+
+Licensed under the MIT License
+Copyright (c) 2010-2016 WoodWing Software
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this а and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+-->
+
+<head>
+	<title>Search similar assets</title>
+	<script src="${pluginsBaseRootUrl}/web.shared/jquery.js" type="text/javascript"></script>
+	<script src="${pluginsBaseRootUrl}/web.shared/jquery.class.js" type="text/javascript"></script>
+	<script src="${pluginsBaseRootUrl}/web.shared/jquery.cookie.js" type="text/javascript"></script>
+	<script src="${pluginsBaseRootUrl}/web.shared/elvis_api/js/jquery.elvis.js" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		var fields = 'tagsFromAI,subjectPerson';
+		var elvisContext = ElvisPlugin.resolveElvisContext();
+		var elvisApi = new ElvisAPI('${serverUrl}');
+
+		function search() {
+			var selectedHits = elvisContext.activeTab.assetSelection;
+			if (selectedHits.length == 0) {
+				alert('Selection is empty. Select one or more images or a collection of images from the Elvis client.');
+			}
+			var query = ElvisPlugin.queryForSelection(selectedHits);
+			elvisApi.search({
+				q: query,
+				num: selectedHits.length,
+				metadataToReturn: fields
+			}, loadPage);
+		}
+
+		function loadPage(data) {
+
+			if (data.hits.length === 1) {
+				var query = '';
+				var fieldArray = fields.split(',');
+				console.log(fields);
+				for (var i = 0; i < fieldArray.length; i++) {
+					var fieldName = fieldArray[i];
+					var fieldValue = data.hits[0].metadata[fieldName];
+					if (fieldValue && fieldValue.length > 0) {
+						if (query.length > 0) {
+							query += ' AND ';
+						}
+						if (fieldValue instanceof Array) {
+							query += fieldName + ':(';
+							for (var j = 0; j < fieldValue.length; j++) {
+								if (j > 0) {
+									query += ' OR ';
+								}
+								query += '"' + fieldValue[j] + '"';
+							}
+							query += ')';
+						}
+						else {
+							query += fieldName + ':"' + fieldValue + '"';
+						}
+					}
+				}
+
+				// Run query
+				console.log('query: ' + query);
+				elvisContext.openSearch(query);
+			}
+			elvisContext.close();
+		}
+
+		search();
+	</script>
+</head>
+
+<body>
+</body>
+
+</html>
