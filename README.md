@@ -162,11 +162,13 @@ Process with id "5e5949d8-3c58-4074-84a4-a63fa10286f8" is being cancelled.
 
 # 8. Architecture
 
-## 8.1 Recognize images during import
+Images can either be detected directly during import or on demand using the Auto Tag Images web client plug-in. The schemas in this chapter describe the process flow.
+
+## 8.1 Directly recognize images during import
 
 ![recognize images during import](https://github.com/WoodWing/elvis-image-recognition/blob/master/readme-files/architecture-recognize-during-import.png "recognize images during import")
 
-## 8.2 Recognize existing images in Elvis with Auto Tag Image
+## 8.2 Recognize existing images in Elvis with the Auto Tag Images plug-in
 
 ![auto tag images](https://github.com/WoodWing/elvis-image-recognition/blob/master/readme-files/architecture-auto-tag-images.png "auto tag images")
 
