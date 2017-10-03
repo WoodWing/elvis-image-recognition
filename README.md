@@ -6,11 +6,13 @@ This readme describes how to setup the integration. Please read this [blog artic
 
 # 2. Package details
 
-The integration contains of several compontents. 
+The integration consist of several compontents. The main component is the image recognition server app. This nodejs based server app handles all communication between Elvis and the AI service(s). It retrieves image previews from Elvis and sends them to the AI services for recognition. It also includes a Google Translate module to translate tags to other languages and there's a REST API that allows developers to interact with the image recognition server. 
 
-The main component is the image recognition server app. This nodejs based server app handles all communication between Elvis and the AI service(s). It retrieves image previews from Elvis and sends them to the AI services for recognition. It also includes a Google Translate module to translate tags to other languages and there's a REST API that allows developers to interact with the image recognition server. 
+![recognize images during import](https://github.com/WoodWing/elvis-image-recognition/blob/master/readme-files/architecture-recognize-during-import.png "recognize images during import")
 
 The second component is an Elvis web client plug-in. The Auto Tag Images plugin allows users to tag existing images in Elvis. It can either tag a selection of images or all files in the selected folder.
+
+![auto tag images](https://github.com/WoodWing/elvis-image-recognition/blob/master/readme-files/architecture-auto-tag-images.png "auto tag images")
 
 The integrated AI services are not identical in the functionality they provide, this is what this integration supports per AI provider:
 
