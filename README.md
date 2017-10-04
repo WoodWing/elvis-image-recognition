@@ -45,11 +45,15 @@ Depending on your configuration and used services, you may need to add custom me
 An Elvis webhook needs to be configured if you want to detect images directly when they are imported in Elvis. You can skip this step if you only want to use the Auto Tag Images plugin or REST API.
 
 - Log-in to the Elvis web client as admin user.
-- Go to the management console, webhooks secion and add a new webhook.
+- Go to the management console, webhooks section and add a new webhook.
 - Name: For example, "Image Recognition".
 - URL: Point it to the URL where the image recognition server is running, if it's running on the same machine as Elvis, this will be: http://localhost:9090/.
 - Event type: `asset_update_metadata`.
-- Metadata to include: `assetDomain`.
+- Metadata to include: 
+  ```
+  assetDomain
+  assetPath
+  ```
 - Save the webhook.
 - The generated secret token needs to be specified in the image recognition configuration later on.
 
