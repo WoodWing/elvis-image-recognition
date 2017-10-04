@@ -11,13 +11,10 @@ export class Clarifai {
 
   private clarifai: ClarifaiAPI.App;
   private readFile: Function = Promise.promisify(require("fs").readFile);
-  private detectSettings: any = { maxConcepts: 30, minValue: 0.80 };
+  private detectSettings: any = { maxConcepts: 20, minValue: 0.85 };
 
   constructor() {
-    this.clarifai = new ClarifaiAPI.App(
-      Config.clarifaiClientId,
-      Config.clarifaiClientSecret
-    );
+    this.clarifai = new ClarifaiAPI.App({ apiKey: Config.clarifaiAPIKey });
   }
 
   /**

@@ -21,11 +21,6 @@ export class WebhookEndpoint {
    * Register HTTP Post route on '/' and listen for Elvis webhook events
    */
   public addRoutes(): void {
-    if (!Config.recognizeOnImport) {
-      console.info('recognizeOnImport is disabled, images can only be tagged through direct API calls');
-      return;
-    }
-
     // Recognize API
     this.app.post('/', (req: Request, res: Response) => {
 
@@ -83,8 +78,11 @@ export class WebhookEndpoint {
       return;
     }
     let previewIsReady: boolean = (event.changedMetadata && event.changedMetadata.previewState && event.changedMetadata.previewState.newValue === 'yes');
-    if (!previewIsReady || event.metadata.assetDomain !== 'image') {
-      // Simply ignore any metadata update that doesn't change the previewState to "yes" or has an assetDomain other than "image"
+    if (event.metadata.assetPath.startsWith('/Users/') || !previewIsReady || event.metadata.assetDomain !== 'image') {
+      // Simply ignore any metadata update that:
+      // - Is in the Users folder, the configured API user doesn't have access here
+      // - When we don't have a preview
+      // - When it's not an image
       return;
     }
     this.recognizer.recognize(event.assetId, null, event.metadata.assetPath);

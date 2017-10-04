@@ -7,27 +7,27 @@ export class Config {
   static httpEnabled: boolean = process.env.IR_HTTP_ENABLED === 'true' || true;
 
   /**
-   * HTTP Port where the app runs
+   * HTTP Port where the app runs.
    */
   static httpPort: string = process.env.IR_HTTP_PORT || '9090';
 
   /**
    * Enable or disable HTTPS. When enabled, all HTTP traffic is redirected to HTTPS.
    */
-  static httpsEnabled: boolean = process.env.IR_HTTPS_ENABLED === 'true' || true;
+  static httpsEnabled: boolean = process.env.IR_HTTPS_ENABLED === 'true' || false;
 
   /**
-   * HTTPS Port where the app runs
+   * HTTPS Port where the app runs.
    */
   static httpsPort: string = process.env.IR_HTTPS_PORT || '9443';
 
   /**
-   * SSL private key
+   * SSL private key.
    */
   static httpsKeyFile: string = process.env.IR_HTTPS_KEY_FILE || './https/server.key';
 
   /**
-   * SSL certificate
+   * SSL certificate.
    */
   static httpsCertFile: string = process.env.IR_HTTPS_CERT_FILE || './https/server.crt';
 
@@ -37,14 +37,16 @@ export class Config {
   static tempDir: string = process.env.IR_TEMP_DIR || './temp';
 
   /**
-   * Elvis server url
+   * Elvis server url.
    */
   static elvisUrl: string = process.env.IR_ELVIS_URL || 'http://localhost:8080';
 
   /**
    * Elvis username. 
    * 
-   * The user should be able to access the preview of the image in Elvis.
+   * Permission configuration:
+   * - This user should be licensed as an API user.
+   * - Ensure that the user can access the preview of all images imported in Elvis.
    */
   static elvisUsername: string = process.env.IR_ELVIS_USER || 'admin';
 
@@ -52,6 +54,7 @@ export class Config {
    * Elvis password.
    */
   static elvisPassword: string = process.env.IR_ELVIS_PASSWORD || 'changemenow';
+
 
   /**
    * Recognize images right after they are imported in Elvis.
@@ -61,7 +64,17 @@ export class Config {
   static recognizeOnImport: boolean = process.env.IR_RECOGNIZE_ON_IMPORT === 'true' || true;
 
   /**
-   * Elvis webhook token. Create a webhook that listens for "asset_create" events and that returns the "assetDomain" metadata field.
+   * Enable or disable the REST API.
+   * 
+   * Web client plugins like the Auto Tag Images plugin depend on this API to be enabled.
+   * 
+   * BETA NOTE: This API is currently in BETA stage. All API calls are fully functional, authentication is however not yet implemented. 
+   * Therefore, ensure on network level that the recognition server can only be accessed by your integration.
+   */
+  static restAPIEnabled: boolean = process.env.IR_REST_API_ENABLED === 'true' || false;
+
+  /**
+   * Elvis webhook token. Create a webhook that listens for "asset_update_metadata" events and that returns the "assetDomain" metadata field.
    * 
    * More info on creating a webhook: https://helpcenter.woodwing.com/hc/en-us/articles/115001884346
    */
@@ -88,18 +101,11 @@ export class Config {
   static clarifaiEnabled: boolean = process.env.IR_CLARIFAI_ENABLED === 'true' || true;
 
   /**
-   * Clarifai CLIENT ID.
-   *
+   * Clarifai API key.
+   * 
    * Can be obtained by creating a Clarifai account: https://www.clarifai.com/
    */
-  static clarifaiClientId: string = process.env.IR_CLARIFAI_CLIENT_ID || 'my-clarifai-client-id';
-
-  /**
-   * Clarifai CLIENT SECRET.
-   *
-   * Can be obtained by creating a Clarifai account: https://www.clarifai.com/
-   */
-  static clarifaiClientSecret: string = process.env.IR_CLARIFAI_CLIENT_SECRET || 'my-clarifai-client-secret';
+  static clarifaiAPIKey: string = process.env.IR_CLARIFAI_API_KEY || 'my-clarifai-api-key';
 
   /**
    * Elvis metadata field where Clarifai tags are stored, set to null to skip saving tags in a specific Clarifai field.
@@ -107,6 +113,11 @@ export class Config {
   static clarifaiTagsField: string = process.env.IR_CLARIFAI_TAGS_FIELD || 'cf_tagsClarifai';
 
   /**
+   * Mapping between a folder in Elvis and one or multiple Clarifai models.
+   * 
+   * When recognizeOnImport=true, this mapping is used to tag images using on import one or multiple models.
+   * More info on Clarifai models: https://clarifai.com/models/
+   * 
    * Possible model values:
    * - ClarifaiAPI.GENERAL_MODEL
    * - ClarifaiAPI.FOOD_MODEL
@@ -114,14 +125,11 @@ export class Config {
    * - ClarifaiAPI.WEDDING_MODEL
    * - ClarifaiAPI.APPAREL_MODEL
    * - 'e466caa0619f444ab97497640cefc4dc' (Celebrity model)
-   * - ClarifaiAPI.DEMOGRAPHICS_MODEL
-   * - ClarifaiAPI.MODERATION_MODEL
-   * - ClarifaiAPI.NSFW_MODEL
    */
   static clarifaiFolderToModelMapping: any[] = [
     {
       folder: '/Demo Zone/Images/Food',
-      models: [ClarifaiAPI.GENERAL_MODEL, ClarifaiAPI.FOOD_MODEL]
+      models: [ClarifaiAPI.FOOD_MODEL]
     },
     {
       folder: '/Demo Zone/Images/Travel',
@@ -140,6 +148,8 @@ export class Config {
       models: [ClarifaiAPI.GENERAL_MODEL, 'e466caa0619f444ab97497640cefc4dc']
     }
   ];
+
+  /**
    * Enable or disable Google image recognition.
    */
   static googleEnabled: boolean = process.env.IR_GOOGLE_ENABLED === 'true' || true;

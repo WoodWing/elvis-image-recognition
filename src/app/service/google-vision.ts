@@ -36,7 +36,9 @@ export class GoogleVision extends Google {
         var sr = new ServiceResponse();
 
         response[0].labels.forEach(label => {
-          sr.tags.push(label.desc.toLowerCase());
+          if (label.score > 0.85) {
+            sr.tags.push(label.desc.toLowerCase());
+          }
         });
 
         if (response[0].landmarks !== undefined && response[0].landmarks.length > 0) {
