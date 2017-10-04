@@ -1,3 +1,13 @@
+// TODO: 
+// var elvisContext = ElvisPlugin.resolveElvisContext();
+
+// var recognitionServerUrl = elvisContext.plugin.configProperties.recognitionServerUrl.value;
+// if (!recognitionServerUrl || recognitionServerUrl.length == 0) {
+//   throw new Error('No recognitionServerUrl configured, please configure this setting in the action.config.xml of this plugin.');
+// }
+
+var recognitionServerUrl = 'http://localhost:9090';
+
 $('.upload-btn').on('click', function () {
   $('#upload-input').click();
   $('.progress-bar').text('0%');
