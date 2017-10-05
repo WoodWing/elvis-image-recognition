@@ -28,13 +28,13 @@
 
 # 1. Introduction
 
-The Elvis image recognition integration is a bridge between Elvis DAM and Artificial Intellegence (AI) image recognition services from Google, Amazon and Clarifai. It uses these services to detect tags, landmarks and do facial analysis. The gathered information is stored as searchable metadata in Elvis. Tags can also be automatically translated to other languages. The integration supports two tagging modes: on demand tagging of images that already exist in Elvis and auto tagging of images immediately after they are imported.
+The Elvis image recognition integration is a bridge between Elvis DAM and Artificial Intelligence (AI) image recognition services from Google, Amazon and Clarifai. It uses these services to detect tags, landmarks and do facial analysis. The gathered information is stored as searchable metadata in Elvis. Tags can also be automatically translated to other languages. The integration supports two tagging modes: on demand tagging of images that already exist in Elvis and auto tagging of images immediately after they are imported.
 
 This readme describes how to setup the integration. Please read this [blog article](https://www.woodwing.com/en/blog/ai-dam-five-ways-ai-can-make-life-easier-for-dam-users) if you want to know more about Elvis and AI.
 
 # 2. Package details
 
-The integration consist of several compontents. The main component is the image recognition server app. This nodejs based server app handles all communication between Elvis and the AI service(s). It retrieves image previews from Elvis and sends them to the AI services for recognition. It also includes a Google Translate module to translate tags to other languages and there's a REST API that allows developers to interact with the image recognition server. 
+The integration consist of several components. The main component is the image recognition server app. This nodejs based server app handles all communication between Elvis and the AI service(s). It retrieves image previews from Elvis and sends them to the AI services for recognition. It also includes a Google Translate module to translate tags to other languages and there's a REST API that allows developers to interact with the image recognition server. 
 
 The second component is an Elvis web client plug-in. The Auto Tag Images plugin allows users to tag existing images in Elvis. It can either tag a selection of images or all files in the selected folder.
 
@@ -43,7 +43,7 @@ The integrated AI services are not identical in the functionality they provide, 
 **Clarifai**
 - General tagging.
 - Tagging using specialized [models](https://clarifai.com/models/): Food, Travel, Wedding, Apparel and Celebrity. You can choose these models when tagging in the Elvis web client (Auto Tag Images plugin). It's also possible to link an Elvis folder to one or multiple models, that way all images imported into that folder will be automatically tagged using the configured models.
-- Tagging results can be directly deliverd in various languages, this is an alternative to using Google Translate.
+- Tagging results can be directly delivered in various languages, this is an alternative to using Google Translate.
 
 **Google Vision**
 - General tagging.
@@ -106,7 +106,7 @@ The server can either be installed on the Elvis Server or on a separate machine.
 
 ## 4.4 Optional: install the Auto Tag Images plug-in
 
-- This plug-in uses the REST API, ensure it's enabled in the `src/config.ts` file:  `restAPIEnabled = tue`
+- This plug-in uses the REST API, ensure it's enabled in the `src/config.ts` file:  `restAPIEnabled = true`
 - Open the `elvis-plugins` folder.
 - Copy the `auto_tag_images` folder to: `<Elvis Config>/plugins/active`.
 - Open `auto_tag_images/action.config.xml`.
@@ -139,7 +139,7 @@ The REST API allows developers to interact with the image recognition server.
 
 ## 7.1 POST `/api/recognize`
 
-Starts the image recognition for a given query, immediatly returns a process id that can be used to track progress or cancel the operation.
+Starts the image recognition for a given query, immediately returns a process id that can be used to track progress or cancel the operation.
 
 In this example we detect all images in the `/Demo Zone` folder.
 
