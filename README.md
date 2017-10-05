@@ -136,7 +136,7 @@ The REST API allows developers to interact with the image recognition server.
 
 **BETA NOTE: This API is currently in BETA stage. All API calls are fully functional, authentication is however not yet implemented. Therefore, ensure on network level that the recognition server can only be accessed by your integration.**
 
-## 7.1 POST /api/recognize
+## 7.1 POST `/api/recognize`
 
 Starts the image recognition for a given query, immediatly returns a process id that can be used to track progress or cancel the operation.
 
@@ -154,7 +154,7 @@ Response (202 ACCEPTED)
 }
 ```
 
-## 7.2 GET /api/recognize/:id:
+## 7.2 GET `/api/recognize/:id:`
 
 Retrieve progress information for a given recognition process.
 
@@ -177,7 +177,7 @@ Response (200 OK)
 }
 ```
 
-## 7.3 DELETE /api/recognize/:id:
+## 7.3 DELETE `/api/recognize/:id:`
 
 Cancel a recognition process.
 
