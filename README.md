@@ -1,4 +1,5 @@
 # Table of contents
+
 <!-- toc -->
 
 - [1. Introduction](#1-introduction)
@@ -12,9 +13,9 @@
 - [5. Detect images during import](#5-detect-images-during-import)
 - [6. Detect existing Elvis images](#6-detect-existing-elvis-images)
 - [7. Detect images using the REST API](#7-detect-images-using-the-rest-api)
-  * [7.1 POST /api/recognize](#71-post-apirecognize)
-  * [7.2 GET /api/recognize/:id:](#72-get-apirecognizeid)
-  * [7.3 DELETE /api/recognize/:id:](#73-delete-apirecognizeid)
+  * [7.1 POST `/api/recognize`](#71-post-apirecognize)
+  * [7.2 GET `/api/recognize/:id:`](#72-get-apirecognizeid)
+  * [7.3 DELETE `/api/recognize/:id:`](#73-delete-apirecognizeid)
 - [8. Architecture](#8-architecture)
   * [8.1 Directly recognize images during import](#81-directly-recognize-images-during-import)
   * [8.2 Recognize existing images in Elvis with the Auto Tag Images plug-in](#82-recognize-existing-images-in-elvis-with-the-auto-tag-images-plug-in)
