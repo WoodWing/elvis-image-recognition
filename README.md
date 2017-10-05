@@ -1,3 +1,30 @@
+# Table of contents
+<!-- toc -->
+
+- [1. Introduction](#1-introduction)
+- [2. Package details](#2-package-details)
+- [3. Installation prerequisites](#3-installation-prerequisites)
+- [4. Installation steps](#4-installation-steps)
+  * [4.1 Configure Elvis metadata fields](#41-configure-elvis-metadata-fields)
+  * [4.2 Optional: configure the Elvis Webhook](#42-optional-configure-the-elvis-webhook)
+  * [4.3 Install the image recognition server](#43-install-the-image-recognition-server)
+  * [4.4 Optional: install the Auto Tag Images plug-in](#44-optional-install-the-auto-tag-images-plug-in)
+- [5. Detect images during import](#5-detect-images-during-import)
+- [6. Detect existing Elvis images](#6-detect-existing-elvis-images)
+- [7. Detect images using the REST API](#7-detect-images-using-the-rest-api)
+  * [7.1 POST /api/recognize](#71-post-apirecognize)
+  * [7.2 GET /api/recognize/:id:](#72-get-apirecognizeid)
+  * [7.3 DELETE /api/recognize/:id:](#73-delete-apirecognizeid)
+- [8. Architecture](#8-architecture)
+  * [8.1 Directly recognize images during import](#81-directly-recognize-images-during-import)
+  * [8.2 Recognize existing images in Elvis with the Auto Tag Images plug-in](#82-recognize-existing-images-in-elvis-with-the-auto-tag-images-plug-in)
+- [9. Version history](#9-version-history)
+  * [v2.0.0](#v200)
+  * [v1.1.0](#v110)
+  * [v1.0.0](#v100)
+
+<!-- tocstop -->
+
 # 1. Introduction
 
 The Elvis image recognition integration is a bridge between Elvis DAM and Artificial Intellegence (AI) image recognition services from Google, Amazon and Clarifai. It uses these services to detect tags, landmarks and do facial analysis. The gathered information is stored as searchable metadata in Elvis. Tags can also be automatically translated to other languages. The integration supports two tagging modes: on demand tagging of images that already exist in Elvis and auto tagging of images immediately after they are imported.
