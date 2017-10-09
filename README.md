@@ -207,11 +207,11 @@ Images can either be detected directly during import or on demand using the Auto
 
 # 9. Privacy and data usage
 
-As explained in the architecture overview, the image recognition server sends preview images to the configured AI vendors. These vendors all have their own privacy policies when it comes to data usage and storage. They typically use your data to improve machine learning services and for analytics. For details, please consult the privacy policy of your AI vendor(s):
+As explained in the architecture overview, the image recognition server sends preview images to the configured AI vendors. These vendors all have their own privacy policies when it comes to data usage and storage. Some of them use your data to improve machine learning services and for analytics. For details, please consult the privacy policy of your AI vendor(s):
 
+- [AWS Rekognition Data Privacy](https://aws.amazon.com/rekognition/faqs/#data-privacy)
 - [Clarifai Privacy Policy](https://www.clarifai.com/privacy)
-- [AWS Privacy Policy](https://aws.amazon.com/privacy)
-- [Google Cloud Terms](https://cloud.google.com/terms)
+- [Google Cloud Vision Data Usage](https://cloud.google.com/vision/docs/data-usage)
 
 # 10. Version history
 
