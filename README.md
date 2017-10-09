@@ -16,10 +16,11 @@
   * [7.1 POST `/api/recognize`](#71-post-apirecognize)
   * [7.2 GET `/api/recognize/:id:`](#72-get-apirecognizeid)
   * [7.3 DELETE `/api/recognize/:id:`](#73-delete-apirecognizeid)
-- [8. Architecture](#8-architecture)
+- [8. Architecture overview](#8-architecture-overview)
   * [8.1 Directly recognize images during import](#81-directly-recognize-images-during-import)
   * [8.2 Recognize existing images in Elvis with the Auto Tag Images plug-in](#82-recognize-existing-images-in-elvis-with-the-auto-tag-images-plug-in)
-- [9. Version history](#9-version-history)
+- [9. Privacy and data usage](#9-privacy-and-data-usage)
+- [10. Version history](#10-version-history)
   * [v2.0.0](#v200)
   * [v1.1.0](#v110)
   * [v1.0.0](#v100)
@@ -192,7 +193,7 @@ Response (200 OK)
 Process with id "5e5949d8-3c58-4074-84a4-a63fa10286f8" is being cancelled.
 ```
 
-# 8. Architecture
+# 8. Architecture overview
 
 Images can either be detected directly during import or on demand using the Auto Tag Images web client plug-in. The schemas in this chapter describe the process flow.
 
@@ -204,7 +205,15 @@ Images can either be detected directly during import or on demand using the Auto
 
 ![auto tag images](https://github.com/WoodWing/elvis-image-recognition/blob/master/readme-files/architecture-auto-tag-images.png "auto tag images")
 
-# 9. Version history
+# 9. Privacy and data usage
+
+As explained in the architecture overview, the image recognition server sends preview images to the configured AI vendors. These vendors all have their own privacy policies when it comes to data usage and storage. They typically use your data to improve machine learning services and for analytics. For details, please consult the privacy policy of your AI vendor(s):
+
+- [Clarifai Privacy Policy](https://www.clarifai.com/privacy)
+- [AWS Privacy Policy](https://aws.amazon.com/privacy)
+- [Google Cloud Terms](https://cloud.google.com/terms)
+
+# 10. Version history
 
 ## v2.0.0
 - Added support for translating tags into different languages (using Google Translate).
