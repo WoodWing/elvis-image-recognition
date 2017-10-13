@@ -40,33 +40,24 @@ THE SOFTWARE.
 		var advancedMode = false;
 
 		var allClarifaiModels = {
-			GENERAL_MODEL: { name: 'General', id: 'aaa03c23b3724a16a56b629203edc62c' },
-			FOOD_MODEL: { name: 'Food', id: 'bd367be194cf45149e75f01d59f77ba7' },
-			TRAVEL_MODEL: { name: 'Travel', id: 'eee28c313d69466f836ab83287a54ed9' },
-			NSFW_MODEL: { name: 'NSFW', id: 'e9576d86d2004ed1a38ba0cf39ecb4b1' },
-			WEDDINGS_MODEL: { name: 'Weddings', id: 'c386b7a870114f4a87477c0824499348' },
-			WEDDING_MODEL: { name: 'Wedding', id: 'c386b7a870114f4a87477c0824499348' },
-			COLOR_MODEL: { name: 'Color', id: 'eeed0b6733a644cea07cf4c60f87ebb7' },
-			CLUSTER_MODEL: { name: 'Cluster', id: 'cccbe437d6e54e2bb911c6aa292fb072' },
-			FACE_DETECT_MODEL: { name: 'Face detect', id: 'a403429f2ddf4b49b307e318f00e528b' },
-			FOCUS_MODEL: { name: 'Focus', id: 'c2cf7cecd8a6427da375b9f35fcd2381' },
-			LOGO_MODEL: { name: 'Logo', id: 'c443119bf2ed4da98487520d01a0b1e3' },
-			DEMOGRAPHICS_MODEL: { name: 'Demographics', id: 'c0c0ac362b03416da06ab3fa36fb58e3' },
-			GENERAL_EMBED_MODEL: { name: 'General embedding', id: 'bbb5f41425b8468d9b7a554ff10f8581' },
-			FACE_EMBED_MODEL: { name: 'Face embedding', id: 'd02b4508df58432fbb84e800597b8959' },
-			APPAREL_MODEL: { name: 'Apparel', id: 'e0be3b9d6a454f0493ac3a30784001ff' },
-			MODERATION_MODEL: { name: 'Moderation', id: 'd16f390eb32cad478c7ae150069bd2c6' },
-			CELEBRITY_MODEL: { name: 'Celebrity', id: 'e466caa0619f444ab97497640cefc4dc' }
+			GENERAL: { name: 'General', id: 'aaa03c23b3724a16a56b629203edc62c' },
+			FOOD: { name: 'Food', id: 'bd367be194cf45149e75f01d59f77ba7' },
+			TRAVEL: { name: 'Travel', id: 'eee28c313d69466f836ab83287a54ed9' },
+			NSFW: { name: 'NSFW', id: 'e9576d86d2004ed1a38ba0cf39ecb4b1' },
+			WEDDINGS: { name: 'Weddings', id: 'c386b7a870114f4a87477c0824499348' },
+			WEDDING: { name: 'Wedding', id: 'c386b7a870114f4a87477c0824499348' },
+			COLOR: { name: 'Color', id: 'eeed0b6733a644cea07cf4c60f87ebb7' },
+			CLUSTER: { name: 'Cluster', id: 'cccbe437d6e54e2bb911c6aa292fb072' },
+			FACE_DETECT: { name: 'Face detect', id: 'a403429f2ddf4b49b307e318f00e528b' },
+			FOCUS: { name: 'Focus', id: 'c2cf7cecd8a6427da375b9f35fcd2381' },
+			LOGO: { name: 'Logo', id: 'c443119bf2ed4da98487520d01a0b1e3' },
+			DEMOGRAPHICS: { name: 'Demographics', id: 'c0c0ac362b03416da06ab3fa36fb58e3' },
+			GENERAL_EMBED: { name: 'General embedding', id: 'bbb5f41425b8468d9b7a554ff10f8581' },
+			FACE_EMBED: { name: 'Face embedding', id: 'd02b4508df58432fbb84e800597b8959' },
+			APPAREL: { name: 'Apparel', id: 'e0be3b9d6a454f0493ac3a30784001ff' },
+			MODERATION: { name: 'Moderation', id: 'd16f390eb32cad478c7ae150069bd2c6' },
+			CELEBRITY: { name: 'Celebrity', id: 'e466caa0619f444ab97497640cefc4dc' }
 		};
-
-		var clarifaiModels = [
-			allClarifaiModels.GENERAL_MODEL,
-			allClarifaiModels.FOOD_MODEL,
-			allClarifaiModels.TRAVEL_MODEL,
-			allClarifaiModels.WEDDING_MODEL,
-			allClarifaiModels.APPAREL_MODEL,
-			allClarifaiModels.CELEBRITY_MODEL
-		];
 
 		function loadClientSpecificCss() {
 			var parentLinks = $('link[rel=stylesheet]', parent.document);
@@ -97,11 +88,28 @@ THE SOFTWARE.
 		// Load main CSS
 		loadCss('resources/styles.css');
 
+		function getClarifaiModels() {
+			var modelSetting = elvisContext.plugin.configProperties.clarifaiModelSelection;
+			if (!modelSetting || !modelSetting.value || modelSetting.value.length == 0) {
+				return null;
+			}
+			var modelNames = modelSetting.value.split(',');
+			var models = [];
+			for (var i = 0; i < modelNames.length; i++) {
+				var model = allClarifaiModels[modelNames[i]];
+				if (model) {
+					models.push(model);
+				}
+			}
+			return models.length > 0 ? models : null;
+		}
+
 		function getServerUrl() {
-			var url = elvisContext.plugin.configProperties.recognitionServerUrl.value;
-			if (!url || url.length == 0) {
+			var urlSetting = elvisContext.plugin.configProperties.recognitionServerUrl;
+			if (!urlSetting || !urlSetting.value || urlSetting.value.length == 0) {
 				throw new Error('No recognitionServerUrl configured, please configure this setting in the action.config.xml of this plugin.');
 			}
+			var url = urlSetting.value;
 			if (url.substring(url.length - 1) == '/') {
 				url = url.substring(0, url.length - 1);
 			}
@@ -183,15 +191,22 @@ THE SOFTWARE.
 			}
 
 			// Advanced section
-			if (localStorage.getItem('elvis-ai.advancedMode') === 'true') {
-				toggleAdvanced();
-			}
 			var selectedModels = localStorage.getItem('elvis-ai.selectedModels') ? localStorage.getItem('elvis-ai.selectedModels') : [];
 			var tagModel = $('#tag-model');
-			for (var i = 0; i < clarifaiModels.length; i++) {
-				var model = clarifaiModels[i];
-				var option = new Option(model.name, model.id, null, (selectedModels.indexOf(model.id) > -1));
-				tagModel.append(option);
+			var clarifaiModels = getClarifaiModels();
+			if (clarifaiModels) {
+				for (var i = 0; i < clarifaiModels.length; i++) {
+					var model = clarifaiModels[i];
+					var option = new Option(model.name, model.id, null, (selectedModels.indexOf(model.id) > -1));
+					tagModel.append(option);
+				}
+				if (localStorage.getItem('elvis-ai.advancedMode') === 'true') {
+					toggleAdvanced();
+				}
+			}
+			else {
+				// No models, hide advanced section
+				$('.tag-advanced').css('display', 'none');
 			}
 
 			// Event handlers
@@ -280,7 +295,7 @@ THE SOFTWARE.
 		function start() {
 			var models = $('#tag-model').val();
 			if (!models || models.length == 0) {
-				models = [allClarifaiModels.GENERAL_MODEL];
+				models = [allClarifaiModels.GENERAL.id];
 			}
 			console.log('Selected models: ' + models);
 			var request = {
