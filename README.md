@@ -1,12 +1,41 @@
+# Table of contents
+
+<!-- toc -->
+
+- [1. Introduction](#1-introduction)
+- [2. Package details](#2-package-details)
+- [3. Installation prerequisites](#3-installation-prerequisites)
+- [4. Installation steps](#4-installation-steps)
+  * [4.1 Configure Elvis metadata fields](#41-configure-elvis-metadata-fields)
+  * [4.2 Optional: configure the Elvis Webhook](#42-optional-configure-the-elvis-webhook)
+  * [4.3 Install the image recognition server](#43-install-the-image-recognition-server)
+  * [4.4 Optional: install the Auto Tag Images plug-in](#44-optional-install-the-auto-tag-images-plug-in)
+- [5. Detect images during import](#5-detect-images-during-import)
+- [6. Detect existing Elvis images](#6-detect-existing-elvis-images)
+- [7. Detect images using the REST API](#7-detect-images-using-the-rest-api)
+  * [7.1 POST `/api/recognize`](#71-post-apirecognize)
+  * [7.2 GET `/api/recognize/:id:`](#72-get-apirecognizeid)
+  * [7.3 DELETE `/api/recognize/:id:`](#73-delete-apirecognizeid)
+- [8. Architecture overview](#8-architecture-overview)
+  * [8.1 Directly recognize images during import](#81-directly-recognize-images-during-import)
+  * [8.2 Recognize existing images in Elvis with the Auto Tag Images plug-in](#82-recognize-existing-images-in-elvis-with-the-auto-tag-images-plug-in)
+- [9. Privacy and data usage](#9-privacy-and-data-usage)
+- [10. Version history](#10-version-history)
+  * [v2.0.0](#v200)
+  * [v1.1.0](#v110)
+  * [v1.0.0](#v100)
+
+<!-- tocstop -->
+
 # 1. Introduction
 
-The Elvis image recognition integration is a bridge between Elvis DAM and Artificial Intellegence (AI) image recognition services from Google, Amazon and Clarifai. It uses these services to detect tags, landmarks and do facial analysis. The gathered information is stored as searchable metadata in Elvis. Tags can also be automatically translated to other languages. The integration supports two tagging modes: on demand tagging of images that already exist in Elvis and auto tagging of images immediately after they are imported.
+The Elvis image recognition integration is a bridge between Elvis DAM and Artificial Intelligence (AI) image recognition services from Google, Amazon and Clarifai. It uses these services to detect tags, landmarks and do facial analysis. The gathered information is stored as searchable metadata in Elvis. Tags can also be automatically translated to other languages. The integration supports two tagging modes: on demand tagging of images that already exist in Elvis and auto tagging of images immediately after they are imported.
 
 This readme describes how to setup the integration. Please read this [blog article](https://www.woodwing.com/en/blog/ai-dam-five-ways-ai-can-make-life-easier-for-dam-users) if you want to know more about Elvis and AI.
 
 # 2. Package details
 
-The integration consist of several compontents. The main component is the image recognition server app. This nodejs based server app handles all communication between Elvis and the AI service(s). It retrieves image previews from Elvis and sends them to the AI services for recognition. It also includes a Google Translate module to translate tags to other languages and there's a REST API that allows developers to interact with the image recognition server. 
+The integration consist of several components. The main component is the image recognition server app. This nodejs based server app handles all communication between Elvis and the AI service(s). It retrieves image previews from Elvis and sends them to the AI services for recognition. It also includes a Google Translate module to translate tags to other languages and there's a REST API that allows developers to interact with the image recognition server. 
 
 The second component is an Elvis web client plug-in. The Auto Tag Images plugin allows users to tag existing images in Elvis. It can either tag a selection of images or all files in the selected folder.
 
@@ -15,7 +44,7 @@ The integrated AI services are not identical in the functionality they provide, 
 **Clarifai**
 - General tagging.
 - Tagging using specialized [models](https://clarifai.com/models/): Food, Travel, Wedding, Apparel and Celebrity. You can choose these models when tagging in the Elvis web client (Auto Tag Images plugin). It's also possible to link an Elvis folder to one or multiple models, that way all images imported into that folder will be automatically tagged using the configured models.
-- Tagging results can be directly deliverd in various languages, this is an alternative to using Google Translate.
+- Tagging results can be directly delivered in various languages, this is an alternative to using Google Translate.
 
 **Google Vision**
 - General tagging.
@@ -45,11 +74,15 @@ Depending on your configuration and used services, you may need to add custom me
 An Elvis webhook needs to be configured if you want to detect images directly when they are imported in Elvis. You can skip this step if you only want to use the Auto Tag Images plugin or REST API.
 
 - Log-in to the Elvis web client as admin user.
-- Go to the management console, webhooks secion and add a new webhook.
+- Go to the management console, webhooks section and add a new webhook.
 - Name: For example, "Image Recognition".
 - URL: Point it to the URL where the image recognition server is running, if it's running on the same machine as Elvis, this will be: http://localhost:9090/.
 - Event type: `asset_update_metadata`.
-- Metadata to include: `assetDomain`.
+- Metadata to include: 
+  ```
+  assetDomain
+  assetPath
+  ```
 - Save the webhook.
 - The generated secret token needs to be specified in the image recognition configuration later on.
 
@@ -74,7 +107,7 @@ The server can either be installed on the Elvis Server or on a separate machine.
 
 ## 4.4 Optional: install the Auto Tag Images plug-in
 
-- This plug-in uses the REST API, ensure it's enabled in the `src/config.ts` file:  `restAPIEnabled = tue`
+- This plug-in uses the REST API, ensure it's enabled in the `src/config.ts` file:  `restAPIEnabled = true`
 - Open the `elvis-plugins` folder.
 - Copy the `auto_tag_images` folder to: `<Elvis Config>/plugins/active`.
 - Open `auto_tag_images/action.config.xml`.
@@ -105,9 +138,9 @@ The REST API allows developers to interact with the image recognition server.
 
 **BETA NOTE: This API is currently in BETA stage. All API calls are fully functional, authentication is however not yet implemented. Therefore, ensure on network level that the recognition server can only be accessed by your integration.**
 
-## 7.1 POST /api/recognize
+## 7.1 POST `/api/recognize`
 
-Starts the image recognition for a given query, immediatly returns a process id that can be used to track progress or cancel the operation.
+Starts the image recognition for a given query, immediately returns a process id that can be used to track progress or cancel the operation.
 
 In this example we detect all images in the `/Demo Zone` folder.
 
@@ -123,7 +156,7 @@ Response (202 ACCEPTED)
 }
 ```
 
-## 7.2 GET /api/recognize/:id:
+## 7.2 GET `/api/recognize/:id:`
 
 Retrieve progress information for a given recognition process.
 
@@ -146,7 +179,7 @@ Response (200 OK)
 }
 ```
 
-## 7.3 DELETE /api/recognize/:id:
+## 7.3 DELETE `/api/recognize/:id:`
 
 Cancel a recognition process.
 
@@ -160,7 +193,7 @@ Response (200 OK)
 Process with id "5e5949d8-3c58-4074-84a4-a63fa10286f8" is being cancelled.
 ```
 
-# 8. Architecture
+# 8. Architecture overview
 
 Images can either be detected directly during import or on demand using the Auto Tag Images web client plug-in. The schemas in this chapter describe the process flow.
 
@@ -172,7 +205,15 @@ Images can either be detected directly during import or on demand using the Auto
 
 ![auto tag images](https://github.com/WoodWing/elvis-image-recognition/blob/master/readme-files/architecture-auto-tag-images.png "auto tag images")
 
-# 9. Version history
+# 9. Privacy and data usage
+
+As explained in the architecture overview, the image recognition server sends preview images to the configured AI vendors. These vendors all have their own privacy policies when it comes to data usage and storage. Some of them use your data to improve machine learning services and for analytics. For details, please consult the privacy policy of your AI vendor(s):
+
+- [AWS Rekognition Data Privacy](https://aws.amazon.com/rekognition/faqs/#data-privacy)
+- [Clarifai Privacy Policy](https://www.clarifai.com/privacy)
+- [Google Cloud Vision Data Usage](https://cloud.google.com/vision/docs/data-usage)
+
+# 10. Version history
 
 ## v2.0.0
 - Added support for translating tags into different languages (using Google Translate).

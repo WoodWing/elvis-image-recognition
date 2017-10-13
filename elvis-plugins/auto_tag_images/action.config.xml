@@ -37,5 +37,9 @@
 			<description>The base URL where the image recognition server runs. This URL must be accessible for users using this plugin.</description>
 			<value>http://localhost:9090</value>
 		</property>
+		<property name="clarifaiModelSelection">
+			<description>Comma separated list of available Clarifai label detection models a user can choose from. Leave empty to hide this option from the dialog. Supported values: GENERAL,FOOD,TRAVEL,WEDDING,APPAREL,CELEBRITY</description>
+			<value>GENERAL,FOOD,TRAVEL,WEDDING,APPAREL,CELEBRITY</value>
+		</property>
 	</config>
 </plugin>

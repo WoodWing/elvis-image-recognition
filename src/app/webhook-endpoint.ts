@@ -60,10 +60,8 @@ export class WebhookEndpoint {
   }
 
   /**
-   * Handle Elvis webhook events. Two events are handled:
-   * 
-   * 1. asset_create: Used for uploads where the previewUrl is directly available (web client uploads)
-   * 2. asset_metadata_update: Used for uploads where the previewUrl is not specified with the asset_create event (desktop client uploads)
+   * Handles the asset_update_metadata Elvis Server event and 
+   * starts the recognition process if the correct metadata is specified
    * 
    * @param event The Elvis webhook event to handle
    */
