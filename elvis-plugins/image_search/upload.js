@@ -51,6 +51,8 @@ $('#upload-input').on('change', function () {
         var url = baseUrl + sorting + encodeURIComponent(query);*/
         console.log(url);
         parent.window.location.href = url;
+        // FIXME: Dialog doesn't close properly, this is a really dirty hack to fix this
+        $('.confirmation-dialog', parent.document).remove();
       },
       xhr: function () {
         // create an XMLHttpRequest
