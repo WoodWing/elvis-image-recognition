@@ -55,7 +55,7 @@ export class GoogleVision extends Google {
         }
 
         if (Config.googleTagsField && sr.tags.length > 0) {
-          sr.metadata[Config.googleTagsField] = sr.tags.join(',');
+          sr.metadata[Config.googleTagsField] = sr.tags.join(';');
         }
 
         resolve(sr);
