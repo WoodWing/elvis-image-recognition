@@ -40,7 +40,7 @@ export class AwsRekognition {
     }).then((sr: ServiceResponse) => {
       // Add detected tags to metadata and resolve
       if (Config.awsTagsField && sr.tags.length > 0) {
-        sr.metadata[Config.awsTagsField] = sr.tags.join(',');
+        sr.metadata[Config.awsTagsField] = sr.tags.join(';');
       }
       return sr;
     });
@@ -71,7 +71,7 @@ export class AwsRekognition {
 
         let properties: string[] = this.getFaceProps(fd, ['Beard', 'Eyeglasses', 'EyesOpen', 'MouthOpen', 'Mustache', 'Smile', 'Sunglasses']);
         if (properties.length > 0) {
-          sr.metadata.cf_personProperties = properties.join(',');
+          sr.metadata.cf_personProperties = properties.join(';');
         }
 
         let emotions: string[] = [];
@@ -82,7 +82,7 @@ export class AwsRekognition {
         });
 
         if (emotions.length > 0) {
-          sr.metadata.cf_personEmotions = emotions.join(',');
+          sr.metadata.cf_personEmotions = emotions.join(';');
         }
 
         if (fd.Gender.Confidence >= 95) {

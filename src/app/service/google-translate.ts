@@ -43,7 +43,7 @@ export class GoogleTranslate extends Google {
    * 
    * @param text Text string to translate
    */
-  public translate(text: string): Promise<string> {
+  public translate(text: string): Promise<any> {
     let translations = [];
     let metadata: any = {};
 

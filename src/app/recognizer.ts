@@ -74,7 +74,7 @@ export class Recognizer {
         metadata = (Object.assign(metadata, serviceResponse.metadata));
         tags = Utils.mergeArrays(tags, serviceResponse.tags);
       });
-      let tagString: string = tags.join(',');
+      let tagString: string = tags.join(';');
       metadata[Config.elvisTagsField] = tagString;
 
       // 5. Translate (if configured)

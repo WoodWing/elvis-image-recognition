@@ -53,7 +53,7 @@ export class Clarifai {
         });
 
         if (Config.clarifaiTagsField && sr.tags.length > 0) {
-          sr.metadata[Config.clarifaiTagsField] = sr.tags.join(',');
+          sr.metadata[Config.clarifaiTagsField] = sr.tags.join(';');
         }
         return Promise.resolve(sr);
       });
