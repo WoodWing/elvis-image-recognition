@@ -35,8 +35,8 @@
   <config>
     <property name="recognitionServerUrl">
       <description>The base URL where the image recognition server runs. This URL must be accessible for users using this plugin. 
-      - Elvis 6.7+ (default): Configure an Elvis API plugin that proxies to the image recognition server and specify the path relative to the Elvis Server, for example: /plugins/recognition_api</description>
-      - Elvis 5 - 6.6: Use the image recognition server endpoint as configured in config.ts, for example: https://elvis-ai.mycompany.com
+      - Elvis 6.7+ (default): Configure an Elvis API plugin that proxies to the image recognition server and specify the path relative to the Elvis Server, for example: /plugins/recognition_api
+      - Elvis 5 - 6.6: Use the image recognition server endpoint as configured in config.ts, for example: https://elvis-ai.mycompany.com</description>
       <value>/plugins/elvis_ai</value>
     </property>
     <property name="clarifaiModelSelection">
