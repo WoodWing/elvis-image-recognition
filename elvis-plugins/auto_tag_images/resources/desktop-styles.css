@@ -22,12 +22,12 @@
  */
 
 body {
-    min-width: 0px;
-    background-color: #333;
-    color: #fff;
-    font-size: 12px;
+  min-width: 0px;
+  background-color: #333;
+  color: #fff;
+  font-size: 12px;
 }
 
 * {
-    font-family: Arial, Arial, Helvetica, sans-serif;
+  font-family: Arial, Arial, Helvetica, sans-serif;
 }
