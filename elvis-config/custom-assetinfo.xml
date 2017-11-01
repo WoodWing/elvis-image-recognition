@@ -55,7 +55,7 @@
 		<assetTypeBaseExt name="CommonFields">
 			<fields>
 				<field name="cf_companyName" group="CompanyData">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" />
 				</field>
@@ -64,7 +64,7 @@
 		<assetTypeBaseExt name="ImageFields">
 			<fields>
 				<field name="cf_photographer" group="CompanyData">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
 					<data editable="true" datatype="number" />
 				</field>
@@ -81,52 +81,52 @@
 		<assetTypeBaseExt name="CommonFields">
 			<fields>
 				<field name="cf_BooleanTest" group="CustomFields">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" />
 				</field>
 				<field name="cf_DateTest" group="CustomFields">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="date" />
 				</field>
 				<field name="cf_DateTimeTest" group="CustomFields">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="datetime" />
 				</field>
 				<field name="cf_DoubleTest" group="CustomFields">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="decimal" />
 				</field>
 				<field name="cf_IntegerTest" group="CustomFields">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="number" />
 				</field>
 				<field name="cf_ListTest" group="CustomFields">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" />
 				</field>
 				<field name="cf_MultiLineTest" group="CustomFields">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" />
 				</field>
 				<field name="cf_MultiListTestElvisMultiField" group="CustomFields">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" multivalue="true" />
 				</field>
 				<field name="cf_MultiStringTestElvisMultiField" group="CustomFields">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" multivalue="true" />
 				</field>
 				<field name="cf_StringTest" group="CustomFields">
-                    <storage storeInMetadata="true"/>
+					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" />
 				</field>
@@ -335,8 +335,8 @@
 		<fieldExt name="metadataComplete" group="System">
 			<data editable="false">
 				<predefinedValues onlyFromList="true">
-                    <value flagIcon="label_broken.png">false</value>
-                    <value flagIcon="label.png">true</value>
+					<value flagIcon="label_broken.png">false</value>
+					<value flagIcon="label.png">true</value>
                 </predefinedValues>
             </data>
             <userInterface flagPosition="20" />
