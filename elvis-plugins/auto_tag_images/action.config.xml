@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
-	<info>
-		<version>
-			<pluginVersion>1.0</pluginVersion>
-			<requiresAtLeast>5.26.1.246</requiresAtLeast>
-		</version>
-		<description>Automatically tag images using AI services</description>
-	</info>
-	<action>
-		<url>${pluginUrl}/index.html</url>
-		<icon16Url>${pluginUrl}/icon16.png</icon16Url>
-		<icon24Url>${pluginUrl}/icon24.png</icon24Url>
+  <info>
+    <version>
+      <pluginVersion>1.0</pluginVersion>
+      <requiresAtLeast>5.26.1.246</requiresAtLeast>
+    </version>
+    <description>Automatically tag images using AI services</description>
+  </info>
+  <action>
+    <url>${pluginUrl}/index.html</url>
+    <icon16Url>${pluginUrl}/icon16.png</icon16Url>
+    <icon24Url>${pluginUrl}/icon24.png</icon24Url>
 
-		<userInterface>
-			<dialog width="400" height="200"/>
-		</userInterface>
+    <userInterface>
+      <dialog width="400" height="200"/>
+    </userInterface>
 
-		<menuAssignments>
-			<menuAssignment id="assetContextMenu" order="1"/>
-		</menuAssignments>
+    <menuAssignments>
+      <menuAssignment id="assetContextMenu" order="1"/>
+    </menuAssignments>
 
-		<requiredRoles>
-			<role>ROLE_CUSTOM_AI_RECOGNITION</role>
-		</requiredRoles>
+    <requiredRoles>
+      <role>ROLE_CUSTOM_AI_RECOGNITION</role>
+    </requiredRoles>
 
-		<messages>
-			<entries locale="en_US">
-				<entry key="title">Automatically Tag Images</entry>
-				<entry key="button.label">Auto Tag Images</entry>
-				<entry key="button.tooltip">Automatically tag images using AI services</entry>
-			</entries>
-		</messages>
-	</action>
-	<config>
-		<property name="recognitionServerUrl">
-			<description>The base URL where the image recognition server runs. This URL must be accessible for users using this plugin. 
-			- Elvis 6.7+ (default): Configure an Elvis API plugin that proxies to the image recognition server and specify the path relative to the Elvis Server, for example: /plugins/recognition_api</description>
-			- Elvis 5 - 6.6: Use the image recognition server endpoint as configured in config.ts, for example: https://elvis-ai.mycompany.com
-			<value>/plugins/elvis_ai</value>
-		</property>
-		<property name="clarifaiModelSelection">
-			<description>Comma separated list of available Clarifai label detection models a user can choose from. Leave empty to hide this option from the dialog. Supported values: GENERAL,FOOD,TRAVEL,WEDDING,APPAREL,CELEBRITY</description>
-			<value>GENERAL,FOOD,TRAVEL,WEDDING,APPAREL,CELEBRITY</value>
-		</property>
-	</config>
+    <messages>
+      <entries locale="en_US">
+        <entry key="title">Automatically Tag Images</entry>
+        <entry key="button.label">Auto Tag Images</entry>
+        <entry key="button.tooltip">Automatically tag images using AI services</entry>
+      </entries>
+    </messages>
+  </action>
+  <config>
+    <property name="recognitionServerUrl">
+      <description>The base URL where the image recognition server runs. This URL must be accessible for users using this plugin. 
+      - Elvis 6.7+ (default): Configure an Elvis API plugin that proxies to the image recognition server and specify the path relative to the Elvis Server, for example: /plugins/recognition_api</description>
+      - Elvis 5 - 6.6: Use the image recognition server endpoint as configured in config.ts, for example: https://elvis-ai.mycompany.com
+      <value>/plugins/elvis_ai</value>
+    </property>
+    <property name="clarifaiModelSelection">
+      <description>Comma separated list of available Clarifai label detection models a user can choose from. Leave empty to hide this option from the dialog. Supported values: GENERAL,FOOD,TRAVEL,WEDDING,APPAREL,CELEBRITY</description>
+      <value>GENERAL,FOOD,TRAVEL,WEDDING,APPAREL,CELEBRITY</value>
+    </property>
+  </config>
 </plugin>

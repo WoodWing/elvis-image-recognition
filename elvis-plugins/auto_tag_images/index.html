@@ -26,356 +26,356 @@ THE SOFTWARE.
 -->
 
 <head>
-	<title>Auto Tag Images</title>
-	<script src="${pluginsBaseRootUrl}/web.shared/jquery.js" type="text/javascript"></script>
-	<script src="${pluginsBaseRootUrl}/web.shared/jquery.class.js" type="text/javascript"></script>
-	<script src="${pluginsBaseRootUrl}/web.shared/jquery.cookie.js" type="text/javascript"></script>
-	<script src="${pluginsBaseRootUrl}/web.shared/elvis_api/js/jquery.elvis.js" type="text/javascript"></script>
+  <title>Auto Tag Images</title>
+  <script src="${pluginsBaseRootUrl}/web.shared/jquery.js" type="text/javascript"></script>
+  <script src="${pluginsBaseRootUrl}/web.shared/jquery.class.js" type="text/javascript"></script>
+  <script src="${pluginsBaseRootUrl}/web.shared/jquery.cookie.js" type="text/javascript"></script>
+  <script src="${pluginsBaseRootUrl}/web.shared/elvis_api/js/jquery.elvis.js" type="text/javascript"></script>
 
-	<script type="text/javascript">
-		var elvisContext = ElvisPlugin.resolveElvisContext();
-		var elvisApi = new ElvisAPI('${serverUrl}');
-		var queryToPerform = null;
-		var recognitionServerUrl = null;
-		var advancedMode = false;
+  <script type="text/javascript">
+    var elvisContext = ElvisPlugin.resolveElvisContext();
+    var elvisApi = new ElvisAPI('${serverUrl}');
+    var queryToPerform = null;
+    var recognitionServerUrl = null;
+    var advancedMode = false;
 
-		var allClarifaiModels = {
-			GENERAL: { name: 'General', id: 'aaa03c23b3724a16a56b629203edc62c' },
-			FOOD: { name: 'Food', id: 'bd367be194cf45149e75f01d59f77ba7' },
-			TRAVEL: { name: 'Travel', id: 'eee28c313d69466f836ab83287a54ed9' },
-			NSFW: { name: 'NSFW', id: 'e9576d86d2004ed1a38ba0cf39ecb4b1' },
-			WEDDINGS: { name: 'Weddings', id: 'c386b7a870114f4a87477c0824499348' },
-			WEDDING: { name: 'Wedding', id: 'c386b7a870114f4a87477c0824499348' },
-			COLOR: { name: 'Color', id: 'eeed0b6733a644cea07cf4c60f87ebb7' },
-			CLUSTER: { name: 'Cluster', id: 'cccbe437d6e54e2bb911c6aa292fb072' },
-			FACE_DETECT: { name: 'Face detect', id: 'a403429f2ddf4b49b307e318f00e528b' },
-			FOCUS: { name: 'Focus', id: 'c2cf7cecd8a6427da375b9f35fcd2381' },
-			LOGO: { name: 'Logo', id: 'c443119bf2ed4da98487520d01a0b1e3' },
-			DEMOGRAPHICS: { name: 'Demographics', id: 'c0c0ac362b03416da06ab3fa36fb58e3' },
-			GENERAL_EMBED: { name: 'General embedding', id: 'bbb5f41425b8468d9b7a554ff10f8581' },
-			FACE_EMBED: { name: 'Face embedding', id: 'd02b4508df58432fbb84e800597b8959' },
-			APPAREL: { name: 'Apparel', id: 'e0be3b9d6a454f0493ac3a30784001ff' },
-			MODERATION: { name: 'Moderation', id: 'd16f390eb32cad478c7ae150069bd2c6' },
-			CELEBRITY: { name: 'Celebrity', id: 'e466caa0619f444ab97497640cefc4dc' }
-		};
+    var allClarifaiModels = {
+      GENERAL: { name: 'General', id: 'aaa03c23b3724a16a56b629203edc62c' },
+      FOOD: { name: 'Food', id: 'bd367be194cf45149e75f01d59f77ba7' },
+      TRAVEL: { name: 'Travel', id: 'eee28c313d69466f836ab83287a54ed9' },
+      NSFW: { name: 'NSFW', id: 'e9576d86d2004ed1a38ba0cf39ecb4b1' },
+      WEDDINGS: { name: 'Weddings', id: 'c386b7a870114f4a87477c0824499348' },
+      WEDDING: { name: 'Wedding', id: 'c386b7a870114f4a87477c0824499348' },
+      COLOR: { name: 'Color', id: 'eeed0b6733a644cea07cf4c60f87ebb7' },
+      CLUSTER: { name: 'Cluster', id: 'cccbe437d6e54e2bb911c6aa292fb072' },
+      FACE_DETECT: { name: 'Face detect', id: 'a403429f2ddf4b49b307e318f00e528b' },
+      FOCUS: { name: 'Focus', id: 'c2cf7cecd8a6427da375b9f35fcd2381' },
+      LOGO: { name: 'Logo', id: 'c443119bf2ed4da98487520d01a0b1e3' },
+      DEMOGRAPHICS: { name: 'Demographics', id: 'c0c0ac362b03416da06ab3fa36fb58e3' },
+      GENERAL_EMBED: { name: 'General embedding', id: 'bbb5f41425b8468d9b7a554ff10f8581' },
+      FACE_EMBED: { name: 'Face embedding', id: 'd02b4508df58432fbb84e800597b8959' },
+      APPAREL: { name: 'Apparel', id: 'e0be3b9d6a454f0493ac3a30784001ff' },
+      MODERATION: { name: 'Moderation', id: 'd16f390eb32cad478c7ae150069bd2c6' },
+      CELEBRITY: { name: 'Celebrity', id: 'e466caa0619f444ab97497640cefc4dc' }
+    };
 
-		function loadClientSpecificCss() {
-			var parentLinks = $('link[rel=stylesheet]', parent.document);
-			if (parentLinks == 0) {
-				// We're in the desktop client, load desktop client styles
-				// TODO: doesn't work yet
-				loadCss('resources/desktop-styles.css')
-			}
-			else {
-				// We're in the web client, load css from parent frame
-				for (var i = 0; i < parentLinks.length; i++) {
-					loadCss(parentLinks[i].href);
-				}
-			}
-		}
+    function loadClientSpecificCss() {
+      var parentLinks = $('link[rel=stylesheet]', parent.document);
+      if (parentLinks == 0) {
+        // We're in the desktop client, load desktop client styles
+        // TODO: doesn't work yet
+        loadCss('resources/desktop-styles.css')
+      }
+      else {
+        // We're in the web client, load css from parent frame
+        for (var i = 0; i < parentLinks.length; i++) {
+          loadCss(parentLinks[i].href);
+        }
+      }
+    }
 
-		function loadCss(href) {
-			var head = $('head')[0];
-			var link = document.createElement('link');
-			link.rel = 'stylesheet';
-			link.href = href;
-			head.appendChild(link);
-		}
+    function loadCss(href) {
+      var head = $('head')[0];
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      head.appendChild(link);
+    }
 
-		// Load CSS files from Elvis
-		loadClientSpecificCss();
+    // Load CSS files from Elvis
+    loadClientSpecificCss();
 
-		// Load main CSS
-		loadCss('resources/styles.css');
+    // Load main CSS
+    loadCss('resources/styles.css');
 
-		function getClarifaiModels() {
-			var modelSetting = elvisContext.plugin.configProperties.clarifaiModelSelection;
-			if (!modelSetting || !modelSetting.value || modelSetting.value.length == 0) {
-				return null;
-			}
-			var modelNames = modelSetting.value.split(',');
-			var models = [];
-			for (var i = 0; i < modelNames.length; i++) {
-				var model = allClarifaiModels[modelNames[i]];
-				if (model) {
-					models.push(model);
-				}
-			}
-			return models.length > 0 ? models : null;
-		}
+    function getClarifaiModels() {
+      var modelSetting = elvisContext.plugin.configProperties.clarifaiModelSelection;
+      if (!modelSetting || !modelSetting.value || modelSetting.value.length == 0) {
+        return null;
+      }
+      var modelNames = modelSetting.value.split(',');
+      var models = [];
+      for (var i = 0; i < modelNames.length; i++) {
+        var model = allClarifaiModels[modelNames[i]];
+        if (model) {
+          models.push(model);
+        }
+      }
+      return models.length > 0 ? models : null;
+    }
 
-		function getServerUrl() {
-			var urlSetting = elvisContext.plugin.configProperties.recognitionServerUrl;
-			if (!urlSetting || !urlSetting.value || urlSetting.value.length == 0) {
-				throw new Error('No recognitionServerUrl configured, please configure this setting in the action.config.xml of this plugin.');
-			}
-			var url = urlSetting.value;
-			if (url.substring(url.length - 1) == '/') {
-				url = url.substring(0, url.length - 1);
-			}
-			return url;
-		}
+    function getServerUrl() {
+      var urlSetting = elvisContext.plugin.configProperties.recognitionServerUrl;
+      if (!urlSetting || !urlSetting.value || urlSetting.value.length == 0) {
+        throw new Error('No recognitionServerUrl configured, please configure this setting in the action.config.xml of this plugin.');
+      }
+      var url = urlSetting.value;
+      if (url.substring(url.length - 1) == '/') {
+        url = url.substring(0, url.length - 1);
+      }
+      return url;
+    }
 
-		function getSelectedFolder() {
-			try {
-				return elvisContext.activeTab.folderSelection[0].assetPath;
-			}
-			catch (error) {
-				return null;
-			}
-		}
+    function getSelectedFolder() {
+      try {
+        return elvisContext.activeTab.folderSelection[0].assetPath;
+      }
+      catch (error) {
+        return null;
+      }
+    }
 
-		function getAssetSelection() {
-			return elvisContext.activeTab.originalAssetSelection;
-		}
+    function getAssetSelection() {
+      return elvisContext.activeTab.originalAssetSelection;
+    }
 
-		function dryRunQuery(tagMode, callback) {
-			var response = {
-				query: '',
-				count: 0
-			}
-			if (tagMode === 'SelectedAssets') {
-				var assetIds = [];
-				var selection = getAssetSelection();
-				selection.forEach(function (hit) {
-					if (hit.assetDomain === 'image') {
-						assetIds.push(hit.id);
-					}
-				});
-				response.count = assetIds.length;
-				if (assetIds.length > 0) {
-					response.query = 'id:' + assetIds.join(' OR id:');
-				}
-				callback(response);
-			} else if (tagMode === 'SelectedFolder') {
-				response.query = 'ancestorPaths:"' + getSelectedFolder() + '" AND assetDomain:image';
-				elvisApi.search({
-					q: response.query
-				}, function (data) {
-					response.count = data.totalHits;
-					callback(response);
-				});
-			} else {
-				throw new Error('Invalid tagMode: ' + tagMode);
-			}
-		}
+    function dryRunQuery(tagMode, callback) {
+      var response = {
+        query: '',
+        count: 0
+      }
+      if (tagMode === 'SelectedAssets') {
+        var assetIds = [];
+        var selection = getAssetSelection();
+        selection.forEach(function (hit) {
+          if (hit.assetDomain === 'image') {
+            assetIds.push(hit.id);
+          }
+        });
+        response.count = assetIds.length;
+        if (assetIds.length > 0) {
+          response.query = 'id:' + assetIds.join(' OR id:');
+        }
+        callback(response);
+      } else if (tagMode === 'SelectedFolder') {
+        response.query = 'ancestorPaths:"' + getSelectedFolder() + '" AND assetDomain:image';
+        elvisApi.search({
+          q: response.query
+        }, function (data) {
+          response.count = data.totalHits;
+          callback(response);
+        });
+      } else {
+        throw new Error('Invalid tagMode: ' + tagMode);
+      }
+    }
 
-		function init() {
-			var assetSelection = getAssetSelection();
-			var selectedFolder = getSelectedFolder();
+    function init() {
+      var assetSelection = getAssetSelection();
+      var selectedFolder = getSelectedFolder();
 
-			var assetsRadio = $('#selected-assets');
-			var folderRadio = $('#selected-folder');
+      var assetsRadio = $('#selected-assets');
+      var folderRadio = $('#selected-folder');
 
-			var isFolderSelected = selectedFolder !== '/';
-			var hasAssetSelection = assetSelection.length > 0;
+      var isFolderSelected = selectedFolder !== '/';
+      var hasAssetSelection = assetSelection.length > 0;
 
-			// Enable / disable radio buttons
-			assetsRadio.prop('disabled', !hasAssetSelection);
-			assetsRadio.prop('checked', hasAssetSelection);
-			folderRadio.prop('disabled', !isFolderSelected);
-			folderRadio.prop('checked', !hasAssetSelection && isFolderSelected);
+      // Enable / disable radio buttons
+      assetsRadio.prop('disabled', !hasAssetSelection);
+      assetsRadio.prop('checked', hasAssetSelection);
+      folderRadio.prop('disabled', !isFolderSelected);
+      folderRadio.prop('checked', !hasAssetSelection && isFolderSelected);
 
-			try {
-				recognitionServerUrl = getServerUrl();
-			}
-			catch (error) {
-				// Handle config failures
-				showErrorState(error.message);
-				return;
-			}
+      try {
+        recognitionServerUrl = getServerUrl();
+      }
+      catch (error) {
+        // Handle config failures
+        showErrorState(error.message);
+        return;
+      }
 
-			if (!hasAssetSelection && !isFolderSelected) {
-				showErrorState('Please select either a folder containing images or one or more individual images.');
-				return;
-			}
+      if (!hasAssetSelection && !isFolderSelected) {
+        showErrorState('Please select either a folder containing images or one or more individual images.');
+        return;
+      }
 
-			// Advanced section
-			var selectedModels = localStorage.getItem('elvis-ai.selectedModels') ? localStorage.getItem('elvis-ai.selectedModels') : [];
-			var tagModel = $('#tag-model');
-			var clarifaiModels = getClarifaiModels();
-			if (clarifaiModels) {
-				for (var i = 0; i < clarifaiModels.length; i++) {
-					var model = clarifaiModels[i];
-					var option = new Option(model.name, model.id, null, (selectedModels.indexOf(model.id) > -1));
-					tagModel.append(option);
-				}
-				if (localStorage.getItem('elvis-ai.advancedMode') === 'true') {
-					toggleAdvanced();
-				}
-			}
-			else {
-				// No models, hide advanced section
-				$('.tag-advanced').css('display', 'none');
-			}
+      // Advanced section
+      var selectedModels = localStorage.getItem('elvis-ai.selectedModels') ? localStorage.getItem('elvis-ai.selectedModels') : [];
+      var tagModel = $('#tag-model');
+      var clarifaiModels = getClarifaiModels();
+      if (clarifaiModels) {
+        for (var i = 0; i < clarifaiModels.length; i++) {
+          var model = clarifaiModels[i];
+          var option = new Option(model.name, model.id, null, (selectedModels.indexOf(model.id) > -1));
+          tagModel.append(option);
+        }
+        if (localStorage.getItem('elvis-ai.advancedMode') === 'true') {
+          toggleAdvanced();
+        }
+      }
+      else {
+        // No models, hide advanced section
+        $('.tag-advanced').css('display', 'none');
+      }
 
-			// Event handlers
-			$('.advanced-header').click(toggleAdvanced);
-			tagModel.change(modelSelectionChange);
-			$('.start-btn').click(start);
-			$('.cancel-btn').click(cancel);
-			$('input[type=radio][name=tag-mode]').change(updateInfo);
+      // Event handlers
+      $('.advanced-header').click(toggleAdvanced);
+      tagModel.change(modelSelectionChange);
+      $('.start-btn').click(start);
+      $('.cancel-btn').click(cancel);
+      $('input[type=radio][name=tag-mode]').change(updateInfo);
 
-			updateInfo(function () {
-				$('.start-state').css('display', 'block');
-			});
-		}
+      updateInfo(function () {
+        $('.start-state').css('display', 'block');
+      });
+    }
 
-		function showErrorState(message) {
-			$('#running-error').html(message);
-			$('.start-state').css('display', 'none');
-			$('.error-state').css('display', 'block');
-		}
+    function showErrorState(message) {
+      $('#running-error').html(message);
+      $('.start-state').css('display', 'none');
+      $('.error-state').css('display', 'block');
+    }
 
-		function showRunningState(message) {
-			$('#running-ok').html(message);
-			$('.start-state').css('display', 'none');
-			$('.running-state').css('display', 'block');
-		}
+    function showRunningState(message) {
+      $('#running-ok').html(message);
+      $('.start-state').css('display', 'none');
+      $('.running-state').css('display', 'block');
+    }
 
-		/**
-		 * Update the info panel to inform the user what will be tagged
-		 */
-		function updateInfo(callback) {
-			var tagMode = $('input[name=tag-mode]:checked').val();
-			dryRunQuery(tagMode, function (data) {
-				var infoMsg = '';
-				var cssClass = 'tag-info';
-				var validSelection = true;
-				if (data.count == 0) {
-					infoMsg = 'There are no images in your selected files or folder, please make a valid selection.';
-					validSelection = false;
-				}
-				else if (data.count > 10000) {
-					infoMsg = 'There are <strong>' + data.count + '</strong> in your selection, only the <strong>first 10.000 images</strong> will be tagged. Click start to begin the tagging process.';
-					cssClass = 'tag-info warning';
-				}
-				else if (data.count == 1) {
-					infoMsg = 'There is <strong>1</strong> image in your current selection. Click start to begin the tagging process.';
-				}
-				else {
-					infoMsg = 'There are <strong>' + data.count + '</strong> images in your current selection. Click start to begin the tagging process.';
-				}
+    /**
+     * Update the info panel to inform the user what will be tagged
+     */
+    function updateInfo(callback) {
+      var tagMode = $('input[name=tag-mode]:checked').val();
+      dryRunQuery(tagMode, function (data) {
+        var infoMsg = '';
+        var cssClass = 'tag-info';
+        var validSelection = true;
+        if (data.count == 0) {
+          infoMsg = 'There are no images in your selected files or folder, please make a valid selection.';
+          validSelection = false;
+        }
+        else if (data.count > 10000) {
+          infoMsg = 'There are <strong>' + data.count + '</strong> in your selection, only the <strong>first 10.000 images</strong> will be tagged. Click start to begin the tagging process.';
+          cssClass = 'tag-info warning';
+        }
+        else if (data.count == 1) {
+          infoMsg = 'There is <strong>1</strong> image in your current selection. Click start to begin the tagging process.';
+        }
+        else {
+          infoMsg = 'There are <strong>' + data.count + '</strong> images in your current selection. Click start to begin the tagging process.';
+        }
 
-				queryToPerform = data.query;
-				$('#info').html(infoMsg);
-				$('#info').removeClass().addClass(cssClass);
-				$('.start-btn').prop('disabled', !validSelection);
+        queryToPerform = data.query;
+        $('#info').html(infoMsg);
+        $('#info').removeClass().addClass(cssClass);
+        $('.start-btn').prop('disabled', !validSelection);
 
-				if (callback && typeof callback === 'function') {
-					callback();
-				}
-			});
-		}
+        if (callback && typeof callback === 'function') {
+          callback();
+        }
+      });
+    }
 
-		function toggleAdvanced() {
-			advancedMode = !advancedMode;
-			localStorage.setItem('elvis-ai.advancedMode', advancedMode);
+    function toggleAdvanced() {
+      advancedMode = !advancedMode;
+      localStorage.setItem('elvis-ai.advancedMode', advancedMode);
 
-			var cssClass = advancedMode ? 'toggle-icon toggle-icon-opened' : 'toggle-icon toggle-icon-closed';
-			$('.advanced-header span').removeClass().addClass(cssClass);
+      var cssClass = advancedMode ? 'toggle-icon toggle-icon-opened' : 'toggle-icon toggle-icon-closed';
+      $('.advanced-header span').removeClass().addClass(cssClass);
 
-			// TODO: Calculate these heights
-			var standardIFrameHeight = 210;
-			var contentHeight = 150;
-			$('iframe', parent.document).animate({
-				height: advancedMode ? standardIFrameHeight + contentHeight : standardIFrameHeight
-			}, 200, function () {
-			});
-			$('.advanced-content').animate({
-				height: advancedMode ? contentHeight : 0
-			}, 200, function () {
-			});
-		}
+      // TODO: Calculate these heights
+      var standardIFrameHeight = 210;
+      var contentHeight = 150;
+      $('iframe', parent.document).animate({
+        height: advancedMode ? standardIFrameHeight + contentHeight : standardIFrameHeight
+      }, 200, function () {
+      });
+      $('.advanced-content').animate({
+        height: advancedMode ? contentHeight : 0
+      }, 200, function () {
+      });
+    }
 
-		function modelSelectionChange() {
-			localStorage.setItem('elvis-ai.selectedModels', $('#tag-model').val());
-		}
+    function modelSelectionChange() {
+      localStorage.setItem('elvis-ai.selectedModels', $('#tag-model').val());
+    }
 
-		function start() {
-			if(elvisApi.csrf) {
-				// Elvis 6+
-				elvisApi.csrf(function (data) {
-					recognize({ 'X-CSRF-TOKEN': data.csrfToken });
-				});
-			}
-			else {
-				// Elvis 5
-				recognize({});
-			}
-		}
+    function start() {
+      if(elvisApi.csrf) {
+        // Elvis 6+
+        elvisApi.csrf(function (data) {
+          recognize({ 'X-CSRF-TOKEN': data.csrfToken });
+        });
+      }
+      else {
+        // Elvis 5
+        recognize({});
+      }
+    }
 
-		function recognize(headers) {
-			var models = $('#tag-model').val();
-			if (!models || models.length == 0) {
-				models = [allClarifaiModels.GENERAL.id];
-			}
-			console.log('Selected models: ' + models);
-			var request = {
-				q: queryToPerform,
-				models: models
-			}
-			
-			$.ajax({
-				type: 'POST',
-				url: recognitionServerUrl + '/api/recognize',
-				contentType: 'application/json; charset=utf-8',
-				dataType: 'json',
-				data: JSON.stringify(request),
-				crossDomain: true,
-				headers: headers,
-				success: function (data) {
-					console.log('Image recognition process started with id: ' + data.processId);
-					showRunningState('The image tagging started as backround process. You can now close this dialog and follow the progress in the metadata of the selected files.');
-				},
-				error: function (jqXHR, textStatus, error) {
-					console.log('Recognition request failed: ' + JSON.stringify(jqXHR));
-					showErrorState('The image tagging process failed to start due to an unexpected error. You can check the web browser developer console for error details.');
-				}
-			});
-		}
+    function recognize(headers) {
+      var models = $('#tag-model').val();
+      if (!models || models.length == 0) {
+        models = [allClarifaiModels.GENERAL.id];
+      }
+      console.log('Selected models: ' + models);
+      var request = {
+        q: queryToPerform,
+        models: models
+      }
+      
+      $.ajax({
+        type: 'POST',
+        url: recognitionServerUrl + '/api/recognize',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        data: JSON.stringify(request),
+        crossDomain: true,
+        headers: headers,
+        success: function (data) {
+          console.log('Image recognition process started with id: ' + data.processId);
+          showRunningState('The image tagging started as backround process. You can now close this dialog and follow the progress in the metadata of the selected files.');
+        },
+        error: function (jqXHR, textStatus, error) {
+          console.log('Recognition request failed: ' + JSON.stringify(jqXHR));
+          showErrorState('The image tagging process failed to start due to an unexpected error. You can check the web browser developer console for error details.');
+        }
+      });
+    }
 
-		function cancel() {
-			elvisContext.close();
-		}
-	</script>
+    function cancel() {
+      elvisContext.close();
+    }
+  </script>
 </head>
 
 <body onLoad="init()">
-	<div style="display: none" class="start-state">
-		<form class="tag-form">
-			<div class="tag-panel">
-				<div class="tag-main">
-					<h3>What do you want to tag?</h3>
-					<input type="radio" id="selected-assets" name="tag-mode" value="SelectedAssets" />
-					<label for="selected-assets">All selected images</label><br/>
-					<input type="radio" id="selected-folder" name="tag-mode" value="SelectedFolder">
-					<label for="selected-folder">All images in the current folder and sub-folders</label>
-					<div id="info" class="tag-info"></div>
-				</div>
-				<div class="tag-advanced">
-					<div class="advanced-header">
-						<span class="toggle-icon toggle-icon-closed"></span>Advanced settings
-					</div>
-					<div class="advanced-content">
-						<label for="tag-model">Choose one or multiple tag models:</label>
-						<div class="tag-model-wrapper">
-							<select id="tag-model" name="tag-model" multiple></select>
-						</div>
-					</div>
-				</div>
-				<div class="tag-buttons">
-					<button type="button" class="cancel-btn basic-btn ml10 pale">Cancel</button> <button type="button" class="start-btn basic-btn ml10">Start</button>
-				</div>
-			</div>
-		</form>
-	</div>
-	<div style="display: none" class="running-state">
-		<div id="running-ok" class="tag-info"></div>
-	</div>
-	<div style="display: none" class="error-state">
-		<div id="running-error" class="tag-info error"></div>
-	</div>
+  <div style="display: none" class="start-state">
+    <form class="tag-form">
+      <div class="tag-panel">
+        <div class="tag-main">
+          <h3>What do you want to tag?</h3>
+          <input type="radio" id="selected-assets" name="tag-mode" value="SelectedAssets" />
+          <label for="selected-assets">All selected images</label><br/>
+          <input type="radio" id="selected-folder" name="tag-mode" value="SelectedFolder">
+          <label for="selected-folder">All images in the current folder and sub-folders</label>
+          <div id="info" class="tag-info"></div>
+        </div>
+        <div class="tag-advanced">
+          <div class="advanced-header">
+            <span class="toggle-icon toggle-icon-closed"></span>Advanced settings
+          </div>
+          <div class="advanced-content">
+            <label for="tag-model">Choose one or multiple tag models:</label>
+            <div class="tag-model-wrapper">
+              <select id="tag-model" name="tag-model" multiple></select>
+            </div>
+          </div>
+        </div>
+        <div class="tag-buttons">
+          <button type="button" class="cancel-btn basic-btn ml10 pale">Cancel</button> <button type="button" class="start-btn basic-btn ml10">Start</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div style="display: none" class="running-state">
+    <div id="running-ok" class="tag-info"></div>
+  </div>
+  <div style="display: none" class="error-state">
+    <div id="running-error" class="tag-info error"></div>
+  </div>
 </body>
 
 </html>
