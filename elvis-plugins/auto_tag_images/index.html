@@ -293,14 +293,14 @@ THE SOFTWARE.
     }
 
     function start() {
-      if(elvisApi.csrf) {
-        // Elvis 6+
+      if(recognitionServerUrl.startsWith('/') && elvisApi.csrf) {
+        // URL hosted inside Elvis 6+, pass CSRF token with request
         elvisApi.csrf(function (data) {
           recognize({ 'X-CSRF-TOKEN': data.csrfToken });
         });
       }
       else {
-        // Elvis 5
+        // Elvis 5 or external URL
         recognize({});
       }
     }
