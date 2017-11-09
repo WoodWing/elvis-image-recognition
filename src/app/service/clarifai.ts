@@ -13,7 +13,7 @@ export class Clarifai {
   private clarifai: ClarifaiAPI.App;
   private readFile: Function = Promise.promisify(require("fs").readFile);
   private detectSettings: any = { maxConcepts: 20, minValue: 0.85 };
-  private limiter:RateLimiter = new RateLimiter(8, 'second');
+  private limiter:RateLimiter = new RateLimiter(5, 'second');
 
   constructor() {
     this.clarifai = new ClarifaiAPI.App({ apiKey: Config.clarifaiAPIKey });
@@ -111,7 +111,7 @@ export class Clarifai {
   }
 
   private predict(model, data, detectSettings): Promise<any> {
-    // Rate limiting our predictions to max 8 per second as the Clarifai API is rate limited at 10/s
+    // Rate limiting our predictions to max 5 per second as the Clarifai API is rate limited at 10/s
     return new Promise<any>((resolve, reject) => {
       this.limiter.removeTokens(1, (error, remainingRequests) => {
         // Keep the compiler happy
