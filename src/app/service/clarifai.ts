@@ -112,15 +112,18 @@ export class Clarifai {
 
   private predict(model, data, detectSettings): Promise<any> {
     // Rate limiting our predictions to max 8 per second as the Clarifai API is rate limited at 10/s
-    return Promise.resolve(
-      this.limiter.removeTokens(1, (err, remainingRequests) => {
+    return new Promise<any>((resolve, reject) => {
+      this.limiter.removeTokens(1, (error, remainingRequests) => {
         // Keep the compiler happy
-        err = err;  // Ignore as it should never happen. An error can only occur if we remove more tokens than specified in the RateLimiter constructor
         remainingRequests = remainingRequests;
+        if (error) {
+          // Should never happen. An error can only occur if we remove more tokens than specified in the RateLimiter constructor
+          reject(error)
+        }
         // console.log("Remanining requests:  " + remainingRequests);
-        return this.clarifai.models.predict(model, data, detectSettings);
+        resolve(this.clarifai.models.predict(model, data, detectSettings));
       })
-    );
+    });
   }
 
   private getTagsFromConcepts(concepts: any, lowercase: boolean = true): string[] {
