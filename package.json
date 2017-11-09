@@ -32,6 +32,7 @@
     "clarifai": "^2.4.0",
     "console-stamp": "^0.2.5",
     "express": "^4.15.4",
+    "limiter": "^1.1.2",
     "request": "^2.81.0",
     "secure-compare": "^3.0.1",
     "ts-node": "^3.3.0",
