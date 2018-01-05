@@ -295,10 +295,8 @@ export class ElvisApi {
      */
     public update(id: string, metadata?: string, filedata?: Buffer, metadataToReturn?: string, nextUrl?: string, parseMetadataModifications?: boolean, clearCheckoutState?: boolean, createVersion?: boolean, autoRename?: boolean, authcred?: string): Promise<HitElement> {
         const localVarPath = this.basePath + '/services/asset/update';
-        let queryParameters: any = {};
         let headerParams: any = (<any>Object).assign({}, this.defaultHeaders);
         let formParams: any = {};
-
 
         // verify required parameter 'id' is not null or undefined
         if (id === null || id === undefined) {
@@ -306,39 +304,39 @@ export class ElvisApi {
         }
 
         if (id !== undefined) {
-            queryParameters['id'] = id;
+            formParams['id'] = id;
         }
 
         if (metadata !== undefined) {
-            queryParameters['metadata'] = metadata;
+            formParams['metadata'] = metadata;
         }
 
         if (metadataToReturn !== undefined) {
-            queryParameters['metadataToReturn'] = metadataToReturn;
+            formParams['metadataToReturn'] = metadataToReturn;
         }
 
         if (nextUrl !== undefined) {
-            queryParameters['nextUrl'] = nextUrl;
+            formParams['nextUrl'] = nextUrl;
         }
 
         if (parseMetadataModifications !== undefined) {
-            queryParameters['parseMetadataModifications'] = parseMetadataModifications;
+            formParams['parseMetadataModifications'] = parseMetadataModifications;
         }
 
         if (clearCheckoutState !== undefined) {
-            queryParameters['clearCheckoutState'] = clearCheckoutState;
+            formParams['clearCheckoutState'] = clearCheckoutState;
         }
 
         if (createVersion !== undefined) {
-            queryParameters['createVersion'] = createVersion;
+            formParams['createVersion'] = createVersion;
         }
 
         if (autoRename !== undefined) {
-            queryParameters['autoRename'] = autoRename;
+            formParams['autoRename'] = autoRename;
         }
 
         if (authcred !== undefined) {
-            queryParameters['authcred'] = authcred;
+            formParams['authcred'] = authcred;
         }
 
         let useFormData = false;
@@ -350,10 +348,8 @@ export class ElvisApi {
 
         let requestOptions: request.Options = {
             method: 'POST',
-            qs: queryParameters,
             headers: headerParams,
             uri: localVarPath,
-            useQuerystring: this._useQuerystring,
             json: true,
         };
 

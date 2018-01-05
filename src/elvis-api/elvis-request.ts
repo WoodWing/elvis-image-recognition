@@ -116,7 +116,7 @@ export class ElvisRequest {
           reject(new HttpError('Elvis request failed: ' + error, 0, options));
         }
 
-        if (body.errorcode) {
+        if (body && body.errorcode) {
           response.statusCode = body.errorcode;
           response.statusMessage = body.message;
         }
