@@ -192,7 +192,11 @@ export class GoogleVision extends Google {
   }
 
   private joinMultiValues(values:string[]):string {
-    return values.map(value => this.replaceUnsafeChars(value)).join(';');
+    return values.map(value => {
+      if (value) {
+        return this.replaceUnsafeChars(value);
+      }
+    }).join(';');
   }
 
 }
