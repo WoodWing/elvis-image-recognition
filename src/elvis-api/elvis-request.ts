@@ -39,7 +39,8 @@ export class ElvisRequest {
             return this.apiRequest(options);
           });
         }
-      } else {
+      } 
+      else {
         throw error;
       }
     });
@@ -64,13 +65,15 @@ export class ElvisRequest {
             return this.fileRequest(url, destination);
           });
         }
-      } else if (error.statusCode == 409) {
+      } 
+      else if (error.statusCode == 409) {
         let delay: number = 5;
         console.warn('Download failed with 409 error (file not available), retrying once more in ' + delay + ' seconds. URL: ' + url);
         return Promise.delay(delay * 1000).then(() => {
           return this.fileRequest(url, destination);
         });
-      } else {
+      }
+      else {
         throw error;
       }
     });
@@ -85,7 +88,8 @@ export class ElvisRequest {
     return this.apiRequest(options).then(response => {
       if (!response.loginSuccess) {
         throw new HttpError(response.loginFaultMessage, 401, options);
-      } else {
+      } 
+      else {
         console.info('Login successful!');
         if (response.csrfToken) {
           // Elvis 6+ login
