@@ -57,7 +57,7 @@ export class GoogleVision extends Google {
           },
           {
             type: "WEB_DETECTION",
-            maxResults: 100
+            maxResults: GoogleVision.MAX_RESULTS
           }
         ]
       };
