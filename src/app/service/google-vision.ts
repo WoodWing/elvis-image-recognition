@@ -12,8 +12,8 @@ export class GoogleVision extends Google {
   private gv:ImageAnnotatorClient;
   private readFile: Function = Promise.promisify(require("fs").readFile);
 
-  private static MIN_LABEL_SCORE:number = 0.85;
-  private static MIN_LOGO_SCORE:number = 0.5;
+  private static MIN_LABEL_SCORE:number = 0.8;
+  private static MIN_LOGO_SCORE:number = 0.1;
   private static MIN_WEB_ENTITY_SCORE:number = 0.1;
   private static MAX_RESULTS:number = 20;
 
@@ -115,8 +115,9 @@ export class GoogleVision extends Google {
       return;
     }
 
-    sr.metadata['gpsLatitude'] = landmarks[0].locations[0].latitude;
-    sr.metadata['gpsLongitude'] = landmarks[0].locations[0].longitude;
+    let latLng = landmarks[0].locations[0].latLng;
+    sr.metadata['gpsLatitude'] = latLng.latitude;
+    sr.metadata['gpsLongitude'] = latLng.longitude;
     
     let locations = landmarks.reduce((newLocations, landmark) => {
       // Handle duplicate locations returned by Google
