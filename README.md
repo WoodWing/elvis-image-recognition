@@ -71,7 +71,7 @@ The integrated AI services are not identical in the functionality they provide, 
 
 # 3. Installation prerequisites
 
-- Fully installed and licensed [Elvis Server](https://www.woodwing.com/en/digital-asset-management-system) (5.26 or higher). 
+- Fully installed and licensed [Elvis Server](https://www.woodwing.com/en/digital-asset-management-system). Minimum required version is Elvis 5.26. To use all features Elvis 6.7 or higher is required.
 - Machine where the image recognition server can run. This can be on the same machine where the Elvis Server runs or a different machine. Currently supported operating systems are Linux and OSX.
 - Elvis API user license.
 - An account with at least one, or optionally multiple AI vendors: [Google Vision](https://cloud.google.com/vision/), [Amazon Rekognition](https://aws.amazon.com/rekognition/) or [Clarifai](https://www.clarifai.com/).
