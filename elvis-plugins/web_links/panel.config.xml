@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+  <info>
+    <version>
+      <pluginVersion>1.0</pluginVersion>
+      <requiresAtLeast>6.1.0.0</requiresAtLeast>
+    </version>
+    <description>Show where the selected file is used on the web</description>
+  </info>
+  <panel>
+    <url>${pluginUrl}/index.html</url>
+
+    <iconUrl>${pluginUrl}/icon.svg</iconUrl>
+ 
+    <panelLocations>
+      <panelLocation id="mainRightPanel" order="1"/>
+    </panelLocations>
+
+    <requiredRoles>
+      <role>ROLE_CUSTOM_WEB_LINKS</role>
+    </requiredRoles>
+
+    <messages>
+      <entries locale="en_US">
+        <entry key="title">Web Links</entry>
+        <entry key="button.tooltip">Show where the selected file is used on the web</entry>
+      </entries>
+    </messages>
+  
+  </panel>
+</plugin>

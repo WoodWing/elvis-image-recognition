@@ -1,5 +1,14 @@
 # Table of contents
 
+<!-- 
+  This TOC is auto-generated using markdown-toc: https://github.com/jonschlinkert/markdown-toc 
+  If you introduce new or change existing chapters, please regenerate the TOC before committing.
+
+  Command to regenerate (save any changes to README.md first):
+
+  $ markdown-toc README.md -i
+-->
+
 <!-- toc -->
 
 - [1. Introduction](#1-introduction)
@@ -10,6 +19,7 @@
   * [4.2 Optional: configure the Elvis Webhook](#42-optional-configure-the-elvis-webhook)
   * [4.3 Install the image recognition server](#43-install-the-image-recognition-server)
   * [4.4 Optional: install the Auto Tag Images plug-in](#44-optional-install-the-auto-tag-images-plug-in)
+  * [4.5 Optional: install the Web Links plug-in](#45-optional-install-the-web-links-plug-in)
 - [5. Detect images during import](#5-detect-images-during-import)
 - [6. Detect existing Elvis images](#6-detect-existing-elvis-images)
 - [7. Detect images using the REST API](#7-detect-images-using-the-rest-api)
@@ -21,6 +31,7 @@
   * [8.2 Recognize existing images in Elvis with the Auto Tag Images plug-in](#82-recognize-existing-images-in-elvis-with-the-auto-tag-images-plug-in)
 - [9. Privacy and data usage](#9-privacy-and-data-usage)
 - [10. Version history](#10-version-history)
+  * [v2.1.0](#v210)
   * [v2.0.0](#v200)
   * [v1.1.0](#v110)
   * [v1.0.0](#v100)
@@ -48,7 +59,11 @@ The integrated AI services are not identical in the functionality they provide, 
 
 **Google Vision**
 - General tagging.
-- Landmark detection: name of a location including GPS coordinates.
+- Landmark detection: location name including GPS coordinates.
+- OCR: Detect text in images
+- Web entities: tags related to where the image is used on websites
+- Web links: URL's to pages where the image or a similar image was linked. These links are saved in Elvis metadata fields, the Web Links panel plugin provides a simple clickable list of URL's (Elvis 6+).
+- Logo detection: Detect brand logos.
 
 **AWS Rekognition**
 - General tagging.
@@ -56,7 +71,7 @@ The integrated AI services are not identical in the functionality they provide, 
 
 # 3. Installation prerequisites
 
-- Fully installed and licensed [Elvis Server](https://www.woodwing.com/en/digital-asset-management-system) (5.26 or higher). 
+- Fully installed and licensed [Elvis Server](https://www.woodwing.com/en/digital-asset-management-system). Minimum required version is Elvis 5.26. To use all features Elvis 6.7 or higher is required.
 - Machine where the image recognition server can run. This can be on the same machine where the Elvis Server runs or a different machine. Currently supported operating systems are Linux and OSX.
 - Elvis API user license.
 - An account with at least one, or optionally multiple AI vendors: [Google Vision](https://cloud.google.com/vision/), [Amazon Rekognition](https://aws.amazon.com/rekognition/) or [Clarifai](https://www.clarifai.com/).
@@ -112,6 +127,12 @@ The server can either be installed on the Elvis Server or on a separate machine.
 - Copy the `auto_tag_images` folder to: `<Elvis Config>/plugins/active`.
 - Open `auto_tag_images/action.config.xml`.
 - Point the `recognitionServerUrl` setting to the image recognition server. This URL must be accessible for users using this plugin (not localhost).
+- [Activate](https://helpcenter.woodwing.com/hc/en-us/articles/115002644606) the plugin.
+
+## 4.5 Optional: install the Web Links plug-in
+
+- Open the `elvis-plugins` folder.
+- Copy the `web_links` folder to: `<Elvis Config>/plugins/active`.
 - [Activate](https://helpcenter.woodwing.com/hc/en-us/articles/115002644606) the plugin.
 
 # 5. Detect images during import
@@ -214,6 +235,9 @@ As explained in the architecture overview, the image recognition server sends pr
 - [Google Cloud Vision Data Usage](https://cloud.google.com/vision/docs/data-usage)
 
 # 10. Version history
+
+## v2.1.0
+- Google Vision: Implement OCR, logo detection, web entities and web links. 
 
 ## v2.0.0
 - Added support for translating tags into different languages (using Google Translate).
