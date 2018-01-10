@@ -135,7 +135,7 @@ This section describes how to install the Auto Tag Images plug-in. Please follow
 - Copy the `recognition_api` folder to: `<Elvis Config>/plugins/active`.
 - Copy the `auto_tag_images` folder to: `<Elvis Config>/plugins/active`.
 - Open `auto_tag_images/action.config.xml`.
-- Point the `recognitionServerUrl` setting to the image recognition server: `/plugins/image_recognition_api`.
+- Point the `recognitionServerUrl` setting to the image recognition server: `/plugins/recognition_api`.
 - [Activate](https://helpcenter.woodwing.com/hc/en-us/articles/115002644606) the plugins.
 
 ### 4.4.2 Elvis 5.26 - Elvis 6.6
