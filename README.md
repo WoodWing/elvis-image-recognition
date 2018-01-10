@@ -19,6 +19,8 @@
   * [4.2 Optional: configure the Elvis Webhook](#42-optional-configure-the-elvis-webhook)
   * [4.3 Install the image recognition server](#43-install-the-image-recognition-server)
   * [4.4 Optional: install the Auto Tag Images plug-in](#44-optional-install-the-auto-tag-images-plug-in)
+    + [4.4.1 Elvis 6.7+](#441-elvis-67)
+    + [4.4.2 Elvis 5.26 - Elvis 6.6](#442-elvis-526---elvis-66)
   * [4.5 Optional: install the Web Links plug-in](#45-optional-install-the-web-links-plug-in)
 - [5. Detect images during import](#5-detect-images-during-import)
 - [6. Detect existing Elvis images](#6-detect-existing-elvis-images)
