@@ -22,10 +22,11 @@
   * [4.5 Optional: install the Web Links plug-in](#45-optional-install-the-web-links-plug-in)
 - [5. Detect images during import](#5-detect-images-during-import)
 - [6. Detect existing Elvis images](#6-detect-existing-elvis-images)
-- [7. Detect images using the REST API](#7-detect-images-using-the-rest-api)
-  * [7.1 POST `/api/recognize`](#71-post-apirecognize)
-  * [7.2 GET `/api/recognize/:id:`](#72-get-apirecognizeid)
-  * [7.3 DELETE `/api/recognize/:id:`](#73-delete-apirecognizeid)
+- [7. Detect images using the Image Recognition REST API](#7-detect-images-using-the-image-recognition-rest-api)
+  * [7.1 Security](#71-security)
+  * [7.2 POST `/api/recognize`](#72-post-apirecognize)
+  * [7.3 GET `/api/recognize/:id:`](#73-get-apirecognizeid)
+  * [7.4 DELETE `/api/recognize/:id:`](#74-delete-apirecognizeid)
 - [8. Architecture overview](#8-architecture-overview)
   * [8.1 Directly recognize images during import](#81-directly-recognize-images-during-import)
   * [8.2 Recognize existing images in Elvis with the Auto Tag Images plug-in](#82-recognize-existing-images-in-elvis-with-the-auto-tag-images-plug-in)
@@ -71,7 +72,8 @@ The integrated AI services are not identical in the functionality they provide, 
 
 # 3. Installation prerequisites
 
-- Fully installed and licensed [Elvis Server](https://www.woodwing.com/en/digital-asset-management-system). Minimum required version is Elvis 5.26. To use all features Elvis 6.7 or higher is required.
+- Fully installed and licensed [Elvis Server](https://www.woodwing.com/en/digital-asset-management-system). 
+- Minimum required version is Elvis 5.26. To use all features Elvis 6.7 or higher is required.
 - Machine where the image recognition server can run. This can be on the same machine where the Elvis Server runs or a different machine. Currently supported operating systems are Linux and OSX.
 - Elvis API user license.
 - An account with at least one, or optionally multiple AI vendors: [Google Vision](https://cloud.google.com/vision/), [Amazon Rekognition](https://aws.amazon.com/rekognition/) or [Clarifai](https://www.clarifai.com/).
@@ -122,6 +124,22 @@ The server can either be installed on the Elvis Server or on a separate machine.
 
 ## 4.4 Optional: install the Auto Tag Images plug-in
 
+This section describes how to install the Auto Tag Images plug-in. Please follow the steps relevant to the Elvis version you have installed. 
+
+### 4.4.1 Elvis 6.7+
+
+- This plug-in uses the REST API, ensure it's enabled in the `src/config.ts` file:  `restAPIEnabled = true`
+- Open the `elvis-plugins` folder.
+- Copy the `recognition_api` folder to: `<Elvis Config>/plugins/active`.
+- Copy the `auto_tag_images` folder to: `<Elvis Config>/plugins/active`.
+- Open `auto_tag_images/action.config.xml`.
+- Point the `recognitionServerUrl` setting to the image recognition server: `/plugins/image_recognition_api`.
+- [Activate](https://helpcenter.woodwing.com/hc/en-us/articles/115002644606) the plugins.
+
+### 4.4.2 Elvis 5.26 - Elvis 6.6
+
+**Security note: Using this plug-in with Elvis 5.26 - Elvis 6.6 is less secure as it requires the image recognition server API te be publicly exposed to end users. If you want to secure the API, upgrade to Elvis 6.7 or higher and follow the 6.7+ instructions.**
+
 - This plug-in uses the REST API, ensure it's enabled in the `src/config.ts` file:  `restAPIEnabled = true`
 - Open the `elvis-plugins` folder.
 - Copy the `auto_tag_images` folder to: `<Elvis Config>/plugins/active`.
@@ -153,13 +171,17 @@ The server can either be installed on the Elvis Server or on a separate machine.
 - Click start, the tagging process will start in the background and the dialog can be closed.
 - Tagging progress can be followed by checking the metadata of the images
 
-# 7. Detect images using the REST API
+# 7. Detect images using the Image Recognition REST API
 
 The REST API allows developers to interact with the image recognition server.
 
-**BETA NOTE: This API is currently in BETA stage. All API calls are fully functional, authentication is however not yet implemented. Therefore, ensure on network level that the recognition server can only be accessed by your integration.**
+## 7.1 Security
 
-## 7.1 POST `/api/recognize`
+This API has no build in authentication mechanism. There are however several ways to protect it:
+- Elvis 6.7+: Use an Elvis API Plugin to proxy the REST API through Elvis. This way only authenticated Elvis users with a specific capability assigned are able to use the REST API. See the Auto Tag Images plugin installation chapter for installation details.
+- Network / firewall: Open the ip & port of the image recognition server exclusively to your integration and/or the Elvis server.
+
+## 7.2 POST `/api/recognize`
 
 Starts the image recognition for a given query, immediately returns a process id that can be used to track progress or cancel the operation.
 
@@ -177,7 +199,7 @@ Response (202 ACCEPTED)
 }
 ```
 
-## 7.2 GET `/api/recognize/:id:`
+## 7.3 GET `/api/recognize/:id:`
 
 Retrieve progress information for a given recognition process.
 
@@ -200,7 +222,7 @@ Response (200 OK)
 }
 ```
 
-## 7.3 DELETE `/api/recognize/:id:`
+## 7.4 DELETE `/api/recognize/:id:`
 
 Cancel a recognition process.
 
@@ -238,6 +260,7 @@ As explained in the architecture overview, the image recognition server sends pr
 
 ## v2.1.0
 - Google Vision: Implement OCR, logo detection, web entities and web links. 
+- Added API security.
 
 ## v2.0.0
 - Added support for translating tags into different languages (using Google Translate).

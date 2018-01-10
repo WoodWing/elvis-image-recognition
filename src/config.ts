@@ -68,8 +68,7 @@ export class Config {
    * 
    * Web client plugins like the Auto Tag Images plugin depend on this API to be enabled.
    * 
-   * BETA NOTE: This API is currently in BETA stage. All API calls are fully functional, authentication is however not yet implemented. 
-   * Therefore, ensure on network level that the recognition server can only be accessed by your integration.
+   * SECURITY NOTE: This API has no build in authentication, check the readme for API security instructions 
    */
   static restAPIEnabled: boolean = process.env.IR_REST_API_ENABLED === 'true' || false;
 

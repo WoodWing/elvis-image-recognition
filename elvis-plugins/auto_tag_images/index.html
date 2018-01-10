@@ -293,6 +293,19 @@ THE SOFTWARE.
     }
 
     function start() {
+      if(recognitionServerUrl.startsWith('/') && elvisApi.csrf) {
+        // URL hosted inside Elvis 6+, pass CSRF token with request
+        elvisApi.csrf(function (data) {
+          recognize({ 'X-CSRF-TOKEN': data.csrfToken });
+        });
+      }
+      else {
+        // Elvis 5 or external URL
+        recognize({});
+      }
+    }
+
+    function recognize(headers) {
       var models = $('#tag-model').val();
       if (!models || models.length == 0) {
         models = [allClarifaiModels.GENERAL.id];
@@ -302,6 +315,7 @@ THE SOFTWARE.
         q: queryToPerform,
         models: models
       }
+      
       $.ajax({
         type: 'POST',
         url: recognitionServerUrl + '/api/recognize',
@@ -309,6 +323,7 @@ THE SOFTWARE.
         dataType: 'json',
         data: JSON.stringify(request),
         crossDomain: true,
+        headers: headers,
         success: function (data) {
           console.log('Image recognition process started with id: ' + data.processId);
           showRunningState('The image tagging started as backround process. You can now close this dialog and follow the progress in the metadata of the selected files.');
