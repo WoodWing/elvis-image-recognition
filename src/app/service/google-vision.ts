@@ -12,7 +12,7 @@ export class GoogleVision extends Google {
   private gv:ImageAnnotatorClient;
   private readFile: Function = Promise.promisify(require("fs").readFile);
 
-  private static MIN_LABEL_SCORE:number = 0.8;
+  private static MIN_LABEL_SCORE:number = 0.5;
   private static MIN_LOGO_SCORE:number = 0.1;
   private static MIN_WEB_ENTITY_SCORE:number = 0.1;
   private static MAX_RESULTS:number = 20;
@@ -98,7 +98,7 @@ export class GoogleVision extends Google {
     }
 
     response.labelAnnotations.forEach(label => {
-      if (label.score > GoogleVision.MIN_LABEL_SCORE) {
+      if (label.score >= GoogleVision.MIN_LABEL_SCORE) {
         sr.tags.push(label.description.toLowerCase());
       }
     });
