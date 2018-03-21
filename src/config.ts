@@ -82,6 +82,12 @@ export class Config {
 
 
   /**
+   * Set access-control-allow-origin header to * instead of elvisUrl. This makes it possible
+   * to configure a non-public or different URL for connecting to Elvis.
+   */
+  static corsOverride: boolean = process.env.CORS_OVERRIDE === 'true' || false;
+
+  /**
    * Recognize images right after they are imported in Elvis.
    * 
    * This depends on webhooks, make sure to also configure the elvisToken correctly when this setting is enabled.
