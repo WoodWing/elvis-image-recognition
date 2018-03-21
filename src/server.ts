@@ -7,6 +7,7 @@ import express = require('express');
 import health = require('express-ping');
 import http = require('http');
 import https = require('https');
+import logger = require('logger-request');
 import fs = require('fs');
 import { Application } from 'express';
 import bodyParser = require('body-parser');
@@ -41,6 +42,20 @@ class Server {
     this.app = Config.httpsEnabled ? this.httpsApp : this.httpApp;
     if (Config.pingEnabled) {
         this.app.use(health.ping('/' + Config.pingEndpoint));
+    }
+    if (Config.logRequests) {
+      this.app.use(logger({
+        filename: Config.logFile,
+        maxFiles: Config.logMaxFiles,
+        console: false,
+        custom: {
+          bytesReq: true,
+          bytesRes: true,
+          transfer: true,
+          referer: true,
+          agent: true
+        }
+      }));
     }
     if (Config.recognizeOnImport) {
       this.webhookEndPoint = new WebhookEndpoint(this.app);
@@ -103,6 +118,9 @@ class Server {
     console.info('REST API enabled: ' + Config.restAPIEnabled);
     if (Config.pingEnabled) {
       console.info('Ping endpoint enabled at: /' + Config.pingEndpoint);
+    }
+    if (Config.pingEnabled) {
+      console.info('Requests are logged at: ' + Config.logFile);
     }
   }
 
