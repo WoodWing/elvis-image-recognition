@@ -37,6 +37,21 @@ export class Config {
   static tempDir: string = process.env.IR_TEMP_DIR || './temp';
 
   /**
+   * Log requests [true/false].
+   */
+  static logRequests: boolean = process.env.IR_LOG_REQUESTS === 'true' || false;
+
+  /**
+   * File to store request logs in.
+   */
+  static logFile: string = process.env.IR_LOG_FILE || 'requests.log';
+
+  /**
+   * Maximum number of log files to keep.
+   */
+  static logMaxFiles: string = process.env.IR_LOG_MAX_FILES || '31';
+
+  /**
    * Elvis server url.
    */
   static elvisUrl: string = process.env.IR_ELVIS_URL || 'http://localhost:8080';

@@ -6,6 +6,7 @@ require("console-stamp")(console, { pattern: "dd-mm-yyyy HH:MM:ss.l" });
 import express = require('express');
 import http = require('http');
 import https = require('https');
+import logger = require('logger-request');
 import fs = require('fs');
 import { Application } from 'express';
 import bodyParser = require('body-parser');
@@ -38,6 +39,21 @@ class Server {
       this.httpsApp = express();
     }
     this.app = Config.httpsEnabled ? this.httpsApp : this.httpApp;
+    if (Config.logRequests) {
+      this.app.use(logger({
+        filename: Config.logFile,
+	daily: true,
+        maxFiles: Config.logMaxFiles,
+        console: false,
+        custom: {
+          bytesReq: true,
+          bytesRes: true,
+          transfer: true,
+          referer: true,
+          agent: true
+        }
+      }));
+    }
     if (Config.recognizeOnImport) {
       this.webhookEndPoint = new WebhookEndpoint(this.app);
     }
