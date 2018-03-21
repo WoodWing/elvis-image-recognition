@@ -4,6 +4,7 @@
 
 require("console-stamp")(console, { pattern: "dd-mm-yyyy HH:MM:ss.l" });
 import express = require('express');
+import health = require('express-ping');
 import http = require('http');
 import https = require('https');
 import fs = require('fs');
@@ -38,6 +39,9 @@ class Server {
       this.httpsApp = express();
     }
     this.app = Config.httpsEnabled ? this.httpsApp : this.httpApp;
+    if (Config.pingEnabled) {
+        this.app.use(health.ping('/' + Config.pingEndpoint));
+    }
     if (Config.recognizeOnImport) {
       this.webhookEndPoint = new WebhookEndpoint(this.app);
     }
@@ -97,6 +101,9 @@ class Server {
     console.info(serverMsg);
     console.info('Recognize imported files on import: ' + Config.recognizeOnImport);
     console.info('REST API enabled: ' + Config.restAPIEnabled);
+    if (Config.pingEnabled) {
+      console.info('Ping endpoint enabled at: /' + Config.pingEndpoint);
+    }
   }
 
   private allowCrossDomain = function (req, res, next) {

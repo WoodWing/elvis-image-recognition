@@ -22,6 +22,16 @@ export class Config {
   static httpsPort: string = process.env.IR_HTTPS_PORT || '9443';
 
   /**
+   * Enable status check on /ping.
+   */
+  static pingEnabled: boolean = process.env.IR_PING_ENABLED === 'true' || false;
+
+  /**
+   * Set status check endpoint. Default is /ping.
+   */
+  static pingEndpoint: string = process.env.IR_PING_ENDPOINT || 'ping';
+
+  /**
    * SSL private key.
    */
   static httpsKeyFile: string = process.env.IR_HTTPS_KEY_FILE || './https/server.key';
