@@ -22,6 +22,16 @@ export class Config {
   static httpsPort: string = process.env.IR_HTTPS_PORT || '9443';
 
   /**
+   * Enable status check on /ping.
+   */
+  static pingEnabled: boolean = process.env.IR_PING_ENABLED === 'true' || false;
+
+  /**
+   * Set status check endpoint. Default is /ping.
+   */
+  static pingEndpoint: string = process.env.IR_PING_ENDPOINT || 'ping';
+
+  /**
    * SSL private key.
    */
   static httpsKeyFile: string = process.env.IR_HTTPS_KEY_FILE || './https/server.key';
@@ -35,6 +45,21 @@ export class Config {
    * Temporary directory used for downloading images.
    */
   static tempDir: string = process.env.IR_TEMP_DIR || './temp';
+
+  /**
+   * Log requests [true/false].
+   */
+  static logRequests: boolean = process.env.IR_LOG_REQUESTS === 'true' || false;
+
+  /**
+   * File to store request logs in.
+   */
+  static logFile: string = process.env.IR_LOG_FILE || 'requests.log';
+
+  /**
+   * Maximum number of log files to keep.
+   */
+  static logMaxFiles: string = process.env.IR_LOG_MAX_FILES || '31';
 
   /**
    * Elvis server url.
@@ -55,6 +80,12 @@ export class Config {
    */
   static elvisPassword: string = process.env.IR_ELVIS_PASSWORD || 'changemenow';
 
+
+  /**
+   * Set access-control-allow-origin header to * instead of elvisUrl. This makes it possible
+   * to configure a non-public or different URL for connecting to Elvis.
+   */
+  static corsOverride: boolean = process.env.CORS_OVERRIDE === 'true' || false;
 
   /**
    * Recognize images right after they are imported in Elvis.
