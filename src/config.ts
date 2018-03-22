@@ -42,6 +42,11 @@ export class Config {
   static elvisUrl: string = process.env.IR_ELVIS_URL || 'http://localhost:8080';
 
   /**
+   * CORS header. See README.md for details.
+   */
+  static corsHeader: string = Config.elvisUrl;
+
+  /**
    * Elvis username. 
    * 
    * Permission configuration:
