@@ -267,6 +267,7 @@ This version has not yet been released.
 
 - Add configuration option corsHeader. Default value is elvisUrl. If needed, it can be changed to '*'. This is useful when using Elvis 6.7 or lower, and there is a preferred URL to connect from the Elvis Image Recognition server to Elvis that is different from the URL that clients access.
 - Health check endpoint is now available at /ping. If the service is available, the response will be a JSON payload of ```{ "uptime": [uptime in seconds] }``` and a 200 status code.
+- Add configuration options for request logging: logRequests, logFile, logMaxFiles. See config.ts for details.
 
 ## v2.1.0
 - Google Vision: Implement OCR, logo detection, web entities and web links. 
