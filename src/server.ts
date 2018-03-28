@@ -94,6 +94,7 @@ class Server {
   }
 
   private logStartupMessage(serverMsg: string): void {
+    console.info('Running NodeJS ' + process.version + ' on ' + process.platform + ' (' + process.arch + ')');
     console.info(serverMsg);
     console.info('Recognize imported files on import: ' + Config.recognizeOnImport);
     console.info('REST API enabled: ' + Config.restAPIEnabled);
