@@ -34,6 +34,7 @@
   * [8.2 Recognize existing images in Elvis with the Auto Tag Images plug-in](#82-recognize-existing-images-in-elvis-with-the-auto-tag-images-plug-in)
 - [9. Privacy and data usage](#9-privacy-and-data-usage)
 - [10. Version history](#10-version-history)
+  * [v2.2.0](#v220)
   * [v2.1.0](#v210)
   * [v2.0.0](#v200)
   * [v1.1.0](#v110)
@@ -259,6 +260,12 @@ As explained in the architecture overview, the image recognition server sends pr
 - [Google Cloud Vision Data Usage](https://cloud.google.com/vision/docs/data-usage)
 
 # 10. Version history
+
+## v2.2.0
+
+This version has not yet been released.
+
+- Add configuration option corsHeader. Default value is elvisUrl. If needed, it can be changed to '*'. This is useful when using Elvis 6.7 or lower, and there is a preferred URL to connect from the Elvis Image Recognition server to Elvis that is different from the URL that clients access.
 
 ## v2.1.0
 - Google Vision: Implement OCR, logo detection, web entities and web links. 

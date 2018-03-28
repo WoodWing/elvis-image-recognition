@@ -104,7 +104,7 @@ class Server {
     // Keep the compiler happy
     req = req;
 
-    res.header('Access-Control-Allow-Origin', Config.elvisUrl);
+    res.header('Access-Control-Allow-Origin', Config.corsHeader);
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept');
 
