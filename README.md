@@ -29,6 +29,7 @@
   * [7.2 POST `/api/recognize`](#72-post-apirecognize)
   * [7.3 GET `/api/recognize/:id:`](#73-get-apirecognizeid)
   * [7.4 DELETE `/api/recognize/:id:`](#74-delete-apirecognizeid)
+  * [7.5 GET `/ping`](#75-get-ping)
 - [8. Architecture overview](#8-architecture-overview)
   * [8.1 Directly recognize images during import](#81-directly-recognize-images-during-import)
   * [8.2 Recognize existing images in Elvis with the Auto Tag Images plug-in](#82-recognize-existing-images-in-elvis-with-the-auto-tag-images-plug-in)
@@ -239,6 +240,22 @@ Response (200 OK)
 Process with id "5e5949d8-3c58-4074-84a4-a63fa10286f8" is being cancelled.
 ```
 
+## 7.5 GET `/ping`
+
+Simple ping to validate that if the server is still online.
+
+Request
+```bash
+$ curl -X GET http://localhost:9090/ping
+```
+
+Response (200 OK)
+```json
+{
+  "uptime": 2451.638
+}
+```
+
 # 8. Architecture overview
 
 Images can either be detected directly during import or on demand using the Auto Tag Images web client plug-in. The schemas in this chapter describe the process flow.
@@ -262,12 +279,9 @@ As explained in the architecture overview, the image recognition server sends pr
 # 10. Version history
 
 ## v2.2.0
-
-This version has not yet been released.
-
-- Add configuration option corsHeader. Default value is elvisUrl. If needed, it can be changed to '*'. This is useful when using Elvis 6.7 or lower, and there is a preferred URL to connect from the Elvis Image Recognition server to Elvis that is different from the URL that clients access.
-- Health check endpoint is now available at /ping. If the service is available, the response will be a JSON payload of ```{ "uptime": [uptime in seconds] }``` and a 200 status code.
-- Add configuration options for request logging: logRequests, logFile, logMaxFiles. See config.ts for details.
+- Make corsHeader configurable.
+- Add health check endpoint.
+- Add HTTP request logging (file based).
 
 ## v2.1.0
 - Google Vision: Implement OCR, logo detection, web entities and web links. 

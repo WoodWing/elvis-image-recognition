@@ -39,21 +39,8 @@ class Server {
       this.httpsApp = express();
     }
     this.app = Config.httpsEnabled ? this.httpsApp : this.httpApp;
-    this.app.use('/ping', require('express-healthcheck')());
     if (Config.logRequests) {
-      this.app.use(logger({
-        filename: Config.logFile,
-	daily: true,
-        maxFiles: Config.logMaxFiles,
-        console: false,
-        custom: {
-          bytesReq: true,
-          bytesRes: true,
-          transfer: true,
-          referer: true,
-          agent: true
-        }
-      }));
+      this.enableLogger();
     }
     if (Config.recognizeOnImport) {
       this.webhookEndPoint = new WebhookEndpoint(this.app);
@@ -61,6 +48,7 @@ class Server {
     if (Config.restAPIEnabled) {
       this.recognizeApi = new RecognizeApi(this.app);
     }
+    this.enablePingApi();
   }
 
   /**
@@ -115,6 +103,26 @@ class Server {
     console.info(serverMsg);
     console.info('Recognize imported files on import: ' + Config.recognizeOnImport);
     console.info('REST API enabled: ' + Config.restAPIEnabled);
+  }
+
+  private enableLogger():void {
+    this.app.use(logger({
+      filename: Config.logFile,
+      daily: true,
+      maxFiles: Config.logMaxFiles,
+      console: false,
+      custom: {
+        bytesReq: true,
+        bytesRes: true,
+        transfer: true,
+        referer: true,
+        agent: true
+      }
+    }));
+  }
+
+  private enablePingApi() {
+    this.app.use('/ping', require('express-healthcheck')());
   }
 
   private allowCrossDomain = function (req, res, next) {
