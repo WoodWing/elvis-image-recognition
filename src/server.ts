@@ -38,6 +38,7 @@ class Server {
       this.httpsApp = express();
     }
     this.app = Config.httpsEnabled ? this.httpsApp : this.httpApp;
+    this.app.use('/ping', require('express-healthcheck')());
     if (Config.recognizeOnImport) {
       this.webhookEndPoint = new WebhookEndpoint(this.app);
     }
