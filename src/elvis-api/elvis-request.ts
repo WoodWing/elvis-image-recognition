@@ -118,6 +118,7 @@ export class ElvisRequest {
         if (error) {
           // Handle generic errors, for example unknown host
           reject(new HttpError('Elvis request failed: ' + error, 0, options));
+          return;
         }
 
         if (body && body.errorcode) {
