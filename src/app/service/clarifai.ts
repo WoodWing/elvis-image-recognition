@@ -87,7 +87,7 @@ export class Clarifai {
 
   private detectCelebrities(sr: ServiceResponse, data: string, model: any): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.predict(model, { base64: data }, this.detectSettings).then((response: any) => {
+      this.predict(model, { base64: data }).then((response: any) => {
         let resData: any = this.getResponseData(response);
         if (!resData || !resData.regions) {
           return resolve();
@@ -97,7 +97,7 @@ export class Clarifai {
         regions.forEach(region => {
           if (region.data && region.data.face && region.data.face.identity && region.data.face.identity.concepts) {
             let concepts: any = region.data.face.identity.concepts;
-            celebs = Utils.mergeArrays(celebs, this.getTagsFromConcepts(concepts, false));
+            celebs = Utils.mergeArrays(celebs, this.getTagsFromConcepts(concepts, false, this.detectSettings.minValue));
           }
         });
         if (celebs.length > 0) {
@@ -110,7 +110,7 @@ export class Clarifai {
     });
   }
 
-  private predict(model, data, detectSettings): Promise<any> {
+  private predict(model, data, detectSettings?): Promise<any> {
     // Rate limiting our predictions to max 5 per second as the Clarifai API is rate limited at 10/s
     return new Promise<any>((resolve, reject) => {
       this.limiter.removeTokens(1, (error, remainingRequests) => {
@@ -126,11 +126,13 @@ export class Clarifai {
     });
   }
 
-  private getTagsFromConcepts(concepts: any, lowercase: boolean = true): string[] {
+  private getTagsFromConcepts(concepts: any, lowercase: boolean = true, score?: number): string[] {
     let tags: string[] = [];
     concepts.forEach(concept => {
-      let tag: string = lowercase ? concept.name.toLowerCase() : concept.name;
-      tags.push(tag);
+      if (!score || concept.value >= score) {
+        let tag: string = lowercase ? concept.name.toLowerCase() : concept.name;
+        tags.push(tag);
+      }
     });
     return tags;
   }
