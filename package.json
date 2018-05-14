@@ -18,14 +18,14 @@
   },
   "devDependencies": {
     "@types/aws-sdk": "2.7.0",
+    "@types/express": "^4.11.1",
+    "@types/node": "^8.10.14",
     "@types/request": "2.0.0",
     "typescript": "^2.8.3"
   },
   "dependencies": {
     "@google-cloud/translate": "^1.0.0",
     "@google-cloud/vision": "^0.14.0",
-    "@types/express": "^4.11.1",
-    "@types/node": "^8.10.14",
     "aws-sdk": "^2.238.1",
     "bluebird": "^3.5.0",
     "body-parser": "^1.18.1",
