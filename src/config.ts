@@ -37,9 +37,33 @@ export class Config {
   static tempDir: string = process.env.IR_TEMP_DIR || './temp';
 
   /**
+   * Enable or disable HTTP request logging.
+   */
+  static logRequests: boolean = process.env.IR_LOG_REQUESTS === 'true' || false;
+
+  /**
+   * File to store request logs in.
+   */
+  static logFile: string = process.env.IR_LOG_FILE || 'requests.log';
+
+  /**
+   * Maximum number of log files to keep.
+   */
+  static logMaxFiles: string = process.env.IR_LOG_MAX_FILES || '31';
+
+  /**
    * Elvis server url.
    */
   static elvisUrl: string = process.env.IR_ELVIS_URL || 'http://localhost:8080';
+
+  /**
+   * CORS header. Default value is elvisUrl. You can change this value to, for example '*' to open up access to other domains than the Elvis URL. 
+   * This can be useful when tou want to access the Image Recognition Server API from a non - Elvis web client webpage.
+   * 
+   * Note: with Elvis 6.7 or higher, it's advised to keep the setting default and access the API via the Elvis Server which adds authentication.
+   * In this case you configure the cors settings in Elvis Server: https://helpcenter.woodwing.com/hc/en-us/articles/115002689986-Elvis-6-API-cross-origin
+   */
+  static corsHeader: string = process.env.IR_CORS_HEADER || Config.elvisUrl;
 
   /**
    * Elvis username. 
@@ -68,8 +92,7 @@ export class Config {
    * 
    * Web client plugins like the Auto Tag Images plugin depend on this API to be enabled.
    * 
-   * BETA NOTE: This API is currently in BETA stage. All API calls are fully functional, authentication is however not yet implemented. 
-   * Therefore, ensure on network level that the recognition server can only be accessed by your integration.
+   * SECURITY NOTE: This API has no build in authentication, check the readme for API security instructions 
    */
   static restAPIEnabled: boolean = process.env.IR_REST_API_ENABLED === 'true' || false;
 

@@ -6,6 +6,7 @@ require("console-stamp")(console, { pattern: "dd-mm-yyyy HH:MM:ss.l" });
 import express = require('express');
 import http = require('http');
 import https = require('https');
+import logger = require('logger-request');
 import fs = require('fs');
 import { Application } from 'express';
 import bodyParser = require('body-parser');
@@ -38,12 +39,16 @@ class Server {
       this.httpsApp = express();
     }
     this.app = Config.httpsEnabled ? this.httpsApp : this.httpApp;
+    if (Config.logRequests) {
+      this.enableLogger();
+    }
     if (Config.recognizeOnImport) {
       this.webhookEndPoint = new WebhookEndpoint(this.app);
     }
     if (Config.restAPIEnabled) {
       this.recognizeApi = new RecognizeApi(this.app);
     }
+    this.enablePingApi();
   }
 
   /**
@@ -94,16 +99,37 @@ class Server {
   }
 
   private logStartupMessage(serverMsg: string): void {
+    console.info('Running NodeJS ' + process.version + ' on ' + process.platform + ' (' + process.arch + ')');
     console.info(serverMsg);
     console.info('Recognize imported files on import: ' + Config.recognizeOnImport);
     console.info('REST API enabled: ' + Config.restAPIEnabled);
+  }
+
+  private enableLogger():void {
+    this.app.use(logger({
+      filename: Config.logFile,
+      daily: true,
+      maxFiles: Config.logMaxFiles,
+      console: false,
+      custom: {
+        bytesReq: true,
+        bytesRes: true,
+        transfer: true,
+        referer: true,
+        agent: true
+      }
+    }));
+  }
+
+  private enablePingApi() {
+    this.app.use('/ping', require('express-healthcheck')());
   }
 
   private allowCrossDomain = function (req, res, next) {
     // Keep the compiler happy
     req = req;
 
-    res.header('Access-Control-Allow-Origin', Config.elvisUrl);
+    res.header('Access-Control-Allow-Origin', Config.corsHeader);
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept');
 

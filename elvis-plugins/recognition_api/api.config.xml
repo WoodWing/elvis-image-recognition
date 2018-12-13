@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+  <info>
+    <version>
+      <pluginVersion>1.0</pluginVersion>
+      <requiresAtLeast>6.7.0.0</requiresAtLeast>
+    </version>
+    <description>API Proxy plugin for the image recognition server</description>
+  </info>
+  <api>
+    <url>http://localhost:9090</url>
+    <requiredRoles>
+      <role>ROLE_CUSTOM_AI_RECOGNITION</role>
+    </requiredRoles>
+  </api>
+</plugin>

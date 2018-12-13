@@ -1,5 +1,6 @@
 import Promise = require('bluebird');
 import ClarifaiAPI = require('clarifai');
+import { RateLimiter } from  'limiter';
 import { Config } from '../../config';
 import { Utils } from '../utils';
 import { ServiceResponse } from './service-response';
@@ -12,6 +13,7 @@ export class Clarifai {
   private clarifai: ClarifaiAPI.App;
   private readFile: Function = Promise.promisify(require("fs").readFile);
   private detectSettings: any = { maxConcepts: 20, minValue: 0.85 };
+  private limiter:RateLimiter = new RateLimiter(5, 'second');
 
   constructor() {
     this.clarifai = new ClarifaiAPI.App({ apiKey: Config.clarifaiAPIKey });
@@ -69,7 +71,7 @@ export class Clarifai {
 
   private detectTags(data: string, model: any): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
-      this.clarifai.models.predict(model, { base64: data }, this.detectSettings).then((response: any) => {
+      this.predict(model, { base64: data }, this.detectSettings).then((response: any) => {
         let resData: any = this.getResponseData(response);
         if (resData && resData.concepts) {
           resolve(this.getTagsFromConcepts(resData.concepts));
@@ -85,7 +87,7 @@ export class Clarifai {
 
   private detectCelebrities(sr: ServiceResponse, data: string, model: any): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.clarifai.models.predict(model, { base64: data }, this.detectSettings).then((response: any) => {
+      this.predict(model, { base64: data }).then((response: any) => {
         let resData: any = this.getResponseData(response);
         if (!resData || !resData.regions) {
           return resolve();
@@ -95,7 +97,7 @@ export class Clarifai {
         regions.forEach(region => {
           if (region.data && region.data.face && region.data.face.identity && region.data.face.identity.concepts) {
             let concepts: any = region.data.face.identity.concepts;
-            celebs = Utils.mergeArrays(celebs, this.getTagsFromConcepts(concepts, false));
+            celebs = Utils.mergeArrays(celebs, this.getTagsFromConcepts(concepts, false, this.detectSettings.minValue));
           }
         });
         if (celebs.length > 0) {
@@ -108,11 +110,29 @@ export class Clarifai {
     });
   }
 
-  private getTagsFromConcepts(concepts: any, lowercase: boolean = true): string[] {
+  private predict(model, data, detectSettings?): Promise<any> {
+    // Rate limiting our predictions to max 5 per second as the Clarifai API is rate limited at 10/s
+    return new Promise<any>((resolve, reject) => {
+      this.limiter.removeTokens(1, (error, remainingRequests) => {
+        // Keep the compiler happy
+        remainingRequests = remainingRequests;
+        if (error) {
+          // Should never happen. An error can only occur if we remove more tokens than specified in the RateLimiter constructor
+          reject(error)
+        }
+        // console.log("Remanining requests:  " + remainingRequests);
+        resolve(this.clarifai.models.predict(model, data, detectSettings));
+      })
+    });
+  }
+
+  private getTagsFromConcepts(concepts: any, lowercase: boolean = true, score?: number): string[] {
     let tags: string[] = [];
     concepts.forEach(concept => {
-      let tag: string = lowercase ? concept.name.toLowerCase() : concept.name;
-      tags.push(tag);
+      if (!score || concept.value >= score) {
+        let tag: string = lowercase ? concept.name.toLowerCase() : concept.name;
+        tags.push(tag);
+      }
     });
     return tags;
   }
