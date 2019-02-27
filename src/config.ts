@@ -253,4 +253,15 @@ export class Config {
    */
   static languageTagFields: string = process.env.IR_LANGUAGE_TAG_FIELDS || Config.elvisTagsField;
 
+  /**
+   * Enable or disable Emrays image emotion analysis.
+   */
+  static emraysEnabled: boolean = process.env.IR_EMRAYS_ENABLED === 'true' || true;
+
+  /**
+   * Emrays API key
+   * 
+   * Can be obtained by contacting Emraus: https://emrays.com
+   */
+  static emraysApiKey: string = process.env.IR_EMRAYS_API_KEY || 'my-emrays-api-key';
 }
