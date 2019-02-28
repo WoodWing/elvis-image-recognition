@@ -310,27 +310,27 @@
 				<field name="cf_emraysLaughterScore" group="AI">
 					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
-					<data editable="true" datatype="number" />
+					<data editable="true" datatype="decimal" />
 				</field>
 				<field name="cf_emraysSurpriseScore" group="AI">
 					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
-					<data editable="true" datatype="number" />
+					<data editable="true" datatype="decimal" />
 				</field>
 				<field name="cf_emraysLoveScore" group="AI">
 					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
-					<data editable="true" datatype="number" />
+					<data editable="true" datatype="decimal" />
 				</field>
 				<field name="cf_emraysSadnessScore" group="AI">
 					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
-					<data editable="true" datatype="number" />
+					<data editable="true" datatype="decimal" />
 				</field>
 				<field name="cf_emraysAngerScore" group="AI">
 					<storage storeInMetadata="true"/>
 					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
-					<data editable="true" datatype="number" />
+					<data editable="true" datatype="decimal" />
 				</field>
 				<field name="cf_emraysImageReference" group="AI">
 					<storage storeInMetadata="true"/>
