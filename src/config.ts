@@ -229,7 +229,7 @@ export class Config {
    * which means translation of tags is disabled
    * 
    * Google Translate is used as translation service.
-   * Example values for Dutch, Portugese and Russian: 'nl,pt,ru'
+   * Example values for Dutch, Portuguese and Russian: 'nl,pt,ru'
    * 
    * - Requires googleKeyFilename setting to be configured.
    * - Enable the Translate API on your Google Cloud account
@@ -261,7 +261,7 @@ export class Config {
   /**
    * Emrays API key
    * 
-   * Can be obtained by contacting Emraus: https://emrays.com
+   * Can be obtained by contacting Emrays: https://emrays.com
    */
   static emraysApiKey: string = process.env.IR_EMRAYS_API_KEY || 'my-emrays-api-key';
 }

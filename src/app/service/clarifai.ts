@@ -29,7 +29,7 @@ export class Clarifai {
       models = assetPath ? this.findModelForPath(assetPath) : [ClarifaiAPI.GENERAL_MODEL];
     }
     return this.readFile(inputFile).then((data: Buffer) => {
-      let base64data: string = new Buffer(data).toString('base64');
+      let base64data: string = data.toString('base64');
       let promises = [];
       let sr = new ServiceResponse();
       models.forEach((model: string) => {
@@ -120,7 +120,7 @@ export class Clarifai {
           // Should never happen. An error can only occur if we remove more tokens than specified in the RateLimiter constructor
           reject(error)
         }
-        // console.log("Remanining requests:  " + remainingRequests);
+        // console.log("Remaining requests:  " + remainingRequests);
         resolve(this.clarifai.models.predict(model, data, detectSettings));
       })
     });

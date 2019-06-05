@@ -18,7 +18,7 @@ export class RecognizeApi {
   }
 
   /**
-   * Add API routes for recognition API's
+   * Add API routes for recognition APIs
    */
   public addRoutes(): void {
 
@@ -95,7 +95,7 @@ export class RecognizeApi {
       }
     });
 
-    // Prefix all API's with /api
+    // Prefix all APIs with /api
     this.app.use('/api', router);
   }
 

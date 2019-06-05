@@ -84,7 +84,6 @@ export class Recognizer {
       });
       let tagString: string = tags.join(';');
       metadata[Config.elvisTagsField] = tagString;
-
       // 5. Translate (if configured)
       if (this.translate) {
         return this.googleTranslate.translate(tagString).then((translatedMetadata: any) => {
