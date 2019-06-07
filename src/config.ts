@@ -229,7 +229,7 @@ export class Config {
    * which means translation of tags is disabled
    * 
    * Google Translate is used as translation service.
-   * Example values for Dutch, Portugese and Russian: 'nl,pt,ru'
+   * Example values for Dutch, Portuguese and Russian: 'nl,pt,ru'
    * 
    * - Requires googleKeyFilename setting to be configured.
    * - Enable the Translate API on your Google Cloud account
@@ -253,4 +253,15 @@ export class Config {
    */
   static languageTagFields: string = process.env.IR_LANGUAGE_TAG_FIELDS || Config.elvisTagsField;
 
+  /**
+   * Enable or disable Emrays image emotion analysis.
+   */
+  static emraysEnabled: boolean = process.env.IR_EMRAYS_ENABLED === 'true' || true;
+
+  /**
+   * Emrays API key
+   * 
+   * Can be obtained by contacting Emrays: https://emrays.com
+   */
+  static emraysApiKey: string = process.env.IR_EMRAYS_API_KEY || 'my-emrays-api-key';
 }

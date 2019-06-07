@@ -326,7 +326,7 @@ THE SOFTWARE.
         headers: headers,
         success: function (data) {
           console.log('Image recognition process started with id: ' + data.processId);
-          showRunningState('The image tagging started as backround process. You can now close this dialog and follow the progress in the metadata of the selected files.');
+          showRunningState('The image tagging started as background process. You can now close this dialog and follow the progress in the metadata of the selected files.');
         },
         error: function (jqXHR, textStatus, error) {
           console.log('Recognition request failed: ' + JSON.stringify(jqXHR));

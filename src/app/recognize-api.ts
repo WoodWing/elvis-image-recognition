@@ -14,11 +14,11 @@ export class RecognizeApi {
 
   constructor(public app: Application) {
     let translateEnabled: boolean = Config.languages !== '';
-    this.recognizer = new Recognizer(Config.clarifaiEnabled, Config.googleEnabled, Config.awsEnabled, translateEnabled);
+    this.recognizer = new Recognizer(Config.clarifaiEnabled, Config.googleEnabled, Config.awsEnabled, Config.emraysEnabled, translateEnabled);
   }
 
   /**
-   * Add API routes for recognition API's
+   * Add API routes for recognition APIs
    */
   public addRoutes(): void {
 
@@ -95,7 +95,7 @@ export class RecognizeApi {
       }
     });
 
-    // Prefix all API's with /api
+    // Prefix all APIs with /api
     this.app.use('/api', router);
   }
 

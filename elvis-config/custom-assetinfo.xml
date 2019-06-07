@@ -301,6 +301,42 @@
 					<data editable="true" datatype="text" multivalue="true" />
 					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
 				</field>
+				<field name="cf_emraysCompoundEmotions" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text" multivalue="true" />
+					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
+				</field>
+				<field name="cf_emraysLaughterScore" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
+					<data editable="true" datatype="decimal" />
+				</field>
+				<field name="cf_emraysSurpriseScore" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
+					<data editable="true" datatype="decimal" />
+				</field>
+				<field name="cf_emraysLoveScore" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
+					<data editable="true" datatype="decimal" />
+				</field>
+				<field name="cf_emraysSadnessScore" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
+					<data editable="true" datatype="decimal" />
+				</field>
+				<field name="cf_emraysAngerScore" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="un_tokenized" store="yes" excludeFromAll="true" />
+					<data editable="true" datatype="decimal" />
+				</field>
+				<field name="cf_emraysImageReference" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="true" />
+					<data editable="true" datatype="text" />
+				</field>
 				<!--
 				<field name="cf_tagsPt" group="AI">
 					<storage storeInMetadata="true"/>

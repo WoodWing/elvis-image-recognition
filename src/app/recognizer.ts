@@ -9,6 +9,7 @@ import { AwsRekognition } from './service/aws-rekognition';
 import { Clarifai } from './service/clarifai';
 import { ServiceResponse } from './service/service-response';
 import { GoogleTranslate } from './service/google-translate';
+import { Emrays } from './service/emrays';
 
 export class Recognizer {
 
@@ -19,8 +20,9 @@ export class Recognizer {
   private googleVision: GoogleVision;
   private aws: AwsRekognition;
   private googleTranslate: GoogleTranslate;
+  private emrays: Emrays;
 
-  constructor(public useClarifai: boolean = false, public useGoogle: boolean = false, public useAws: boolean = false, public translate = false) {
+  constructor(public useClarifai: boolean = false, public useGoogle: boolean = false, public useAws: boolean = false, public useEmrays: boolean = false, public translate: boolean = false) {
     if (!useClarifai && !useGoogle && !useAws) {
       throw new Error('Specify at least one recognition service');
     }
@@ -32,6 +34,9 @@ export class Recognizer {
     }
     if (useAws) {
       this.aws = new AwsRekognition();
+    }
+    if (useEmrays) {
+      this.emrays = new Emrays();
     }
     if (translate) {
       this.googleTranslate = new GoogleTranslate();
@@ -59,6 +64,9 @@ export class Recognizer {
       if (this.useAws) {
         services.push(this.aws.detect(filePath));
       }
+      if (this.useEmrays) {
+        services.push(this.emrays.detect(filePath));
+      }
       return Promise.all(services);
     }).then((serviceResponses: ServiceResponse[]) => {
       // 3. Delete the image, we no longer need it 
@@ -76,7 +84,6 @@ export class Recognizer {
       });
       let tagString: string = tags.join(';');
       metadata[Config.elvisTagsField] = tagString;
-
       // 5. Translate (if configured)
       if (this.translate) {
         return this.googleTranslate.translate(tagString).then((translatedMetadata: any) => {

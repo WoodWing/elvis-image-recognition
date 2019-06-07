@@ -14,7 +14,7 @@ export class WebhookEndpoint {
 
   constructor(public app: Application) {
     let translateEnabled: boolean = Config.languages !== '';
-    this.recognizer = new Recognizer(Config.clarifaiEnabled, Config.googleEnabled, Config.awsEnabled, translateEnabled);
+    this.recognizer = new Recognizer(Config.clarifaiEnabled, Config.googleEnabled, Config.awsEnabled, Config.emraysEnabled, translateEnabled);
   }
 
   /**
