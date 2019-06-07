@@ -1,6 +1,6 @@
 import Promise = require('bluebird');
 import { ServiceResponse } from './service-response';
-import { EmraysEmotionsApi, EmraysEmotionsApiApiKeys, ImageEmotions, Emotions } from './api';
+import { EmraysEmotionsApi, EmraysEmotionsApiApiKeys, ImageEmotions, Emotions } from './emrays-api';
 import { Config } from '../../config';
 
 /**

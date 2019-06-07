@@ -35,6 +35,7 @@
   * [8.2 Recognize existing images in Elvis with the Auto Tag Images plug-in](#82-recognize-existing-images-in-elvis-with-the-auto-tag-images-plug-in)
 - [9. Privacy and data usage](#9-privacy-and-data-usage)
 - [10. Version history](#10-version-history)
+  * [v2.3.0](#v230)
   * [v2.2.0](#v220)
   * [v2.1.0](#v210)
   * [v2.0.0](#v200)
@@ -45,7 +46,7 @@
 
 # 1. Introduction
 
-The Elvis image recognition integration is a bridge between Elvis DAM and Artificial Intelligence (AI) image recognition services from Google, Amazon and Clarifai. It uses these services to detect tags, landmarks and do facial analysis. The gathered information is stored as searchable metadata in Elvis. Tags can also be automatically translated to other languages. The integration supports two tagging modes: on demand tagging of images that already exist in Elvis and auto tagging of images immediately after they are imported.
+The Elvis image recognition integration is a bridge between Elvis DAM and Artificial Intelligence (AI) image recognition services from Google, Amazon, Clarifai and Emrays. It uses these services to detect tags, landmarks and do facial analysis. The gathered information is stored as searchable metadata in Elvis. Tags can also be automatically translated to other languages. The integration supports two tagging modes: on demand tagging of images that already exist in Elvis and auto tagging of images immediately after they are imported.
 
 This readme describes how to setup the integration. Please read this [blog article](https://www.woodwing.com/en/blog/ai-dam-five-ways-ai-can-make-life-easier-for-dam-users) if you want to know more about Elvis and AI.
 
@@ -73,6 +74,11 @@ The integrated AI services are not identical in the functionality they provide, 
 **AWS Rekognition**
 - General tagging.
 - Facial analysis: Eyes open/closed, male/female, beard/glasses/mustache, age, etc.
+
+**Emrays**
+- Emotion detection in image
+- Images are scored on the core emotions: Love, Laughter, Surprise, Sadness and Anxiety
+- Images are tagged with one compound emotion that reflects a combination of the highest emotion scores.
 
 # 3. Installation prerequisites
 
@@ -275,8 +281,12 @@ As explained in the architecture overview, the image recognition server sends pr
 - [AWS Rekognition Data Privacy](https://aws.amazon.com/rekognition/faqs/#data-privacy)
 - [Clarifai Privacy Policy](https://www.clarifai.com/privacy)
 - [Google Cloud Vision Data Usage](https://cloud.google.com/vision/docs/data-usage)
+- [Emrays Privacy Policy](https://emrays.com/privacypolicy/)
 
 # 10. Version history
+
+## v2.3.0
+- Add support for Emrays emotion detection
 
 ## v2.2.0
 - Make corsHeader configurable.

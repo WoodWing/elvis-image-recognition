@@ -96,7 +96,7 @@ export class Recognizer {
       return this.api.update(assetId, JSON.stringify(metadata), undefined, 'filename');
     }).then((hit: HitElement) => {
       // 7. We're done!
-      console.info('Image recognition finshed for asset: ' + assetId + ' (' + hit.metadata['filename'] + ')');
+      console.info('Image recognition finished for asset: ' + assetId + ' (' + hit.metadata['filename'] + ')');
       return hit;
     }).catch((error: any) => {
       if (error instanceof NoPreviewError) {

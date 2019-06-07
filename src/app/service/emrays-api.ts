@@ -528,7 +528,7 @@ export class EmraysEmotionsApi {
         let localVarHeaderParams: any = (<any>Object).assign({}, this.defaultHeaders);
         let localVarFormParams: any = {};
 
-        // Hack to Ensure Emray API is working for multi-part post request as it's not respecting a query string authkey param.
+        // Hack to Ensure Emrays API is working for multi-part post request as it's not respecting a query string authkey param.
         localVarFormParams['apikey'] = this.authentications.ApiKeyAuth.apiKey;
 
         // verify required parameter 'input' is not null or undefined
