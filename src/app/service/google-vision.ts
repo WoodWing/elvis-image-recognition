@@ -152,8 +152,8 @@ export class GoogleVision extends Google {
       return;
     }
 
-    let textContent = texts.map(text => text.description).join(' ');
-    sr.metadata['textContent'] = textContent;
+    let extractedText = texts.map(text => text.description).join(' ');
+    sr.metadata['cf_extractedText'] = extractedText;
   }
 
   private addWebDetection(response, sr:ServiceResponse):void {

@@ -277,23 +277,28 @@
 				<field name="cf_fullMatchingImages" group="AI">
 					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
-					<data editable="false" datatype="text" multivalue="true" />
+					<data editable="true" datatype="text" multivalue="true" />
 				</field>
 				<field name="cf_pagesWithMatchingImages" group="AI">
 					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
-					<data editable="false" datatype="text" multivalue="true" />
+					<data editable="true" datatype="text" multivalue="true" />
 				</field>
 				<field name="cf_partialMatchingImages" group="AI">
 					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
-					<data editable="false" datatype="text" multivalue="true" />
+					<data editable="true" datatype="text" multivalue="true" />
 				</field>
 				<field name="cf_webEntities" group="AI">
 					<storage storeInMetadata="true"/>
 					<compass index="tokenized" analyzer="pureLowerCase" store="yes" excludeFromAll="false" />
 					<data editable="true" datatype="text" multivalue="true" />
 					<userInterface filterUI="tagCloud" filterValuesSource="usedTerms" />
+				</field>
+				<field name="cf_extractedText" group="AI">
+					<storage storeInMetadata="true"/>
+					<compass index="tokenized" store="yes" excludeFromAll="false" />
+					<data editable="true" datatype="text"/>
 				</field>
 				<field name="cf_logos" group="AI">
 					<storage storeInMetadata="true"/>
