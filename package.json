@@ -12,7 +12,7 @@
     "node": ">= 6.9.0"
   },
   "scripts": {
-    "start": "$(npm bin)/ts-node src/server.ts",
+    "start": "node_modules/.bin/ts-node src/server.ts",
     "build": "tsc -p tsconfig.release.json",
     "watch": "tsc -w -p tsconfig.release.json"
   },
