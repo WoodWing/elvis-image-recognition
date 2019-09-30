@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+  <info>
+    <version>
+      <pluginVersion>1.0</pluginVersion>
+      <requiresAtLeast>5.26.1.246</requiresAtLeast>
+    </version>
+    <description>Search for similar images</description>
+  </info>
+  <action>
+    <url>${pluginUrl}/index.html</url>
+    <icon16Url>${pluginUrl}/icon16.png</icon16Url>
+    <icon24Url>${pluginUrl}/icon24.png</icon24Url>
+
+    <userInterface>
+      <dialog width="400" height="245"/>
+    </userInterface>
+
+    <menuAssignments>
+      <menuAssignment id="toolBar" order="3"/>
+    </menuAssignments>
+
+    <messages>
+      <entries locale="en_US">
+        <entry key="button.label">Image search</entry>
+        <entry key="button.tooltip">Search for similar images</entry>
+        <entry key="title">Image search</entry>
+      </entries>
+      <entries locale="de">
+        <entry key="button.label">Bildersuche</entry>
+        <entry key="button.tooltip">Search for similar images</entry>
+        <entry key="title">Image search</entry>
+      </entries>
+    </messages>
+
+  </action>
+  <config>
+    <property name="recognitionServerUrl">
+      <description>The base URL where the image recognition server runs. This URL must be accessible for users using this plugin.</description>
+      <value>http://localhost:9090</value>
+    </property>
+  </config>
+</plugin>

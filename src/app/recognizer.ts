@@ -109,6 +109,35 @@ export class Recognizer {
     });
   }
 
+  public recognizeFile(filePath: string, models: string[] = null, assetPath: string = null): Promise<ServiceResponse> {
+    let services = [];
+    if (this.useClarifai) {
+      services.push(this.clarifai.detect(filePath, models, assetPath));
+    }
+    if (this.useGoogle) {
+      services.push(this.googleVision.detect(filePath));
+    }
+    if (this.useAws) {
+      services.push(this.aws.detect(filePath));
+    }
+    return Promise.all(services).then((serviceResponses: ServiceResponse[]) => {
+      // Combine results from the services
+      let tags: string[] = [];
+      let sr = new ServiceResponse();
+      serviceResponses.forEach((serviceResponse: ServiceResponse) => {
+        // Merge metadata values, note: this is quite a blunt merge, 
+        // this only works because the cloud services don't use identical metadata fields
+        sr.metadata = (Object.assign(sr.metadata, serviceResponse.metadata));
+        sr.tags = Utils.mergeArrays(sr.tags, serviceResponse.tags);
+      });
+      let tagString: string = tags.join(',');
+      sr.metadata[Config.elvisTagsField] = tagString;
+      return Promise.resolve(sr);
+    }).catch((error) => {
+      return Promise.reject(new Error('Image recognition failed for file: ' + filePath + '. Error details:\n' + error.stack));
+    });
+  }
+
   private downloadAsset(assetId: string): Promise<string> {
     let query: string = 'id:' + assetId;
     let search: AssetSearch = {
