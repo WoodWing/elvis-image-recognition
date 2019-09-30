@@ -22,6 +22,8 @@
     + [4.4.1 Elvis 6.7+](#441-elvis-67)
     + [4.4.2 Elvis 5.26 - Elvis 6.6](#442-elvis-526---elvis-66)
   * [4.5 Optional: install the Web Links plug-in](#45-optional-install-the-web-links-plug-in)
+  * [4.6 Optional: install the Search Similar plug-in](#46-optional-install-the-search-similar-plug-in)
+  * [4.7 Optional: install the Image Search plug-in](#47-optional-install-the-image-search-plug-in)
 - [5. Detect images during import](#5-detect-images-during-import)
 - [6. Detect existing Elvis images](#6-detect-existing-elvis-images)
 - [7. Detect images using the Image Recognition REST API](#7-detect-images-using-the-image-recognition-rest-api)
@@ -163,6 +165,18 @@ This section describes how to install the Auto Tag Images plug-in. Please follow
 - Copy the `web_links` folder to: `<Elvis Config>/plugins/active`.
 - [Activate](https://helpcenter.woodwing.com/hc/en-us/articles/115002644606) the plugin.
 
+## 4.6 Optional: install the Search Similar plug-in
+
+- Open the `elvis-plugins` folder.
+- Copy the `search_similar` folder to: `<Elvis Config>/plugins/active`.
+- [Activate](https://helpcenter.woodwing.com/hc/en-us/articles/115002644606) the plugin.
+
+## 4.7 Optional: install the Image Search plug-in
+
+- Open the `elvis-plugins` folder.
+- Copy the `image_search` folder to: `<Elvis Config>/plugins/active`.
+- [Activate](https://helpcenter.woodwing.com/hc/en-us/articles/115002644606) the plugin.
+
 # 5. Detect images during import
 
 - Open the Elvis web client.
@@ -284,6 +298,10 @@ As explained in the architecture overview, the image recognition server sends pr
 - [Emrays Privacy Policy](https://emrays.com/privacypolicy/)
 
 # 10. Version history
+
+## v2.4.0
+- Add simple tag based search similar functionality
+- Add simple tag based image search functionality
 
 ## v2.3.0
 - Add support for Emrays emotion detection
