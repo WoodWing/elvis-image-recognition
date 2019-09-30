@@ -37,6 +37,7 @@
   * [8.2 Recognize existing images in Elvis with the Auto Tag Images plug-in](#82-recognize-existing-images-in-elvis-with-the-auto-tag-images-plug-in)
 - [9. Privacy and data usage](#9-privacy-and-data-usage)
 - [10. Version history](#10-version-history)
+  * [v2.4.0](#v240)
   * [v2.3.0](#v230)
   * [v2.2.0](#v220)
   * [v2.1.0](#v210)
