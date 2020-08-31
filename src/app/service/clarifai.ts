@@ -80,7 +80,7 @@ export class Clarifai {
           resolve([]);
         }
       }).catch((error: any) => {
-        reject(new Error('An error occurred while getting labels from Clarifai: ' + JSON.stringify(error.data.status, null, 2)));
+        reject(new Error('An error occurred while getting labels from Clarifai: ' + error));
       });
     });
   }
@@ -105,7 +105,7 @@ export class Clarifai {
         }
         resolve();
       }).catch((error: any) => {
-        reject(new Error('An error occurred while getting celebrity info from Clarifai: ' + JSON.stringify(error.data.status, null, 2)));
+        reject(new Error('An error occurred while getting celebrity info from Clarifai: ' + error));
       });
     });
   }
