@@ -6,7 +6,7 @@ import { Recognizer } from './recognizer';
 import { ServiceResponse } from './service/service-response';
 import { Config } from '../config';
 import formidable = require('formidable');
-import uuidV4 = require('uuid/v4');
+import { v4 as uuidV4 } from 'uuid';
 
 export class RecognizeApi {
 

@@ -69,10 +69,7 @@ export class GoogleVision extends Google {
           console.warn('Unexpected response from Google Vision');
           return sr;
         }
-        else if (response.error) {
-          throw this.getErrorObj(inputFile, response.error);
-        }
-
+        
         let res = response[0];
         this.addLabels(res, sr);
         this.addLandmarks(res, sr);

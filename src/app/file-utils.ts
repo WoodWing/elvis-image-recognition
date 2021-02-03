@@ -4,7 +4,7 @@ import path = require('path');
 import { ApiManager } from '../elvis-api/api-manager';
 import Promise = require('bluebird');
 import lvs = require('../elvis-api/api');
-import uuidV4 = require('uuid/v4');
+import { v4 as uuidV4 } from 'uuid';
 
 export class FileUtils {
 

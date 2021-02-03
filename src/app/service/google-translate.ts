@@ -1,4 +1,4 @@
-import translate = require('@google-cloud/translate');
+import {v3} from '@google-cloud/translate';
 import { Google } from './google-base';
 import { Config } from '../../config';
 
@@ -7,7 +7,7 @@ import { Config } from '../../config';
  */
 export class GoogleTranslate extends Google {
 
-  private gt;
+  private gt:v3.TranslationServiceClient;
 
   private languages: string[];
   private languageTagFields: string[];
@@ -32,9 +32,9 @@ export class GoogleTranslate extends Google {
         throw new Error('Invalid language translation configuration, the number of languages (' + this.languages.length + ') must be equal to the number of languageTagFields (' + this.languageTagFields.length + ').');
       }
 
-      this.gt = translate({
+      this.gt = new v3.TranslationServiceClient({
         keyFilename: Config.googleKeyFilename
-      });
+      })
     });
   }
 
@@ -67,7 +67,7 @@ export class GoogleTranslate extends Google {
       to: destinationLanguage
     };
 
-    return this.gt.translate(text, options).then((response: any) => {
+    return this.gt.translateText({contents:[text]}, options).then((response: any) => {
       return {
         language: destinationLanguage,
         translation: response[0]
