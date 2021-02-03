@@ -1,6 +1,6 @@
 import Promise = require('bluebird');
 import ClarifaiAPI = require('clarifai');
-import { RateLimiter } from  'limiter';
+import { RateLimiter } from 'limiter';
 import { Config } from '../../config';
 import { Utils } from '../utils';
 import { ServiceResponse } from './service-response';
@@ -13,7 +13,7 @@ export class Clarifai {
   private clarifai: ClarifaiAPI.App;
   private readFile: Function = Promise.promisify(require("fs").readFile);
   private detectSettings: any = { maxConcepts: 20, minValue: 0.85 };
-  private limiter:RateLimiter = new RateLimiter(5, 'second');
+  private limiter: RateLimiter = new RateLimiter(5, 'second');
 
   constructor() {
     this.clarifai = new ClarifaiAPI.App({ apiKey: Config.clarifaiAPIKey });
@@ -70,43 +70,39 @@ export class Clarifai {
   }
 
   private detectTags(data: string, model: any): Promise<string[]> {
-    return new Promise<string[]>((resolve, reject) => {
-      this.predict(model, { base64: data }, this.detectSettings).then((response: any) => {
-        let resData: any = this.getResponseData(response);
-        if (resData && resData.concepts) {
-          resolve(this.getTagsFromConcepts(resData.concepts));
-        }
-        else {
-          resolve([]);
-        }
-      }).catch((error: any) => {
-        reject(new Error('An error occurred while getting labels from Clarifai: ' + JSON.stringify(error.data.status, null, 2)));
-      });
+    return this.predict(model, { base64: data }, this.detectSettings).then((response: any) => {
+      let resData: any = this.getResponseData(response);
+      if (resData && resData.concepts) {
+        return this.getTagsFromConcepts(resData.concepts);
+      }
+      else {
+        return [];
+      }
+    }).catch((error: any) => {
+      throw new Error('An error occurred while getting labels from Clarifai: ' + error);
     });
   }
 
   private detectCelebrities(sr: ServiceResponse, data: string, model: any): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.predict(model, { base64: data }).then((response: any) => {
-        let resData: any = this.getResponseData(response);
-        if (!resData || !resData.regions) {
-          return resolve();
+    return this.predict(model, { base64: data }).then((response: any) => {
+      let resData: any = this.getResponseData(response);
+      if (!resData || !resData.regions) {
+        return;
+      }
+      let regions = resData.regions;
+      let celebs: string[] = [];
+      regions.forEach(region => {
+        if (region.data && region.data.face && region.data.face.identity && region.data.face.identity.concepts) {
+          let concepts: any = region.data.face.identity.concepts;
+          celebs = Utils.mergeArrays(celebs, this.getTagsFromConcepts(concepts, false, this.detectSettings.minValue));
         }
-        let regions = resData.regions;
-        let celebs: string[] = [];
-        regions.forEach(region => {
-          if (region.data && region.data.face && region.data.face.identity && region.data.face.identity.concepts) {
-            let concepts: any = region.data.face.identity.concepts;
-            celebs = Utils.mergeArrays(celebs, this.getTagsFromConcepts(concepts, false, this.detectSettings.minValue));
-          }
-        });
-        if (celebs.length > 0) {
-          sr.metadata['subjectPerson'] = celebs.join(', ');
-        }
-        resolve();
-      }).catch((error: any) => {
-        reject(new Error('An error occurred while getting celebrity info from Clarifai: ' + JSON.stringify(error.data.status, null, 2)));
       });
+      if (celebs.length > 0) {
+        sr.metadata['subjectPerson'] = celebs.join(', ');
+      }
+      return;
+    }).catch((error: any) => {
+      throw new Error('An error occurred while getting celebrity info from Clarifai: ' + error);
     });
   }
 

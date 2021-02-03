@@ -101,7 +101,7 @@ Depending on your configuration and used services, you may need to add custom me
 
 ## 4.2 Optional: configure the Elvis Webhook
 
-An Elvis webhook needs to be configured if you want to detect images directly when they are imported in Elvis. You can skip this step if you only want to use the Auto Tag Images plugin or REST API.
+An Elvis webhook needs to be configured if you want to detect images directly when they are imported in Elvis. You can skip this step if you only want to use the Auto Tag Images plugin or REST API. Images imported in /Users/ are excluded by the  image recognition server.
 
 - Log-in to the Elvis web client as admin user.
 - Go to the management console, webhooks section and add a new webhook.
