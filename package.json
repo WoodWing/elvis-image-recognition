@@ -25,7 +25,7 @@
   "dependencies": {
     "@google-cloud/translate": "^1.0.0",
     "@google-cloud/vision": "^0.22.1",
-    "aws-sdk": "^2.350.0",
+    "aws-sdk": "^2.814.0",
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.1",
     "clarifai": "^2.9.1",
