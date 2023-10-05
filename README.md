@@ -1,3 +1,7 @@
+# Deprecated
+
+**This project is no longer maintained.**
+
 # Table of contents
 
 <!-- 
